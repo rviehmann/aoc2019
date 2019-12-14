@@ -38,8 +38,8 @@ public class Main {
         Day07.testWithExamplesForPuzzle1();
         Day07.testWithExamplesForPuzzle2();
         System.out.println("### Solutions ###");
-        System.out.println("Day 07, puzzle 1: " + Day07.doPuzzle1());
         try {
+            System.out.println("Day 07, puzzle 1: " + Day07.doPuzzle1());
             System.out.println("Day 07, puzzle 2: " + Day07.doPuzzle2());
         } catch (InterruptedException e) {
             System.err.println("InterruptedException caught: " + e);

@@ -38,21 +38,6 @@ public class Day07 {
     private static final int MIN_PHASE_PUZZLE2 = 5;
     private static final int MAX_PHASE_PUZZLE2 = 9;
 
-    private static int runAmplifier(int[] memory, int phase, int input) {
-        int[] copiedMemory = new int[memory.length];
-        System.arraycopy(memory, 0, copiedMemory, 0, memory.length);
-        Integer[] outputs = interpretIntcode(copiedMemory, new int[]{phase, input});
-        return outputs[0];
-    }
-
-    private static int runAmplifiers(int[] memory, int[] phases) {
-        int output = 0;
-        for (int i = 0; i < NUM_AMPLIFIERS; i++) {
-            output = runAmplifier(memory, phases[i], output);
-        }
-        return output;
-    }
-
     private static boolean hasOnlyUniquePhaseSettings(int[] phases) {
         for (int i = 0; i < phases.length; i++) {
             for (int j = 0; j < phases.length; j++) {
@@ -127,26 +112,26 @@ public class Day07 {
 
     public static void testWithExamplesForPuzzle1() {
         System.out.println("### Day 07: Examples for puzzle 1 ###");
-        System.out.println("This should yield 43210: " + runAmplifiers(EXAMPLE1, new int[]{4, 3, 2, 1, 0}));
-        System.out.println("This should yield 54321: " + runAmplifiers(EXAMPLE2, new int[]{0, 1, 2, 3, 4}));
-        System.out.println("This should yield 65210: " + runAmplifiers(EXAMPLE3, new int[]{1, 0, 4, 3, 2}));
+        try {
+            System.out.println("This should yield 43210: " + runAmplifiersInThreads(EXAMPLE1, new int[]{4, 3, 2, 1, 0}));
+            System.out.println("This should yield 54321: " + runAmplifiersInThreads(EXAMPLE2, new int[]{0, 1, 2, 3, 4}));
+            System.out.println("This should yield 65210: " + runAmplifiersInThreads(EXAMPLE3, new int[]{1, 0, 4, 3, 2}));
+        } catch (InterruptedException e) {
+            System.err.println("InterruptedException caught: " + e);
+        }
     }
 
     public static void testWithExamplesForPuzzle2() {
         System.out.println("### Day 07: Examples for puzzle 2 ###");
         try {
             System.out.println("This should yield 139629729: " + runAmplifiersInThreads(EXAMPLE4, new int[]{9, 8, 7, 6, 5}));
-        } catch (InterruptedException e) {
-            System.err.println("InterruptedException caught: " + e);
-        }
-        try {
             System.out.println("This should yield 18216: " + runAmplifiersInThreads(EXAMPLE5, new int[]{9, 7, 8, 5, 6}));
         } catch (InterruptedException e) {
             System.err.println("InterruptedException caught: " + e);
         }
     }
 
-    public static int doPuzzle1() {
+    public static int doPuzzle1() throws InterruptedException {
         int bestOutput = Integer.MIN_VALUE;
         for (int a = MIN_PHASE_PUZZLE1; a <= MAX_PHASE_PUZZLE1; a++) {
             for (int b = MIN_PHASE_PUZZLE1; b <= MAX_PHASE_PUZZLE1; b++) {
@@ -155,7 +140,7 @@ public class Day07 {
                         for (int e = MIN_PHASE_PUZZLE1; e <= MAX_PHASE_PUZZLE1; e++) {
                             int[] phases = new int[]{a, b, c, d, e};
                             if (hasOnlyUniquePhaseSettings(phases)) {
-                                int output = runAmplifiers(MEMORY, phases);
+                                int output = runAmplifiersInThreads(MEMORY, phases);
                                 if (output > bestOutput) {
                                     bestOutput = output;
                                 }
