@@ -13,14 +13,14 @@ public class Day05 {
         // NOP
     }
 
-    public static int doPuzzle1() {
+    public static int doPuzzle1() throws InterruptedException {
         int[] copiedMemory = new int[MEMORY.length];
         System.arraycopy(MEMORY, 0, copiedMemory, 0, MEMORY.length);
         Integer[] outputs = interpretIntcode(copiedMemory, new int[]{1});
         return outputs[outputs.length - 1];
     }
 
-    public static int doPuzzle2() {
+    public static int doPuzzle2() throws InterruptedException {
         int[] copiedMemory = new int[MEMORY.length];
         System.arraycopy(MEMORY, 0, copiedMemory, 0, MEMORY.length);
         Integer[] outputs = interpretIntcode(copiedMemory, new int[]{5});

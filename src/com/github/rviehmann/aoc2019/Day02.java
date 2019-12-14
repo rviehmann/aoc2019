@@ -13,29 +13,32 @@ public class Day02 {
 
     public static void testWithExamplesForPuzzle1() {
         System.out.println("### Day 02: Examples for puzzle 1 ###");
+        try {
+            int[] memory = new int[]{1, 9, 10, 3, 2, 3, 11, 0, 99, 30, 40, 50};
+            interpretIntcode(memory, new int[0]);
+            System.out.println("This should yield '3500, 9, 10, 70, 2, 3, 11, 0, 99, 30, 40, 50': " + Arrays.toString(memory));
 
-        int[] memory = new int[]{1, 9, 10, 3, 2, 3, 11, 0, 99, 30, 40, 50};
-        interpretIntcode(memory, new int[0]);
-        System.out.println("This should yield '3500, 9, 10, 70, 2, 3, 11, 0, 99, 30, 40, 50': " + Arrays.toString(memory));
+            memory = new int[]{1, 0, 0, 0, 99};
+            interpretIntcode(memory, new int[0]);
+            System.out.println("This should yield '2, 0, 0, 0, 99': " + Arrays.toString(memory));
 
-        memory = new int[]{1, 0, 0, 0, 99};
-        interpretIntcode(memory, new int[0]);
-        System.out.println("This should yield '2, 0, 0, 0, 99': " + Arrays.toString(memory));
+            memory = new int[]{2, 3, 0, 3, 99};
+            interpretIntcode(memory, new int[0]);
+            System.out.println("This should yield '2, 3, 0, 6, 99': " + Arrays.toString(memory));
 
-        memory = new int[]{2, 3, 0, 3, 99};
-        interpretIntcode(memory, new int[0]);
-        System.out.println("This should yield '2, 3, 0, 6, 99': " + Arrays.toString(memory));
+            memory = new int[]{2, 4, 4, 5, 99, 0};
+            interpretIntcode(memory, new int[0]);
+            System.out.println("This should yield '2, 4, 4, 5, 99, 9801': " + Arrays.toString(memory));
 
-        memory = new int[]{2, 4, 4, 5, 99, 0};
-        interpretIntcode(memory, new int[0]);
-        System.out.println("This should yield '2, 4, 4, 5, 99, 9801': " + Arrays.toString(memory));
-
-        memory = new int[]{1, 1, 1, 4, 99, 5, 6, 0, 99};
-        interpretIntcode(memory, new int[0]);
-        System.out.println("This should yield '30, 1, 1, 4, 2, 5, 6, 0, 99': " + Arrays.toString(memory));
+            memory = new int[]{1, 1, 1, 4, 99, 5, 6, 0, 99};
+            interpretIntcode(memory, new int[0]);
+            System.out.println("This should yield '30, 1, 1, 4, 2, 5, 6, 0, 99': " + Arrays.toString(memory));
+        } catch (InterruptedException e) {
+            System.err.println("InterruptedException caught: " + e);
+        }
     }
 
-    public static int doPuzzle1() {
+    public static int doPuzzle1() throws InterruptedException {
         int[] copiedMemory = new int[MEMORY.length];
         System.arraycopy(MEMORY, 0, copiedMemory, 0, MEMORY.length);
         copiedMemory[1] = 12;
@@ -44,7 +47,7 @@ public class Day02 {
         return copiedMemory[0];
     }
 
-    public static int doPuzzle2() {
+    public static int doPuzzle2() throws InterruptedException {
         for (int noun = 0; noun <= 99; noun++) {
             for (int verb = 0; verb <= 99; verb++) {
                 int[] copiedMemory = new int[MEMORY.length];
