@@ -156,10 +156,12 @@ public class Intcode {
         switch (mode) {
             case POSITION_MODE:
                 memory[(int) memory[pc + numParam]] = value;
+                return;
             case IMMEDIATE_MODE:
                 throw new IllegalArgumentException("Immediate mode not allowed for output: position=" + pc + ", mode=" + mode);
             case RELATIVE_MODE:
                 memory[(int) (memory[pc + numParam] + relativeBase)] = value;
+                return;
         }
         throw new IllegalArgumentException("Invalid mode: position=" + pc + ", mode=" + mode);
     }
