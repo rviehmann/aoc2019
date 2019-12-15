@@ -120,10 +120,11 @@ public class Intcode {
         int relativeBase = 0;
 
         while (true) {
-            int opcode = (int) (memory.getRaw(pc) % 100);
-            int param1Mode = (int) ((memory.getRaw(pc) / 100) % 10);
-            int param2Mode = (int) ((memory.getRaw(pc) / 1000) % 10);
-            int param3Mode = (int) ((memory.getRaw(pc) / 10000) % 10);
+            long memAtPc = memory.getRaw(pc);
+            int opcode = (int) (memAtPc % 100);
+            int param1Mode = (int) ((memAtPc / 100) % 10);
+            int param2Mode = (int) ((memAtPc / 1000) % 10);
+            int param3Mode = (int) ((memAtPc / 10000) % 10);
 
             if (!MODES.contains(param1Mode)) {
                 throw new IllegalArgumentException("Invalid param1Mode: param1Mode=" + param1Mode + ", position=" + pc);
