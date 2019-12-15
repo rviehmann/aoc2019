@@ -53,7 +53,9 @@ public class Main {
             System.err.println("InterruptedException caught: " + e);
         }
 
+        Day08.testWithExamplesForPuzzle2();
         System.out.println("### Solutions ###");
         System.out.println("Day 08, puzzle 1: " + Day08.doPuzzle1());
+        System.out.println("Day 08, puzzle 2: " + Day08.doPuzzle2());
     }
 }
