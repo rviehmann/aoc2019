@@ -8,25 +8,25 @@ import static com.github.rviehmann.aoc2019.Intcode.interpretIntcode;
 public class Day07 {
 
     // From: https://adventofcode.com/2019/day/7/input
-    private static final int[] MEMORY = {
+    private static final long[] MEMORY = {
             3, 8, 1001, 8, 10, 8, 105, 1, 0, 0, 21, 38, 63, 80, 105, 118, 199, 280, 361, 442, 99999, 3, 9, 102, 5, 9, 9, 1001, 9, 3, 9, 1002, 9, 2, 9, 4, 9, 99, 3, 9, 1001, 9, 4, 9, 102, 4, 9, 9, 101, 4, 9, 9, 102, 2, 9, 9, 101, 2, 9, 9, 4, 9, 99, 3, 9, 1001, 9, 5, 9, 102, 4, 9, 9, 1001, 9, 4, 9, 4, 9, 99, 3, 9, 101, 3, 9, 9, 1002, 9, 5, 9, 101, 3, 9, 9, 102, 5, 9, 9, 101, 3, 9, 9, 4, 9, 99, 3, 9, 1002, 9, 2, 9, 1001, 9, 4, 9, 4, 9, 99, 3, 9, 1002, 9, 2, 9, 4, 9, 3, 9, 1002, 9, 2, 9, 4, 9, 3, 9, 1001, 9, 2, 9, 4, 9, 3, 9, 1001, 9, 1, 9, 4, 9, 3, 9, 1002, 9, 2, 9, 4, 9, 3, 9, 1001, 9, 2, 9, 4, 9, 3, 9, 1002, 9, 2, 9, 4, 9, 3, 9, 1001, 9, 1, 9, 4, 9, 3, 9, 101, 2, 9, 9, 4, 9, 3, 9, 1001, 9, 1, 9, 4, 9, 99, 3, 9, 102, 2, 9, 9, 4, 9, 3, 9, 1001, 9, 2, 9, 4, 9, 3, 9, 1002, 9, 2, 9, 4, 9, 3, 9, 1001, 9, 2, 9, 4, 9, 3, 9, 1001, 9, 1, 9, 4, 9, 3, 9, 1002, 9, 2, 9, 4, 9, 3, 9, 1002, 9, 2, 9, 4, 9, 3, 9, 1002, 9, 2, 9, 4, 9, 3, 9, 1002, 9, 2, 9, 4, 9, 3, 9, 101, 1, 9, 9, 4, 9, 99, 3, 9, 101, 1, 9, 9, 4, 9, 3, 9, 102, 2, 9, 9, 4, 9, 3, 9, 101, 1, 9, 9, 4, 9, 3, 9, 102, 2, 9, 9, 4, 9, 3, 9, 1001, 9, 1, 9, 4, 9, 3, 9, 102, 2, 9, 9, 4, 9, 3, 9, 1001, 9, 1, 9, 4, 9, 3, 9, 1002, 9, 2, 9, 4, 9, 3, 9, 1001, 9, 2, 9, 4, 9, 3, 9, 101, 2, 9, 9, 4, 9, 99, 3, 9, 1002, 9, 2, 9, 4, 9, 3, 9, 102, 2, 9, 9, 4, 9, 3, 9, 102, 2, 9, 9, 4, 9, 3, 9, 1002, 9, 2, 9, 4, 9, 3, 9, 1001, 9, 1, 9, 4, 9, 3, 9, 102, 2, 9, 9, 4, 9, 3, 9, 102, 2, 9, 9, 4, 9, 3, 9, 1002, 9, 2, 9, 4, 9, 3, 9, 1001, 9, 2, 9, 4, 9, 3, 9, 1001, 9, 1, 9, 4, 9, 99, 3, 9, 1001, 9, 2, 9, 4, 9, 3, 9, 1001, 9, 2, 9, 4, 9, 3, 9, 101, 1, 9, 9, 4, 9, 3, 9, 101, 2, 9, 9, 4, 9, 3, 9, 1002, 9, 2, 9, 4, 9, 3, 9, 102, 2, 9, 9, 4, 9, 3, 9, 1001, 9, 1, 9, 4, 9, 3, 9, 1002, 9, 2, 9, 4, 9, 3, 9, 1001, 9, 1, 9, 4, 9, 3, 9, 101, 1, 9, 9, 4, 9, 99
     };
-    private static final int[] EXAMPLE1 = {
+    private static final long[] EXAMPLE1 = {
             3, 15, 3, 16, 1002, 16, 10, 16, 1, 16, 15, 15, 4, 15, 99, 0, 0
     };
-    private static final int[] EXAMPLE2 = {
+    private static final long[] EXAMPLE2 = {
             3, 23, 3, 24, 1002, 24, 10, 24, 1002, 23, -1, 23,
             101, 5, 23, 23, 1, 24, 23, 23, 4, 23, 99, 0, 0
     };
-    private static final int[] EXAMPLE3 = {
+    private static final long[] EXAMPLE3 = {
             3, 31, 3, 32, 1002, 32, 10, 32, 1001, 31, -2, 31, 1007, 31, 0, 33,
             1002, 33, 7, 33, 1, 33, 31, 31, 1, 32, 31, 31, 4, 31, 99, 0, 0, 0
     };
-    private static final int[] EXAMPLE4 = {
+    private static final long[] EXAMPLE4 = {
             3, 26, 1001, 26, -4, 26, 3, 27, 1002, 27, 2, 27, 1, 27, 26,
             27, 4, 27, 1001, 28, -1, 28, 1005, 28, 6, 99, 0, 0, 5
     };
-    private static final int[] EXAMPLE5 = {
+    private static final long[] EXAMPLE5 = {
             3, 52, 1001, 52, -5, 52, 3, 53, 1, 52, 56, 54, 1007, 54, 5, 55, 1005, 55, 26, 1001, 54,
             -5, 54, 1105, 1, 12, 1, 53, 54, 53, 1008, 54, 0, 55, 1001, 55, 1, 55, 2, 53, 55, 53, 4,
             53, 1001, 56, -1, 56, 1005, 56, 6, 99, 0, 0, 0, 0, 10
@@ -52,17 +52,15 @@ public class Day07 {
     public static class Amplifier implements Runnable {
 
         private final String name;
-        private final int[] memory;
-        private final int phase;
-        private final BlockingQueue<Integer> inputQueue;
-        private final BlockingQueue<Integer> outputQueue;
+        private final long[] memory;
+        private final BlockingQueue<Long> inputQueue;
+        private final BlockingQueue<Long> outputQueue;
 
-        public Amplifier(String name, int[] memory, int phase, BlockingQueue<Integer> inputQueue, BlockingQueue<Integer> outputQueue) {
+        public Amplifier(String name, long[] memory, BlockingQueue<Long> inputQueue, BlockingQueue<Long> outputQueue) {
             this.name = name;
-            int[] copiedMemory = new int[memory.length];
+            long[] copiedMemory = new long[memory.length];
             System.arraycopy(memory, 0, copiedMemory, 0, memory.length);
             this.memory = copiedMemory;
-            this.phase = phase;
             this.inputQueue = inputQueue;
             this.outputQueue = outputQueue;
         }
@@ -79,19 +77,19 @@ public class Day07 {
         }
     }
 
-    private static int runAmplifiersInThreads(int[] memory, int[] phases) throws InterruptedException {
-        BlockingQueue<Integer>[] queues = new BlockingQueue[NUM_AMPLIFIERS];
+    private static long runAmplifiersInThreads(long[] memory, int[] phases) throws InterruptedException {
+        BlockingQueue<Long>[] queues = new BlockingQueue[NUM_AMPLIFIERS];
         Amplifier[] amplifiers = new Amplifier[NUM_AMPLIFIERS];
         Thread[] threads = new Thread[NUM_AMPLIFIERS];
 
         for (int i = 0; i < NUM_AMPLIFIERS; i++) {
             queues[i] = new LinkedBlockingQueue<>();
-            queues[i].put(phases[i]);
+            queues[i].put((long) phases[i]);
         }
 
         for (int i = 0; i < NUM_AMPLIFIERS; i++) {
             String name = "Amp " + (char) ('A' + i);
-            amplifiers[i] = new Amplifier(name, memory, phases[i], queues[i], queues[(i + 1) % NUM_AMPLIFIERS]);
+            amplifiers[i] = new Amplifier(name, memory, queues[i], queues[(i + 1) % NUM_AMPLIFIERS]);
             threads[i] = new Thread(amplifiers[i]);
         }
 
@@ -99,7 +97,7 @@ public class Day07 {
             threads[i].start();
         }
 
-        queues[0].put(0);
+        queues[0].put(0L);
 
         for (int i = 0; i < NUM_AMPLIFIERS; i++) {
             // Wait until all amplifiers are finished.
@@ -131,8 +129,8 @@ public class Day07 {
         }
     }
 
-    public static int doPuzzle1() throws InterruptedException {
-        int bestOutput = Integer.MIN_VALUE;
+    public static long doPuzzle1() throws InterruptedException {
+        long bestOutput = Long.MIN_VALUE;
         for (int a = MIN_PHASE_PUZZLE1; a <= MAX_PHASE_PUZZLE1; a++) {
             for (int b = MIN_PHASE_PUZZLE1; b <= MAX_PHASE_PUZZLE1; b++) {
                 for (int c = MIN_PHASE_PUZZLE1; c <= MAX_PHASE_PUZZLE1; c++) {
@@ -140,7 +138,7 @@ public class Day07 {
                         for (int e = MIN_PHASE_PUZZLE1; e <= MAX_PHASE_PUZZLE1; e++) {
                             int[] phases = new int[]{a, b, c, d, e};
                             if (hasOnlyUniquePhaseSettings(phases)) {
-                                int output = runAmplifiersInThreads(MEMORY, phases);
+                                long output = runAmplifiersInThreads(MEMORY, phases);
                                 if (output > bestOutput) {
                                     bestOutput = output;
                                 }
@@ -153,8 +151,8 @@ public class Day07 {
         return bestOutput;
     }
 
-    public static int doPuzzle2() throws InterruptedException {
-        int bestOutput = Integer.MIN_VALUE;
+    public static long doPuzzle2() throws InterruptedException {
+        long bestOutput = Long.MIN_VALUE;
         for (int a = MIN_PHASE_PUZZLE2; a <= MAX_PHASE_PUZZLE2; a++) {
             for (int b = MIN_PHASE_PUZZLE2; b <= MAX_PHASE_PUZZLE2; b++) {
                 for (int c = MIN_PHASE_PUZZLE2; c <= MAX_PHASE_PUZZLE2; c++) {
@@ -162,7 +160,7 @@ public class Day07 {
                         for (int e = MIN_PHASE_PUZZLE2; e <= MAX_PHASE_PUZZLE2; e++) {
                             int[] phases = new int[]{a, b, c, d, e};
                             if (hasOnlyUniquePhaseSettings(phases)) {
-                                int output = runAmplifiersInThreads(MEMORY, phases);
+                                long output = runAmplifiersInThreads(MEMORY, phases);
                                 if (output > bestOutput) {
                                     bestOutput = output;
                                 }
