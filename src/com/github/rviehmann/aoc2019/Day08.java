@@ -74,6 +74,8 @@ public class Day08 {
                     case TRANSPARENT:
                         System.out.print(TRANSPARENT_CHAR);
                         break;
+                    default:
+                        throw new IllegalArgumentException("Char encountered that is not a valid color: " + pixel);
                 }
             }
             System.out.print("\n");
