@@ -61,6 +61,7 @@ public class Main {
         System.out.println("### Solutions ###");
         try {
             System.out.println("Day 09, puzzle 1: " + Day09.doPuzzle1());
+            System.out.println("Day 09, puzzle 2: " + Day09.doPuzzle2());
         } catch (InterruptedException e) {
             System.err.println("InterruptedException caught: " + e);
         }

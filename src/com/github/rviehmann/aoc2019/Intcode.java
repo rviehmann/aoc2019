@@ -207,7 +207,7 @@ public class Intcode {
 
                 case 9: // adjust relative base
                     input1 = memory.read(pc, 1, param1Mode, relativeBase);
-                    relativeBase = (int) input1;
+                    relativeBase += (int) input1;
                     pc += 2;
                     break;
 

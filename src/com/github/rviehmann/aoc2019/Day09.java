@@ -38,4 +38,11 @@ public class Day09 {
         System.out.println("This should yield only one output: " + Arrays.toString(outputs));
         return outputs[outputs.length - 1];
     }
+
+    public static long doPuzzle2() throws InterruptedException {
+        Memory memory = new Memory(MEMORY);
+        Long[] outputs = interpretIntcode(memory, new long[]{2});
+        System.out.println("This should yield only one output: " + Arrays.toString(outputs));
+        return outputs[outputs.length - 1];
+    }
 }
