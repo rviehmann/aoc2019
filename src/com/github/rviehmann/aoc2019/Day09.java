@@ -26,9 +26,16 @@ public class Day09 {
 
             memory = new Memory(new long[]{104, 1125899906842624L, 99});
             outputs = interpretIntcode(memory, new long[0]);
-            System.out.println("This should yield '104, 1125899906842624, 99': " + Arrays.toString(outputs));
+            System.out.println("This should yield '1125899906842624': " + Arrays.toString(outputs));
         } catch (InterruptedException e) {
             System.err.println("InterruptedException caught: " + e);
         }
+    }
+
+    public static long doPuzzle1() throws InterruptedException {
+        Memory memory = new Memory(MEMORY);
+        Long[] outputs = interpretIntcode(memory, new long[]{1});
+        System.out.println("This should yield only one output: " + Arrays.toString(outputs));
+        return outputs[outputs.length - 1];
     }
 }
