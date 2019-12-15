@@ -1,5 +1,7 @@
 package com.github.rviehmann.aoc2019;
 
+import com.github.rviehmann.aoc2019.Intcode.Memory;
+
 import java.util.Arrays;
 
 import static com.github.rviehmann.aoc2019.Intcode.interpretIntcode;
@@ -14,48 +16,46 @@ public class Day02 {
     public static void testWithExamplesForPuzzle1() {
         System.out.println("### Day 02: Examples for puzzle 1 ###");
         try {
-            long[] memory = new long[]{1, 9, 10, 3, 2, 3, 11, 0, 99, 30, 40, 50};
+            Memory memory = new Memory(new long[]{1, 9, 10, 3, 2, 3, 11, 0, 99, 30, 40, 50});
             interpretIntcode(memory, new long[0]);
-            System.out.println("This should yield '3500, 9, 10, 70, 2, 3, 11, 0, 99, 30, 40, 50': " + Arrays.toString(memory));
+            System.out.println("This should yield '3500, 9, 10, 70, 2, 3, 11, 0, 99, 30, 40, 50': " + Arrays.toString(memory.getRaw()));
 
-            memory = new long[]{1, 0, 0, 0, 99};
+            memory = new Memory(new long[]{1, 0, 0, 0, 99});
             interpretIntcode(memory, new long[0]);
-            System.out.println("This should yield '2, 0, 0, 0, 99': " + Arrays.toString(memory));
+            System.out.println("This should yield '2, 0, 0, 0, 99': " + Arrays.toString(memory.getRaw()));
 
-            memory = new long[]{2, 3, 0, 3, 99};
+            memory = new Memory(new long[]{2, 3, 0, 3, 99});
             interpretIntcode(memory, new long[0]);
-            System.out.println("This should yield '2, 3, 0, 6, 99': " + Arrays.toString(memory));
+            System.out.println("This should yield '2, 3, 0, 6, 99': " + Arrays.toString(memory.getRaw()));
 
-            memory = new long[]{2, 4, 4, 5, 99, 0};
+            memory = new Memory(new long[]{2, 4, 4, 5, 99, 0});
             interpretIntcode(memory, new long[0]);
-            System.out.println("This should yield '2, 4, 4, 5, 99, 9801': " + Arrays.toString(memory));
+            System.out.println("This should yield '2, 4, 4, 5, 99, 9801': " + Arrays.toString(memory.getRaw()));
 
-            memory = new long[]{1, 1, 1, 4, 99, 5, 6, 0, 99};
+            memory = new Memory(new long[]{1, 1, 1, 4, 99, 5, 6, 0, 99});
             interpretIntcode(memory, new long[0]);
-            System.out.println("This should yield '30, 1, 1, 4, 2, 5, 6, 0, 99': " + Arrays.toString(memory));
+            System.out.println("This should yield '30, 1, 1, 4, 2, 5, 6, 0, 99': " + Arrays.toString(memory.getRaw()));
         } catch (InterruptedException e) {
             System.err.println("InterruptedException caught: " + e);
         }
     }
 
     public static long doPuzzle1() throws InterruptedException {
-        long[] copiedMemory = new long[MEMORY.length];
-        System.arraycopy(MEMORY, 0, copiedMemory, 0, MEMORY.length);
-        copiedMemory[1] = 12;
-        copiedMemory[2] = 2;
-        interpretIntcode(copiedMemory, new long[0]);
-        return copiedMemory[0];
+        Memory memory = new Memory(MEMORY);
+        memory.setRaw(1, 12);
+        memory.setRaw(2, 2);
+        interpretIntcode(memory, new long[0]);
+        return memory.getRaw(0);
     }
 
     public static long doPuzzle2() throws InterruptedException {
         for (int noun = 0; noun <= 99; noun++) {
             for (int verb = 0; verb <= 99; verb++) {
-                long[] copiedMemory = new long[MEMORY.length];
-                System.arraycopy(MEMORY, 0, copiedMemory, 0, MEMORY.length);
-                copiedMemory[1] = noun;
-                copiedMemory[2] = verb;
-                interpretIntcode(copiedMemory, new long[0]);
-                if (copiedMemory[0] == 19690720) {
+                Memory memory = new Memory(MEMORY);
+                memory.setRaw(1, noun);
+                memory.setRaw(2, verb);
+                interpretIntcode(memory, new long[0]);
+                if (memory.getRaw(0) == 19690720) {
                     return 100 * noun + verb;
                 }
             }

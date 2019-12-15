@@ -1,5 +1,7 @@
 package com.github.rviehmann.aoc2019;
 
+import com.github.rviehmann.aoc2019.Intcode.Memory;
+
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -52,15 +54,13 @@ public class Day07 {
     public static class Amplifier implements Runnable {
 
         private final String name;
-        private final long[] memory;
+        private final Memory memory;
         private final BlockingQueue<Long> inputQueue;
         private final BlockingQueue<Long> outputQueue;
 
-        public Amplifier(String name, long[] memory, BlockingQueue<Long> inputQueue, BlockingQueue<Long> outputQueue) {
+        public Amplifier(String name, Memory memory, BlockingQueue<Long> inputQueue, BlockingQueue<Long> outputQueue) {
             this.name = name;
-            long[] copiedMemory = new long[memory.length];
-            System.arraycopy(memory, 0, copiedMemory, 0, memory.length);
-            this.memory = copiedMemory;
+            this.memory = memory;
             this.inputQueue = inputQueue;
             this.outputQueue = outputQueue;
         }
@@ -77,7 +77,7 @@ public class Day07 {
         }
     }
 
-    private static long runAmplifiersInThreads(long[] memory, int[] phases) throws InterruptedException {
+    private static long runAmplifiersInThreads(Memory memory, int[] phases) throws InterruptedException {
         BlockingQueue<Long>[] queues = new BlockingQueue[NUM_AMPLIFIERS];
         Amplifier[] amplifiers = new Amplifier[NUM_AMPLIFIERS];
         Thread[] threads = new Thread[NUM_AMPLIFIERS];
@@ -89,7 +89,7 @@ public class Day07 {
 
         for (int i = 0; i < NUM_AMPLIFIERS; i++) {
             String name = "Amp " + (char) ('A' + i);
-            amplifiers[i] = new Amplifier(name, memory, queues[i], queues[(i + 1) % NUM_AMPLIFIERS]);
+            amplifiers[i] = new Amplifier(name, memory.getClone(), queues[i], queues[(i + 1) % NUM_AMPLIFIERS]);
             threads[i] = new Thread(amplifiers[i]);
         }
 
@@ -111,9 +111,9 @@ public class Day07 {
     public static void testWithExamplesForPuzzle1() {
         System.out.println("### Day 07: Examples for puzzle 1 ###");
         try {
-            System.out.println("This should yield 43210: " + runAmplifiersInThreads(EXAMPLE1, new int[]{4, 3, 2, 1, 0}));
-            System.out.println("This should yield 54321: " + runAmplifiersInThreads(EXAMPLE2, new int[]{0, 1, 2, 3, 4}));
-            System.out.println("This should yield 65210: " + runAmplifiersInThreads(EXAMPLE3, new int[]{1, 0, 4, 3, 2}));
+            System.out.println("This should yield 43210: " + runAmplifiersInThreads(new Memory(EXAMPLE1), new int[]{4, 3, 2, 1, 0}));
+            System.out.println("This should yield 54321: " + runAmplifiersInThreads(new Memory(EXAMPLE2), new int[]{0, 1, 2, 3, 4}));
+            System.out.println("This should yield 65210: " + runAmplifiersInThreads(new Memory(EXAMPLE3), new int[]{1, 0, 4, 3, 2}));
         } catch (InterruptedException e) {
             System.err.println("InterruptedException caught: " + e);
         }
@@ -122,8 +122,8 @@ public class Day07 {
     public static void testWithExamplesForPuzzle2() {
         System.out.println("### Day 07: Examples for puzzle 2 ###");
         try {
-            System.out.println("This should yield 139629729: " + runAmplifiersInThreads(EXAMPLE4, new int[]{9, 8, 7, 6, 5}));
-            System.out.println("This should yield 18216: " + runAmplifiersInThreads(EXAMPLE5, new int[]{9, 7, 8, 5, 6}));
+            System.out.println("This should yield 139629729: " + runAmplifiersInThreads(new Memory(EXAMPLE4), new int[]{9, 8, 7, 6, 5}));
+            System.out.println("This should yield 18216: " + runAmplifiersInThreads(new Memory(EXAMPLE5), new int[]{9, 7, 8, 5, 6}));
         } catch (InterruptedException e) {
             System.err.println("InterruptedException caught: " + e);
         }
@@ -138,7 +138,7 @@ public class Day07 {
                         for (int e = MIN_PHASE_PUZZLE1; e <= MAX_PHASE_PUZZLE1; e++) {
                             int[] phases = new int[]{a, b, c, d, e};
                             if (hasOnlyUniquePhaseSettings(phases)) {
-                                long output = runAmplifiersInThreads(MEMORY, phases);
+                                long output = runAmplifiersInThreads(new Memory(MEMORY), phases);
                                 if (output > bestOutput) {
                                     bestOutput = output;
                                 }
@@ -160,7 +160,7 @@ public class Day07 {
                         for (int e = MIN_PHASE_PUZZLE2; e <= MAX_PHASE_PUZZLE2; e++) {
                             int[] phases = new int[]{a, b, c, d, e};
                             if (hasOnlyUniquePhaseSettings(phases)) {
-                                long output = runAmplifiersInThreads(MEMORY, phases);
+                                long output = runAmplifiersInThreads(new Memory(MEMORY), phases);
                                 if (output > bestOutput) {
                                     bestOutput = output;
                                 }

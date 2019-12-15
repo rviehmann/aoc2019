@@ -1,5 +1,7 @@
 package com.github.rviehmann.aoc2019;
 
+import com.github.rviehmann.aoc2019.Intcode.Memory;
+
 import java.util.Arrays;
 
 import static com.github.rviehmann.aoc2019.Intcode.interpretIntcode;
@@ -14,17 +16,17 @@ public class Day09 {
     public static void testWithExamplesForPuzzle1() {
         System.out.println("### Day 09: Examples for puzzle 1 ###");
         try {
-            long[] memory = new long[]{109, 1, 204, -1, 1001, 100, 1, 100, 1008, 100, 16, 101, 1006, 101, 0, 99};
+            Memory memory = new Memory(new long[]{109, 1, 204, -1, 1001, 100, 1, 100, 1008, 100, 16, 101, 1006, 101, 0, 99});
             Long[] outputs = interpretIntcode(memory, new long[0]);
             System.out.println("This should yield '109, 1, 204, -1, 1001, 100, 1, 100, 1008, 100, 16, 101, 1006, 101, 0, 99': " + Arrays.toString(outputs));
 
-            memory = new long[]{1102, 34915192, 34915192, 7, 4, 7, 99, 0};
+            memory = new Memory(new long[]{1102, 34915192, 34915192, 7, 4, 7, 99, 0});
             outputs = interpretIntcode(memory, new long[0]);
             System.out.println("This should yield a 16-digit number: " + Arrays.toString(outputs) + ", length: " + outputs[0].toString().length());
 
-            memory = new long[]{104, 1125899906842624L, 99};
+            memory = new Memory(new long[]{104, 1125899906842624L, 99});
             outputs = interpretIntcode(memory, new long[0]);
-            System.out.println("This should yield '104,1125899906842624,99': " + Arrays.toString(outputs));
+            System.out.println("This should yield '104, 1125899906842624, 99': " + Arrays.toString(outputs));
         } catch (InterruptedException e) {
             System.err.println("InterruptedException caught: " + e);
         }

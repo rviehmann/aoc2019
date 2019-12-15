@@ -34,7 +34,6 @@ public class Main {
         System.out.println("Day 04, puzzle 2: " + Day04.doPuzzle2());
         */
 
-        Day05.testWithExamplesForPuzzle1();
         System.out.println("### Solutions ###");
         try {
             System.out.println("Day 05, puzzle 1: " + Day05.doPuzzle1());

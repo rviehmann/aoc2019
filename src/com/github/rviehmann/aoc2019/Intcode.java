@@ -18,7 +18,87 @@ public class Intcode {
         MODES.add(RELATIVE_MODE);
     }
 
-    public static Long[] interpretIntcode(long[] memory, long[] inputs) throws InterruptedException {
+    public static class Memory {
+        private long[] memory;
+
+        public Memory(long[] memory) {
+            // Make sure that outside actors can't ever manipulate our internal memory.
+            long[] newMemory = new long[memory.length];
+            System.arraycopy(memory, 0, newMemory, 0, memory.length);
+            this.memory = newMemory;
+        }
+
+        public long getRaw(int rawAddress) {
+            growIfNecessary(rawAddress);
+            return memory[rawAddress];
+        }
+
+        public long[] getRaw() {
+            // Use with lots of caution (and only if it can't easily be avoided).
+            return memory;
+        }
+
+        public Memory getClone() {
+            // The constructor already makes sure that the clone is independent.
+            return new Memory(memory);
+        }
+
+        public void setRaw(int rawAddress, long value) {
+            growIfNecessary(rawAddress);
+            memory[rawAddress] = value;
+        }
+
+        public long read(int pc, int numParam, int mode, int relativeBase) {
+            int address;
+            switch (mode) {
+                case POSITION_MODE:
+                    growIfNecessary(pc + numParam);
+                    address = (int) memory[pc + numParam];
+                    growIfNecessary(address);
+                    return memory[address];
+                case IMMEDIATE_MODE:
+                    growIfNecessary(pc + numParam);
+                    return memory[pc + numParam];
+                case RELATIVE_MODE:
+                    growIfNecessary(pc + numParam);
+                    address = (int) (memory[pc + numParam] + relativeBase);
+                    growIfNecessary(address);
+                    return memory[address];
+            }
+            throw new IllegalArgumentException("Invalid mode: position=" + pc + ", mode=" + mode);
+        }
+
+        public void write(int pc, int numParam, int mode, int relativeBase, long value) {
+            int address;
+            switch (mode) {
+                case POSITION_MODE:
+                    growIfNecessary(pc + numParam);
+                    address = (int) memory[pc + numParam];
+                    growIfNecessary(address);
+                    memory[address] = value;
+                    return;
+                case IMMEDIATE_MODE:
+                    throw new IllegalArgumentException("Immediate mode not allowed for output: position=" + pc + ", mode=" + mode);
+                case RELATIVE_MODE:
+                    growIfNecessary(pc + numParam);
+                    address = (int) (memory[pc + numParam] + relativeBase);
+                    growIfNecessary(address);
+                    memory[address] = value;
+                    return;
+            }
+            throw new IllegalArgumentException("Invalid mode: position=" + pc + ", mode=" + mode);
+        }
+
+        private void growIfNecessary(int address) {
+            if (memory.length < (address + 1)) {
+                long[] newMemory = new long[address + 1];
+                System.arraycopy(memory, 0, newMemory, 0, memory.length);
+                memory = newMemory;
+            }
+        }
+    }
+
+    public static Long[] interpretIntcode(Memory memory, long[] inputs) throws InterruptedException {
         BlockingQueue<Long>[] queues = new BlockingQueue[2];
         for (int i = 0; i < 2; i++) {
             queues[i] = new LinkedBlockingQueue<>();
@@ -35,15 +115,15 @@ public class Intcode {
         return outputs.toArray(new Long[outputs.size()]);
     }
 
-    public static void interpretIntcode(long[] memory, BlockingQueue<Long> inputQueue, BlockingQueue<Long> outputQueue) throws InterruptedException {
+    public static void interpretIntcode(Memory memory, BlockingQueue<Long> inputQueue, BlockingQueue<Long> outputQueue) throws InterruptedException {
         int pc = 0;
         int relativeBase = 0;
 
         while (true) {
-            int opcode = (int) (memory[pc] % 100);
-            int param1Mode = (int) ((memory[pc] / 100) % 10);
-            int param2Mode = (int) ((memory[pc] / 1000) % 10);
-            int param3Mode = (int) ((memory[pc] / 10000) % 10);
+            int opcode = (int) (memory.getRaw(pc) % 100);
+            int param1Mode = (int) ((memory.getRaw(pc) / 100) % 10);
+            int param2Mode = (int) ((memory.getRaw(pc) / 1000) % 10);
+            int param3Mode = (int) ((memory.getRaw(pc) / 10000) % 10);
 
             if (!MODES.contains(param1Mode)) {
                 throw new IllegalArgumentException("Invalid param1Mode: param1Mode=" + param1Mode + ", position=" + pc);
@@ -61,36 +141,36 @@ public class Intcode {
 
             switch (opcode) {
                 case 1: // add
-                    input1 = readFromMemory(memory, pc, 1, param1Mode, relativeBase);
-                    input2 = readFromMemory(memory, pc, 2, param2Mode, relativeBase);
+                    input1 = memory.read(pc, 1, param1Mode, relativeBase);
+                    input2 = memory.read(pc, 2, param2Mode, relativeBase);
                     output = input1 + input2;
-                    writeToMemory(memory, pc, 3, param3Mode, relativeBase, output);
+                    memory.write(pc, 3, param3Mode, relativeBase, output);
                     pc += 4;
                     break;
 
                 case 2: // multiply
-                    input1 = readFromMemory(memory, pc, 1, param1Mode, relativeBase);
-                    input2 = readFromMemory(memory, pc, 2, param2Mode, relativeBase);
+                    input1 = memory.read(pc, 1, param1Mode, relativeBase);
+                    input2 = memory.read(pc, 2, param2Mode, relativeBase);
                     output = input1 * input2;
-                    writeToMemory(memory, pc, 3, param3Mode, relativeBase, output);
+                    memory.write(pc, 3, param3Mode, relativeBase, output);
                     pc += 4;
                     break;
 
                 case 3: // read input
                     input1 = inputQueue.take();
-                    writeToMemory(memory, pc, 1, param1Mode, relativeBase, input1);
+                    memory.write(pc, 1, param1Mode, relativeBase, input1);
                     pc += 2;
                     break;
 
                 case 4: // write output
-                    input1 = readFromMemory(memory, pc, 1, param1Mode, relativeBase);
+                    input1 = memory.read(pc, 1, param1Mode, relativeBase);
                     outputQueue.put(input1);
                     pc += 2;
                     break;
 
                 case 5: // jump-if-true
-                    input1 = readFromMemory(memory, pc, 1, param1Mode, relativeBase);
-                    input2 = readFromMemory(memory, pc, 2, param2Mode, relativeBase);
+                    input1 = memory.read(pc, 1, param1Mode, relativeBase);
+                    input2 = memory.read(pc, 2, param2Mode, relativeBase);
                     if (input1 != 0) {
                         pc = (int) input2;
                     } else {
@@ -99,8 +179,8 @@ public class Intcode {
                     break;
 
                 case 6: // jump-if-false
-                    input1 = readFromMemory(memory, pc, 1, param1Mode, relativeBase);
-                    input2 = readFromMemory(memory, pc, 2, param2Mode, relativeBase);
+                    input1 = memory.read(pc, 1, param1Mode, relativeBase);
+                    input2 = memory.read(pc, 2, param2Mode, relativeBase);
                     if (input1 == 0) {
                         pc = (int) input2;
                     } else {
@@ -109,23 +189,23 @@ public class Intcode {
                     break;
 
                 case 7: // less than
-                    input1 = readFromMemory(memory, pc, 1, param1Mode, relativeBase);
-                    input2 = readFromMemory(memory, pc, 2, param2Mode, relativeBase);
+                    input1 = memory.read(pc, 1, param1Mode, relativeBase);
+                    input2 = memory.read(pc, 2, param2Mode, relativeBase);
                     output = input1 < input2 ? 1 : 0;
-                    writeToMemory(memory, pc, 3, param3Mode, relativeBase, output);
+                    memory.write(pc, 3, param3Mode, relativeBase, output);
                     pc += 4;
                     break;
 
                 case 8: // equals
-                    input1 = readFromMemory(memory, pc, 1, param1Mode, relativeBase);
-                    input2 = readFromMemory(memory, pc, 2, param2Mode, relativeBase);
+                    input1 = memory.read(pc, 1, param1Mode, relativeBase);
+                    input2 = memory.read(pc, 2, param2Mode, relativeBase);
                     output = input1 == input2 ? 1 : 0;
-                    writeToMemory(memory, pc, 3, param3Mode, relativeBase, output);
+                    memory.write(pc, 3, param3Mode, relativeBase, output);
                     pc += 4;
                     break;
 
                 case 9: // adjust relative base
-                    input1 = readFromMemory(memory, pc, 1, param1Mode, relativeBase);
+                    input1 = memory.read(pc, 1, param1Mode, relativeBase);
                     relativeBase = (int) input1;
                     pc += 2;
                     break;
@@ -138,31 +218,5 @@ public class Intcode {
                     throw new IllegalArgumentException("Invalid opcode: position=" + pc + ", opcode=" + opcode);
             }
         }
-    }
-
-    private static long readFromMemory(long[] memory, int pc, int numParam, int mode, int relativeBase) {
-        switch (mode) {
-            case POSITION_MODE:
-                return memory[(int) memory[pc + numParam]];
-            case IMMEDIATE_MODE:
-                return memory[pc + numParam];
-            case RELATIVE_MODE:
-                return memory[(int) (memory[pc + numParam] + relativeBase)];
-        }
-        throw new IllegalArgumentException("Invalid mode: position=" + pc + ", mode=" + mode);
-    }
-
-    private static void writeToMemory(long[] memory, int pc, int numParam, int mode, int relativeBase, long value) {
-        switch (mode) {
-            case POSITION_MODE:
-                memory[(int) memory[pc + numParam]] = value;
-                return;
-            case IMMEDIATE_MODE:
-                throw new IllegalArgumentException("Immediate mode not allowed for output: position=" + pc + ", mode=" + mode);
-            case RELATIVE_MODE:
-                memory[(int) (memory[pc + numParam] + relativeBase)] = value;
-                return;
-        }
-        throw new IllegalArgumentException("Invalid mode: position=" + pc + ", mode=" + mode);
     }
 }
