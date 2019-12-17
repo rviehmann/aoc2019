@@ -65,5 +65,12 @@ public class Main {
         } catch (InterruptedException e) {
             System.err.println("InterruptedException caught: " + e);
         }
+
+        System.out.println("### Solutions ###");
+        try {
+            System.out.println("Day 11, puzzle 1: " + Day11.doPuzzle1());
+        } catch (InterruptedException e) {
+            System.err.println("InterruptedException caught: " + e);
+        }
     }
 }
