@@ -20,6 +20,14 @@ public class Day11 {
     private static final int BLACK = 0;
     private static final int WHITE = 1;
 
+    // As per requirements
+    // private static final char BLACK_CHAR = '#';
+    // private static final char WHITE_CHAR = '.';
+
+    // My choice
+    private static final char BLACK_CHAR = '█';
+    private static final char WHITE_CHAR = ' ';
+
     private static final int NORTH = 0;
     private static final int EAST = 1;
     private static final int SOUTH = 2;
@@ -90,9 +98,13 @@ public class Day11 {
         private final BlockingQueue<Long> inputQueue;
         private final BlockingQueue<Long> outputQueue;
 
-        public HullPaintingRobot(BlockingQueue<Long> inputQueue, BlockingQueue<Long> outputQueue) {
+        public HullPaintingRobot(BlockingQueue<Long> inputQueue, BlockingQueue<Long> outputQueue, long startingPanelColor) {
             this.inputQueue = inputQueue;
             this.outputQueue = outputQueue;
+
+            if (startingPanelColor != BLACK) {
+                paintCurrentField(startingPanelColor);
+            }
         }
 
         public long getPositionX() {
@@ -123,12 +135,37 @@ public class Day11 {
             return bottomMost;
         }
 
+        public void debugWholePlayingArea() {
+            long countY = -topMost + bottomMost + 1;
+            String[] lines = new String[(int) countY];
+            int lineCounter = 0;
+
+            for (long y = topMost; y <= bottomMost; y++) {
+                StringBuilder sb = new StringBuilder();
+
+                for (long x = leftMost; x <= rightMost; x++) {
+                    long color = getColorOfPanel(x, y);
+
+                    if (color == BLACK) {
+                        sb.append(BLACK_CHAR);
+                    } else if (color == WHITE) {
+                        sb.append(WHITE_CHAR);
+                    } else {
+                        throw new IllegalArgumentException("Invalid color: color=" + color);
+                    }
+                }
+                lines[lineCounter] = sb.toString();
+                System.out.println(lines[lineCounter]);
+                lineCounter++;
+            }
+        }
+
         private void paintCurrentField(long color) {
             paintedPanels.add(new PaintedPanel(positionX, positionY, color));
         }
 
         private void rotateCounterClockwise() {
-            heading = (heading - 1) % 4;
+            heading = (heading + 3) % 4;
         }
 
         private void rotateClockwise() {
@@ -165,13 +202,17 @@ public class Day11 {
         }
 
         private long getColorOfCurrentPanel() {
+            return getColorOfPanel(positionX, positionY);
+        }
+
+        private long getColorOfPanel(long x, long y) {
             if (paintedPanels.size() == 0) {
                 return BLACK;
             } else {
                 // Iterate from the end, since if we paint the same panel more than once, only the last color will be visible.
                 for (int index = paintedPanels.size() - 1; index >= 0; index--) {
                     PaintedPanel panel = paintedPanels.get(index);
-                    if (panel.hasPosition(positionX, positionY)) {
+                    if (panel.hasPosition(x, y)) {
                         return panel.color;
                     }
                 }
@@ -223,7 +264,7 @@ public class Day11 {
         }
     }
 
-    private static long runRobotAndCountPanelsMinified() throws InterruptedException {
+    private static long runRobotAndCountPanelsMinified(long startingPanelColor) throws InterruptedException {
         BlockingQueue<Long>[] queues = new BlockingQueue[2];
         for (int i = 0; i < 2; i++) {
             queues[i] = new LinkedBlockingQueue<>();
@@ -231,7 +272,7 @@ public class Day11 {
         Thread[] threads = new Thread[2];
         Memory memory = new Memory(MEMORY);
         RobotControlComputer robotControlComputer = new RobotControlComputer(memory, queues[0], queues[1]);
-        HullPaintingRobot hullPaintingRobot = new HullPaintingRobot(queues[1], queues[0]);
+        HullPaintingRobot hullPaintingRobot = new HullPaintingRobot(queues[1], queues[0], startingPanelColor);
         threads[0] = new Thread(robotControlComputer);
         threads[1] = new Thread(hullPaintingRobot);
 
@@ -256,11 +297,16 @@ public class Day11 {
         System.out.println("bottomMost: " + hullPaintingRobot.getBottomMost());
         System.out.println("paintedPanels: " + hullPaintingRobot.getPaintedPanels().size());
         System.out.println("paintedPanelsMinified: " + paintedPanelsMinified.size());
+        hullPaintingRobot.debugWholePlayingArea();
 
         return paintedPanelsMinified.size();
     }
 
     public static long doPuzzle1() throws InterruptedException {
-        return runRobotAndCountPanelsMinified();
+        return runRobotAndCountPanelsMinified(BLACK);
+    }
+
+    public static long doPuzzle2() throws InterruptedException {
+        return runRobotAndCountPanelsMinified(WHITE);
     }
 }
