@@ -33,6 +33,9 @@ public class Day11 {
     private static final int SOUTH = 2;
     private static final int WEST = 3;
 
+    // Not in the requirements, just to get the HullPaintingRobot to shut itself down cleanly.
+    private static final long SHUT_DOWN_COMMAND = Long.MAX_VALUE;
+
     public static class RobotControlComputer implements Runnable {
 
         private final Memory memory;
@@ -245,9 +248,18 @@ public class Day11 {
                 try {
                     outputQueue.put(getColorOfCurrentPanel());
 
-                    paintCurrentField(inputQueue.take());
+                    long color = inputQueue.take();
+                    if (color == SHUT_DOWN_COMMAND) {
+                        return;
+                    }
+
+                    paintCurrentField(color);
 
                     long direction = inputQueue.take();
+                    if (direction == SHUT_DOWN_COMMAND) {
+                        return;
+                    }
+
                     if (direction == 0) {
                         rotateCounterClockwise();
                     } else if (direction == 1) {
@@ -280,11 +292,14 @@ public class Day11 {
             threads[i].start();
         }
 
-        // Wait until RobotControlComputer is finished
+        // Wait until RobotControlComputer is finished.
         threads[0].join();
 
         // Make sure that HullPaintingRobot is also completely finished with everything.
         Thread.sleep(100);
+
+        // Afterwards, shut it down.
+        queues[1].put(SHUT_DOWN_COMMAND);
 
         List<PaintedPanel> paintedPanelsMinified = hullPaintingRobot.getPaintedPanelsMinified();
 
