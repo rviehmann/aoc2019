@@ -140,7 +140,7 @@ public class Day11 {
 
         public void debugWholePlayingArea() {
             long countY = -topMost + bottomMost + 1;
-            String[] lines = new String[(int) countY];
+            String[] lines = new String[Math.toIntExact(countY)];
             int lineCounter = 0;
 
             for (long y = topMost; y <= bottomMost; y++) {
