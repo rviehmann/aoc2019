@@ -73,5 +73,13 @@ public class Main {
         } catch (InterruptedException e) {
             System.err.println("InterruptedException caught: " + e);
         }
+
+        System.out.println("### Solutions ###");
+        try {
+            System.out.println("Day 13, puzzle 1: " + Day13.doPuzzle1());
+            System.out.println("Day 13, puzzle 2: " + Day13.doPuzzle2());
+        } catch (InterruptedException e) {
+            System.err.println("InterruptedException caught: " + e);
+        }
     }
 }
