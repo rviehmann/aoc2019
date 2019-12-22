@@ -66,6 +66,11 @@ public class Main {
             System.err.println("InterruptedException caught: " + e);
         }
 
+        Day10.testWithExamplesForPuzzle1();
+        System.out.println("### Solutions ###");
+        System.out.println("Day 10, puzzle 1: " + Day10.doPuzzle1());
+        System.out.println("Day 10, puzzle 2: " + Day10.doPuzzle2());
+
         System.out.println("### Solutions ###");
         try {
             System.out.println("Day 11, puzzle 1: " + Day11.doPuzzle1());
@@ -74,6 +79,7 @@ public class Main {
             System.err.println("InterruptedException caught: " + e);
         }
 
+        /*
         System.out.println("### Solutions ###");
         try {
             System.out.println("Day 13, puzzle 1: " + Day13.doPuzzle1());
@@ -81,5 +87,6 @@ public class Main {
         } catch (InterruptedException e) {
             System.err.println("InterruptedException caught: " + e);
         }
+        */
     }
 }
