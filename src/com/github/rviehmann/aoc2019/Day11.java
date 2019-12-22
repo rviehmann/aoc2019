@@ -139,16 +139,10 @@ public class Day11 {
         }
 
         public void debugWholePlayingArea() {
-            long countY = -topMost + bottomMost + 1;
-            String[] lines = new String[Math.toIntExact(countY)];
-            int lineCounter = 0;
-
+            StringBuilder sb = new StringBuilder();
             for (long y = topMost; y <= bottomMost; y++) {
-                StringBuilder sb = new StringBuilder();
-
                 for (long x = leftMost; x <= rightMost; x++) {
                     long color = getColorOfPanel(x, y);
-
                     if (color == BLACK) {
                         sb.append(BLACK_CHAR);
                     } else if (color == WHITE) {
@@ -157,10 +151,9 @@ public class Day11 {
                         throw new IllegalArgumentException("Invalid color: color=" + color);
                     }
                 }
-                lines[lineCounter] = sb.toString();
-                System.out.println(lines[lineCounter]);
-                lineCounter++;
+                sb.append("\n");
             }
+            System.out.print(sb.toString());
         }
 
         private void paintCurrentField(long color) {
