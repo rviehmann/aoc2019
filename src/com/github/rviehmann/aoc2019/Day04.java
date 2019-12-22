@@ -16,7 +16,6 @@ public class Day04 {
 
         String asString = Long.toString(number);
         if (asString.length() != 6) {
-            // System.out.println("Wrong length for: " + number);
             return false;
         }
 
