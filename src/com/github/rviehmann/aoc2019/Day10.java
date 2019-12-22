@@ -169,6 +169,7 @@ public class Day10 {
          */
         public boolean canDetect(Asteroid other, List<Asteroid> asteroidField) {
             if (other.equals(this)) {
+                // We can only detect OTHER asteroids, not ourselves (per definition).
                 return false;
             }
             double distance = this.distance(other);
@@ -183,10 +184,10 @@ public class Day10 {
                     // Is further away from me than my counterpart, therefore can't obstruct view.
                     continue;
                 }
-                long dstX = other.x - asteroid.x;
-                long dstY = other.y - asteroid.y;
-                double factorX = distanceX != 0 ? (double) distanceX / (double) dstX : 0;
-                double factorY = distanceY != 0 ? (double) distanceY / (double) dstY : 0;
+                long dstX = asteroid.x - this.x;
+                long dstY = asteroid.y - this.y;
+                double factorX = dstX != 0 ? (double) distanceX / (double) dstX : 0;
+                double factorY = dstY != 0 ? (double) distanceY / (double) dstY : 0;
                 if (equalsRespectingEpsilon(factorX, factorY)) {
                     // Nearer to me than my counterpart, and on a line between me and my counterpart.
                     return false;
