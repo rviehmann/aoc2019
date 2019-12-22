@@ -324,7 +324,7 @@ public class Day13 {
         }
     }
 
-    private static long runArcadeAndCountBlockTiles(Memory memory) throws InterruptedException {
+    private static Arcade runArcade(Memory memory) throws InterruptedException {
         BlockingQueue<Long>[] queues = new BlockingQueue[3];
         for (int i = 0; i < 3; i++) {
             queues[i] = new LinkedBlockingQueue<>();
@@ -366,18 +366,21 @@ public class Day13 {
             tileId++;
         }
         arcade.debugWholePlayingArea();
-
-        return count[Math.toIntExact(TILE_BLOCK)];
+        return arcade;
     }
 
     public static long doPuzzle1() throws InterruptedException {
         Memory memory = new Memory(MEMORY);
-        return runArcadeAndCountBlockTiles(memory);
+        Arcade arcade = runArcade(memory);
+        long[] count = arcade.getCountForEachPanelId();
+        return count[Math.toIntExact(TILE_BLOCK)];
     }
 
     public static long doPuzzle2() throws InterruptedException {
         Memory memory = new Memory(MEMORY);
+        // Memory address 0 represents the number of quarters that have been inserted; set it to 2 to play for free.
         memory.setRaw(0, 2);
-        return runArcadeAndCountBlockTiles(memory);
+        Arcade arcade = runArcade(memory);
+        return arcade.getScore();
     }
 }
