@@ -296,7 +296,7 @@ public class Day11 {
         threads[0].join();
 
         // Make sure that HullPaintingRobot is also completely finished with everything.
-        Thread.sleep(100);
+        Thread.sleep(50);
 
         // Afterwards, shut it down.
         queues[1].put(SHUT_DOWN_COMMAND);

@@ -33,6 +33,10 @@ public class Day13 {
 
     private static final Map<Long, Character> MAP_TILE_ID_TO_CHAR = new HashMap<>();
 
+    private static final Long JOYSTICK_LEFT = -1L;
+    private static final Long JOYSTICK_CENTER = 0L;
+    private static final Long JOYSTICK_RIGHT = 1L;
+
     // Not in the requirements, just to get the Arcade to shut itself down cleanly.
     private static final long SHUT_DOWN_COMMAND = Long.MAX_VALUE;
 
@@ -49,17 +53,19 @@ public class Day13 {
         private final Memory memory;
         private final BlockingQueue<Long> inputQueue;
         private final BlockingQueue<Long> outputQueue;
+        private final BlockingQueue<Long> inputRequestQueue;
 
-        public ArcadeControlComputer(Memory memory, BlockingQueue<Long> inputQueue, BlockingQueue<Long> outputQueue) {
+        public ArcadeControlComputer(Memory memory, BlockingQueue<Long> inputQueue, BlockingQueue<Long> outputQueue, BlockingQueue<Long> inputRequestQueue) {
             this.memory = memory;
             this.inputQueue = inputQueue;
             this.outputQueue = outputQueue;
+            this.inputRequestQueue = inputRequestQueue;
         }
 
         @Override
         public void run() {
             try {
-                interpretIntcode(memory, inputQueue, outputQueue);
+                interpretIntcode(memory, inputQueue, outputQueue, inputRequestQueue);
             } catch (InterruptedException e) {
                 System.err.println("InterruptedException caught: " + e);
             }
@@ -98,11 +104,11 @@ public class Day13 {
 
         private long score = 0;
 
-        private long paddleX = 0;
-        private long paddleY = 0;
+        private long paddleX = -1;
+        private long paddleY = -1;
 
-        private long ballX = 0;
-        private long ballY = 0;
+        private long ballX = -1;
+        private long ballY = -1;
 
         private long leftMost = 0;
         private long rightMost = 0;
@@ -116,6 +122,26 @@ public class Day13 {
         public Arcade(BlockingQueue<Long> inputQueue, BlockingQueue<Long> outputQueue) {
             this.inputQueue = inputQueue;
             this.outputQueue = outputQueue;
+        }
+
+        public long getScore() {
+            return score;
+        }
+
+        public long getPaddleX() {
+            return paddleX;
+        }
+
+        public long getPaddleY() {
+            return paddleY;
+        }
+
+        public long getBallX() {
+            return ballX;
+        }
+
+        public long getBallY() {
+            return ballY;
         }
 
         public long getLeftMost() {
@@ -135,13 +161,8 @@ public class Day13 {
         }
 
         public void debugWholePlayingArea() {
-            long countY = -topMost + bottomMost + 1;
-            String[] lines = new String[Math.toIntExact(countY)];
-            int lineCounter = 0;
-
+            StringBuilder sb = new StringBuilder();
             for (long y = topMost; y <= bottomMost; y++) {
-                StringBuilder sb = new StringBuilder();
-
                 for (long x = leftMost; x <= rightMost; x++) {
                     long tileId = getTileIdOfTile(x, y);
                     Character charForTile = MAP_TILE_ID_TO_CHAR.get(tileId);
@@ -151,10 +172,9 @@ public class Day13 {
                         throw new IllegalArgumentException("Invalid tileId: tileId=" + tileId);
                     }
                 }
-                lines[lineCounter] = sb.toString();
-                System.out.println(lines[lineCounter]);
-                lineCounter++;
+                sb.append("\n");
             }
+            System.out.print(sb.toString());
         }
 
         private void paintTile(long x, long y, long tileId) {
@@ -253,19 +273,71 @@ public class Day13 {
         }
     }
 
-    private static long runArcadeAndCountBlockTiles() throws InterruptedException {
-        BlockingQueue<Long>[] queues = new BlockingQueue[2];
-        for (int i = 0; i < 2; i++) {
+    public static class ArcadeJoystick implements Runnable {
+
+        private final Arcade arcade;
+        private final BlockingQueue<Long> inputRequestQueue;
+        private final BlockingQueue<Long> outputQueue;
+
+        public ArcadeJoystick(Arcade arcade, BlockingQueue<Long> inputRequestQueue, BlockingQueue<Long> outputQueue) {
+            this.arcade = arcade;
+            this.inputRequestQueue = inputRequestQueue;
+            this.outputQueue = outputQueue;
+        }
+
+        @Override
+        public void run() {
+            while (true) {
+                try {
+                    // The value (if unequal to SHUT_DOWN_COMMAND) is not relevant, it only signifies that the interpreter will be waiting for input.
+                    long inputRequest = inputRequestQueue.take();
+                    if (inputRequest == SHUT_DOWN_COMMAND) {
+                        return;
+                    }
+
+                    // Make sure that Arcade is also completely finished with everything.
+                    Thread.sleep(50);
+
+                    long ballX = arcade.getBallX();
+                    long paddleX = arcade.getPaddleX();
+
+                    if (ballX < paddleX) {
+                        // arcade.debugWholePlayingArea();
+                        System.out.println("score: " + arcade.getScore());
+                        System.out.println("Setting joystick to left, ballX: " + ballX + ", paddleX: " + paddleX);
+                        outputQueue.put(JOYSTICK_LEFT);
+                    } else if (ballX > paddleX) {
+                        // arcade.debugWholePlayingArea();
+                        System.out.println("score: " + arcade.getScore());
+                        System.out.println("Setting joystick to right, ballX: " + ballX + ", paddleX: " + paddleX);
+                        outputQueue.put(JOYSTICK_RIGHT);
+                    } else {
+                        // arcade.debugWholePlayingArea();
+                        System.out.println("score: " + arcade.getScore());
+                        System.out.println("Setting joystick to center, ballX: " + ballX + ", paddleX: " + paddleX);
+                        outputQueue.put(JOYSTICK_CENTER);
+                    }
+                } catch (InterruptedException e) {
+                    System.err.println("InterruptedException caught: " + e);
+                }
+            }
+        }
+    }
+
+    private static long runArcadeAndCountBlockTiles(Memory memory) throws InterruptedException {
+        BlockingQueue<Long>[] queues = new BlockingQueue[3];
+        for (int i = 0; i < 3; i++) {
             queues[i] = new LinkedBlockingQueue<>();
         }
-        Thread[] threads = new Thread[2];
-        Memory memory = new Memory(MEMORY);
-        ArcadeControlComputer arcadeControlComputer = new ArcadeControlComputer(memory, queues[0], queues[1]);
+        Thread[] threads = new Thread[3];
+        ArcadeControlComputer arcadeControlComputer = new ArcadeControlComputer(memory, queues[0], queues[1], queues[2]);
         Arcade arcade = new Arcade(queues[1], queues[0]);
+        ArcadeJoystick arcadeJoystick = new ArcadeJoystick(arcade, queues[2], queues[0]);
         threads[0] = new Thread(arcadeControlComputer);
         threads[1] = new Thread(arcade);
+        threads[2] = new Thread(arcadeJoystick);
 
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 3; i++) {
             threads[i].start();
         }
 
@@ -273,10 +345,11 @@ public class Day13 {
         threads[0].join();
 
         // Make sure that Arcade is also completely finished with everything.
-        Thread.sleep(100);
+        Thread.sleep(50);
 
         // Afterwards, shut it down.
         queues[1].put(SHUT_DOWN_COMMAND);
+        queues[2].put(SHUT_DOWN_COMMAND);
 
         System.out.println("leftMost: " + arcade.getLeftMost());
         System.out.println("rightMost: " + arcade.getRightMost());
@@ -284,6 +357,7 @@ public class Day13 {
         System.out.println("bottomMost: " + arcade.getBottomMost());
         System.out.println("paintedTiles: " + arcade.getPaintedTiles().size());
         System.out.println("paintedTilesMinified: " + arcade.getPaintedTilesMinified().size());
+        System.out.println("score: " + arcade.getScore());
 
         long[] count = arcade.getCountForEachPanelId();
         long tileId = 0;
@@ -297,11 +371,13 @@ public class Day13 {
     }
 
     public static long doPuzzle1() throws InterruptedException {
-        return runArcadeAndCountBlockTiles();
+        Memory memory = new Memory(MEMORY);
+        return runArcadeAndCountBlockTiles(memory);
     }
 
     public static long doPuzzle2() throws InterruptedException {
-        // TODO
-        return 0;
+        Memory memory = new Memory(MEMORY);
+        memory.setRaw(0, 2);
+        return runArcadeAndCountBlockTiles(memory);
     }
 }
