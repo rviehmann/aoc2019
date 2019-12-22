@@ -68,9 +68,7 @@ public class Day07 {
         @Override
         public void run() {
             try {
-                // System.out.println("Starting amplifier '" + name + "'.");
                 interpretIntcode(memory, inputQueue, outputQueue, null);
-                // System.out.println("Amplifier '" + name + "' finished execution.");
             } catch (InterruptedException e) {
                 System.err.println("InterruptedException caught: " + e);
             }
