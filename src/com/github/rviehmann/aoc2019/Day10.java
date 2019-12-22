@@ -77,6 +77,7 @@ public class Day10 {
                     "#.#.#.#####.####.###\n" +
                     "###.##.####.##.#..##";
 
+    // From: https://adventofcode.com/2019/day/10/input
     private static final String INPUT =
             "#.#................#..............#......#......\n" +
                     ".......##..#..#....#.#.....##...#.........#.#...\n" +
@@ -246,16 +247,25 @@ public class Day10 {
 
     public static void testWithExamplesForPuzzle1() {
         System.out.println("### Day 10: Examples for puzzle 1 ###");
+
+        System.out.println("This should yield '3, 4, 8':");
         findBestLocation(parseAsteroidField(EXAMPLE1));
+
+        System.out.println("This should yield '5, 8, 33':");
         findBestLocation(parseAsteroidField(EXAMPLE2));
+
+        System.out.println("This should yield '1, 2, 35':");
         findBestLocation(parseAsteroidField(EXAMPLE3));
+
+        System.out.println("This should yield '6, 3, 41':");
         findBestLocation(parseAsteroidField(EXAMPLE4));
+
+        System.out.println("This should yield '11, 13, 210':");
         findBestLocation(parseAsteroidField(EXAMPLE5));
     }
 
     public static long doPuzzle1() {
-        // TODO
-        return 0;
+        return findBestLocation(parseAsteroidField(INPUT));
     }
 
     public static long doPuzzle2() {
