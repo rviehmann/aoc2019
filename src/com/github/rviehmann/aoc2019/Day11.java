@@ -82,7 +82,7 @@ public class Day11 {
 
             PaintedPanel other = (PaintedPanel) obj;
             // Yes, it is intentional that we only compare the coordinates, but not the color. Otherwise, getPaintedPanelsMinified() would not work at all.
-            return this.x == other.x && this.y == other.y;
+            return x == other.x && y == other.y;
         }
     }
 

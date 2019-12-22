@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.Math.abs;
+import static java.lang.Math.atan2;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
+import static java.lang.Math.toDegrees;
 
 public class Day10 {
 
@@ -140,10 +142,6 @@ public class Day10 {
             this.y = y;
         }
 
-        public boolean hasPosition(long x, long y) {
-            return this.x == x && this.y == y;
-        }
-
         /**
          * Calculates the distance between this and another asteroid.
          *
@@ -151,9 +149,23 @@ public class Day10 {
          * @return
          */
         public double distance(Asteroid other) {
-            double q1 = pow((double) (other.x - this.x), 2);
-            double q2 = pow((double) (other.y - this.y), 2);
+            double q1 = pow((double) (other.x - x), 2);
+            double q2 = pow((double) (other.y - y), 2);
             return sqrt(q1 + q2);
+        }
+
+        /**
+         * Calculates the angle between this and another asteroid in degrees (360 degrees == 1 circle).
+         *
+         * @param other
+         * @return
+         */
+        public double angle(Asteroid other) {
+            double angle = toDegrees(atan2(other.y - y, other.x - x));
+            if (angle < 0) {
+                angle += 360;
+            }
+            return angle;
         }
 
         public static boolean equalsRespectingEpsilon(double a, double b) {
@@ -172,24 +184,31 @@ public class Day10 {
                 // We can only detect OTHER asteroids, not ourselves (per definition).
                 return false;
             }
-            double distance = this.distance(other);
-            long distanceX = other.x - this.x;
-            long distanceY = other.y - this.y;
+            double distanceToCounterpart = distance(other);
+            long distanceX = other.x - x;
+            long distanceY = other.y - y;
             for (Asteroid asteroid : asteroidField) {
                 if (asteroid.equals(this) || asteroid.equals(other)) {
                     // Is equal to me or my counterpart, therefore can't obstruct view.
                     continue;
                 }
-                if (this.distance(asteroid) >= distance) {
+                if (distance(asteroid) >= distanceToCounterpart) {
                     // Is further away from me than my counterpart, therefore can't obstruct view.
                     continue;
                 }
-                long dstX = asteroid.x - this.x;
-                long dstY = asteroid.y - this.y;
+                long dstX = asteroid.x - x;
+                long dstY = asteroid.y - y;
+                if ((distanceX == 0 && dstX != 0) || (distanceX != 0 && dstX == 0)) {
+                    continue;
+                }
+                if ((distanceY == 0 && dstY != 0) || (distanceY != 0 && dstY == 0)) {
+                    continue;
+                }
                 double factorX = dstX != 0 ? (double) distanceX / (double) dstX : 0;
                 double factorY = dstY != 0 ? (double) distanceY / (double) dstY : 0;
                 if (equalsRespectingEpsilon(factorX, factorY)) {
                     // Nearer to me than my counterpart, and on a line between me and my counterpart.
+                    System.out.println("Asteroid at (" + asteroid.x + ", " + asteroid.y + ") blocks view from me (" + x + ", " + y + ") to other (" + other.x + ", " + other.y + ").");
                     return false;
                 }
             }
@@ -199,7 +218,7 @@ public class Day10 {
         public long countVisibleAsteroids(List<Asteroid> asteroidField) {
             long count = 0;
             for (Asteroid asteroid : asteroidField) {
-                if (this.canDetect(asteroid, asteroidField)) {
+                if (canDetect(asteroid, asteroidField)) {
                     count++;
                 }
             }
@@ -213,7 +232,7 @@ public class Day10 {
             }
 
             Asteroid other = (Asteroid) obj;
-            return this.x == other.x && this.y == other.y;
+            return x == other.x && y == other.y;
         }
     }
 
@@ -238,19 +257,18 @@ public class Day10 {
     }
 
     private static long findBestLocation(List<Asteroid> asteroidField) {
-        long visible = 0;
+        long bestVis = 0;
         Asteroid bestLocation = null;
         for (Asteroid asteroid : asteroidField) {
             long vis = asteroid.countVisibleAsteroids(asteroidField);
-            if (vis > visible) {
-                visible = vis;
+            System.out.println("Some asteroid: x, y, visible: " + asteroid.x + ", " + asteroid.y + ", " + vis);
+            if (vis > bestVis) {
+                bestVis = vis;
                 bestLocation = asteroid;
             }
         }
-        System.out.println("X: " + bestLocation.x);
-        System.out.println("Y: " + bestLocation.y);
-        System.out.println("Visible: " + visible);
-        return visible;
+        System.out.println("Asteroid with best visibility: x, y, visible: " + bestLocation.x + ", " + bestLocation.y + ", " + bestVis);
+        return bestVis;
     }
 
     public static void testWithExamplesForPuzzle1() {
@@ -263,17 +281,18 @@ public class Day10 {
         findBestLocation(parseAsteroidField(EXAMPLE2));
 
         System.out.println("This should yield '1, 2, 35':");
-        findBestLocation(parseAsteroidField(EXAMPLE3));
+        // findBestLocation(parseAsteroidField(EXAMPLE3));
 
         System.out.println("This should yield '6, 3, 41':");
-        findBestLocation(parseAsteroidField(EXAMPLE4));
+        // findBestLocation(parseAsteroidField(EXAMPLE4));
 
         System.out.println("This should yield '11, 13, 210':");
-        findBestLocation(parseAsteroidField(EXAMPLE5));
+        // findBestLocation(parseAsteroidField(EXAMPLE5));
     }
 
     public static long doPuzzle1() {
-        return findBestLocation(parseAsteroidField(INPUT));
+        // return findBestLocation(parseAsteroidField(INPUT));
+        return 0;
     }
 
     public static long doPuzzle2() {
