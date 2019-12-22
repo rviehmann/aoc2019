@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.Math.abs;
+import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
 
 public class Day10 {
 
@@ -143,13 +145,15 @@ public class Day10 {
         }
 
         /**
-         * Calculates the manhattan distance between this and another asteroid.
+         * Calculates the distance between this and another asteroid.
          *
          * @param other
          * @return
          */
-        public long distance(Asteroid other) {
-            return abs(other.x - this.x) + abs(other.y - this.y);
+        public double distance(Asteroid other) {
+            double q1 = pow((double) (other.x - this.x), 2);
+            double q2 = pow((double) (other.y - this.y), 2);
+            return sqrt(q1 + q2);
         }
 
         public static boolean equalsRespectingEpsilon(double a, double b) {
@@ -167,7 +171,7 @@ public class Day10 {
             if (other.equals(this)) {
                 return false;
             }
-            long distance = other.distance(this);
+            double distance = this.distance(other);
             long distanceX = other.x - this.x;
             long distanceY = other.y - this.y;
             for (Asteroid asteroid : asteroidField) {
