@@ -106,7 +106,7 @@ public class Intcode {
         for (long input : inputs) {
             queues[0].put(input);
         }
-        interpretIntcode(memory, queues[0], queues[1]);
+        interpretIntcode(memory, queues[0], queues[1], null);
         List<Long> outputs = new ArrayList<>();
         while (!queues[1].isEmpty()) {
             outputs.add(queues[1].take());
@@ -115,7 +115,7 @@ public class Intcode {
         return outputs.toArray(new Long[outputs.size()]);
     }
 
-    public static void interpretIntcode(Memory memory, BlockingQueue<Long> inputQueue, BlockingQueue<Long> outputQueue) throws InterruptedException {
+    public static void interpretIntcode(Memory memory, BlockingQueue<Long> inputQueue, BlockingQueue<Long> outputQueue, BlockingQueue<Long> inputRequestQueue) throws InterruptedException {
         int pc = 0;
         int relativeBase = 0;
 
@@ -158,6 +158,9 @@ public class Intcode {
                     break;
 
                 case 3: // read input
+                    if (inputRequestQueue != null) {
+                        inputRequestQueue.put(0L);
+                    }
                     input1 = inputQueue.take();
                     memory.write(pc, 1, param1Mode, relativeBase, input1);
                     pc += 2;

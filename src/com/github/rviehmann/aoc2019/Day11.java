@@ -51,7 +51,7 @@ public class Day11 {
         @Override
         public void run() {
             try {
-                interpretIntcode(memory, inputQueue, outputQueue);
+                interpretIntcode(memory, inputQueue, outputQueue, null);
             } catch (InterruptedException e) {
                 System.err.println("InterruptedException caught: " + e);
             }
