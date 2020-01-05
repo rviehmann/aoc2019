@@ -11,6 +11,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import static com.github.rviehmann.aoc2019.Intcode.interpretIntcode;
+import static java.lang.Math.toIntExact;
 
 public class Day13 {
 
@@ -74,9 +75,9 @@ public class Day13 {
 
     public static class PaintedTile {
 
-        public long x;
-        public long y;
-        public long tileId;
+        public final long x;
+        public final long y;
+        public final long tileId;
 
         public PaintedTile(long x, long y, long tileId) {
             this.x = x;
@@ -242,7 +243,7 @@ public class Day13 {
         public long[] getCountForEachPanelId() {
             long[] count = new long[5];
             List<PaintedTile> paintedTilesMinified = getPaintedTilesMinified();
-            paintedTilesMinified.forEach(tile -> count[Math.toIntExact(tile.tileId)]++);
+            paintedTilesMinified.forEach(tile -> count[toIntExact(tile.tileId)]++);
             return count;
         }
 
@@ -373,7 +374,7 @@ public class Day13 {
         Memory memory = new Memory(MEMORY);
         Arcade arcade = runArcade(memory);
         long[] count = arcade.getCountForEachPanelId();
-        return count[Math.toIntExact(TILE_BLOCK)];
+        return count[toIntExact(TILE_BLOCK)];
     }
 
     public static long doPuzzle2() throws InterruptedException {

@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import static java.lang.Math.toIntExact;
+
 public class Intcode {
 
     private static final int POSITION_MODE = 0;
@@ -53,7 +55,7 @@ public class Intcode {
             switch (mode) {
                 case POSITION_MODE:
                     growIfNecessary(pc + numParam);
-                    address = Math.toIntExact(memory[pc + numParam]);
+                    address = toIntExact(memory[pc + numParam]);
                     growIfNecessary(address);
                     return memory[address];
                 case IMMEDIATE_MODE:
@@ -61,7 +63,7 @@ public class Intcode {
                     return memory[pc + numParam];
                 case RELATIVE_MODE:
                     growIfNecessary(pc + numParam);
-                    address = Math.toIntExact((memory[pc + numParam] + relativeBase));
+                    address = toIntExact((memory[pc + numParam] + relativeBase));
                     growIfNecessary(address);
                     return memory[address];
             }
@@ -73,7 +75,7 @@ public class Intcode {
             switch (mode) {
                 case POSITION_MODE:
                     growIfNecessary(pc + numParam);
-                    address = Math.toIntExact(memory[pc + numParam]);
+                    address = toIntExact(memory[pc + numParam]);
                     growIfNecessary(address);
                     memory[address] = value;
                     return;
@@ -81,7 +83,7 @@ public class Intcode {
                     throw new IllegalArgumentException("Immediate mode not allowed for output: position=" + pc + ", mode=" + mode);
                 case RELATIVE_MODE:
                     growIfNecessary(pc + numParam);
-                    address = Math.toIntExact((memory[pc + numParam] + relativeBase));
+                    address = toIntExact((memory[pc + numParam] + relativeBase));
                     growIfNecessary(address);
                     memory[address] = value;
                     return;
@@ -121,10 +123,10 @@ public class Intcode {
 
         while (true) {
             long memAtPc = memory.getRaw(pc);
-            int opcode = Math.toIntExact(memAtPc % 100);
-            int param1Mode = Math.toIntExact((memAtPc / 100) % 10);
-            int param2Mode = Math.toIntExact((memAtPc / 1000) % 10);
-            int param3Mode = Math.toIntExact((memAtPc / 10000) % 10);
+            int opcode = toIntExact(memAtPc % 100);
+            int param1Mode = toIntExact((memAtPc / 100) % 10);
+            int param2Mode = toIntExact((memAtPc / 1000) % 10);
+            int param3Mode = toIntExact((memAtPc / 10000) % 10);
 
             if (!MODES.contains(param1Mode)) {
                 throw new IllegalArgumentException("Invalid param1Mode: param1Mode=" + param1Mode + ", position=" + pc);
@@ -176,7 +178,7 @@ public class Intcode {
                     input1 = memory.read(pc, 1, param1Mode, relativeBase);
                     input2 = memory.read(pc, 2, param2Mode, relativeBase);
                     if (input1 != 0) {
-                        pc = Math.toIntExact(input2);
+                        pc = toIntExact(input2);
                     } else {
                         pc += 3;
                     }
@@ -186,7 +188,7 @@ public class Intcode {
                     input1 = memory.read(pc, 1, param1Mode, relativeBase);
                     input2 = memory.read(pc, 2, param2Mode, relativeBase);
                     if (input1 == 0) {
-                        pc = Math.toIntExact(input2);
+                        pc = toIntExact(input2);
                     } else {
                         pc += 3;
                     }
@@ -210,7 +212,7 @@ public class Intcode {
 
                 case 9: // adjust relative base
                     input1 = memory.read(pc, 1, param1Mode, relativeBase);
-                    relativeBase += Math.toIntExact(input1);
+                    relativeBase += toIntExact(input1);
                     pc += 2;
                     break;
 

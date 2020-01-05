@@ -60,9 +60,9 @@ public class Day11 {
 
     public static class PaintedPanel {
 
-        public long x;
-        public long y;
-        public long color;
+        public final long x;
+        public final long y;
+        public final long color;
 
         public PaintedPanel(long x, long y, long color) {
             this.x = x;
