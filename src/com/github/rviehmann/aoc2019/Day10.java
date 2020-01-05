@@ -1,7 +1,10 @@
 package com.github.rviehmann.aoc2019;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.atan2;
@@ -14,7 +17,6 @@ public class Day10 {
     private final static double EPSILON = 0.00001;
 
     private static final char ASTEROID = '#';
-    private static final char SPACE = ' ';
 
     private static final String EXAMPLE1 =
             ".#..#\n" +
@@ -134,8 +136,8 @@ public class Day10 {
 
     public static class Asteroid {
 
-        public long x;
-        public long y;
+        public final long x;
+        public final long y;
 
         public Asteroid(long x, long y) {
             this.x = x;
@@ -259,6 +261,79 @@ public class Day10 {
         return bestVis;
     }
 
+    private static void startLaser(List<Asteroid> asteroidField, Asteroid laserPosition) {
+        // The laser starts by pointing up and always rotates clockwise.
+        // Straight up: 270°
+        // Straight to the right: 0°
+        // Straight down: 90°
+        // Straight to the left: 180°
+        Map<Double, List<Asteroid>> asteroidsByAngle = new HashMap<>();
+        for (Asteroid asteroid : asteroidField) {
+            if (!asteroid.equals(laserPosition)) {
+
+                double angleToCounterpart = laserPosition.angle(asteroid);
+                if (asteroidsByAngle.containsKey(angleToCounterpart)) {
+                    asteroidsByAngle.get(angleToCounterpart).add(asteroid);
+                } else {
+                    List<Asteroid> list = new ArrayList<>();
+                    list.add(asteroid);
+                    asteroidsByAngle.put(angleToCounterpart, list);
+                }
+            }
+        }
+
+        double laserAngle = 270;
+        long asteroidsToBeDestroyed = asteroidField.size() - 1; // We can only destroy OTHER asteroids, not ourselves (per definition).
+        long asteroidsDestroyed = 0;
+        while (asteroidsToBeDestroyed > 0) {
+            if (asteroidsByAngle.containsKey(laserAngle)) {
+                // Destroy one
+                List<Asteroid> shorterList = destroyNearest(asteroidsByAngle.get(laserAngle), laserPosition, asteroidsDestroyed);
+                asteroidsToBeDestroyed--;
+                asteroidsDestroyed++;
+                if (shorterList.size() == 0) {
+                    asteroidsByAngle.remove(laserAngle);
+                }
+                if (asteroidsToBeDestroyed == 0) {
+                    return;
+                }
+            }
+
+            // Rotate laser
+            double currentLaserAngle = laserAngle;
+            if (asteroidsByAngle.keySet().stream().anyMatch(ang -> ang > currentLaserAngle)) {
+                laserAngle = asteroidsByAngle.keySet()
+                                             .stream()
+                                             .filter(ang -> ang > currentLaserAngle)
+                                             .min(Comparator.comparing(Double::valueOf))
+                                             .orElseThrow(() -> new IllegalStateException("Could not find next angle."));
+            } else {
+                // Wraparound
+                laserAngle = asteroidsByAngle.keySet()
+                                             .stream()
+                                             .min(Comparator.comparing(Double::valueOf))
+                                             .orElseThrow(() -> new IllegalStateException("Could not find next angle."));
+            }
+        }
+    }
+
+    private static List<Asteroid> destroyNearest(List<Asteroid> asteroidsWithSameAngle, Asteroid laserPosition, long asteroidsDestroyed) {
+        double minDistance = Double.MAX_VALUE;
+        Asteroid nearest = null;
+
+        for (Asteroid asteroid : asteroidsWithSameAngle) {
+            double distanceToCounterpart = laserPosition.distance(asteroid);
+            if (distanceToCounterpart < minDistance) {
+                minDistance = distanceToCounterpart;
+                nearest = asteroid;
+            }
+        }
+
+        System.out.println("Destroying asteroid: count, x, y, distance: " + (asteroidsDestroyed + 1) + ", " + nearest.x + ", " + nearest.y + ", " + minDistance);
+        asteroidsWithSameAngle.remove(nearest);
+        return asteroidsWithSameAngle;
+    }
+
     public static void testWithExamplesForPuzzle1() {
         System.out.println("### Day 10: Examples for puzzle 1 ###");
 
@@ -283,7 +358,8 @@ public class Day10 {
     }
 
     public static long doPuzzle2() {
-        // TODO
+        // Solution of the first puzzle: Asteroid with best visibility: x, y, visible: 37, 25, 309
+        startLaser(parseAsteroidField(INPUT), new Asteroid(37, 25));
         return 0;
     }
 }
