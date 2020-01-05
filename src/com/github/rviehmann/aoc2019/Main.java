@@ -9,7 +9,6 @@ public class Main {
         System.out.println("### Solutions ###");
         System.out.println("Day 01, puzzle 1: " + Day01.doPuzzle1());
         System.out.println("Day 01, puzzle 2: " + Day01.doPuzzle2());
-        */
 
         Day02.testWithExamplesForPuzzle1();
         System.out.println("### Solutions ###");
@@ -20,7 +19,6 @@ public class Main {
             System.err.println("InterruptedException caught: " + e);
         }
 
-        /*
         Day03.testWithExamplesForPuzzle1();
         Day03.testWithExamplesForPuzzle2();
         System.out.println("### Solutions ###");
@@ -32,7 +30,6 @@ public class Main {
         System.out.println("### Solutions ###");
         System.out.println("Day 04, puzzle 1: " + Day04.doPuzzle1());
         System.out.println("Day 04, puzzle 2: " + Day04.doPuzzle2());
-        */
 
         System.out.println("### Solutions ###");
         try {
@@ -79,7 +76,6 @@ public class Main {
             System.err.println("InterruptedException caught: " + e);
         }
 
-        /*
         System.out.println("### Solutions ###");
         try {
             System.out.println("Day 13, puzzle 1: " + Day13.doPuzzle1());
@@ -87,12 +83,18 @@ public class Main {
         } catch (InterruptedException e) {
             System.err.println("InterruptedException caught: " + e);
         }
-        */
 
         Day16.testWithExamplesForPuzzle1();
         Day16.testWithExamplesForPuzzle2();
         System.out.println("### Solutions ###");
         System.out.println("Day 16, puzzle 1: " + Day16.doPuzzle1());
         System.out.println("Day 16, puzzle 2: " + Day16.doPuzzle2());
+        */
+        System.out.println("### Solutions ###");
+        try {
+            System.out.println("Day 19, puzzle 1: " + Day19.doPuzzle1());
+        } catch (InterruptedException e) {
+            System.err.println("InterruptedException caught: " + e);
+        }
     }
 }
