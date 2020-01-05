@@ -18,40 +18,32 @@ public class Day19 {
     private static final Character CHAR_NOBEAM = '.';
 
     public static long doPuzzle1() throws InterruptedException {
-        Memory memory = new Memory(MEMORY);
-
-        BlockingQueue<Long>[] queues = new BlockingQueue[2];
-        for (int i = 0; i < 2; i++) {
-            queues[i] = new LinkedBlockingQueue<>();
-        }
-
-        for (long y = 0; y < 50; y++) {
-            for (long x = 0; x < 50; x++) {
-                queues[0].put(x);
-                queues[0].put(y);
-            }
-        }
-
-        try {
-            interpretIntcode(memory, queues[0], queues[1], null);
-        } catch (InterruptedException e) {
-            System.err.println("InterruptedException caught: " + e);
-        }
-
         int affected = 0;
         for (long y = 0; y < 50; y++) {
             for (long x = 0; x < 50; x++) {
+                Memory memory = new Memory(MEMORY);
+                BlockingQueue<Long>[] queues = new BlockingQueue[2];
+                for (int i = 0; i < 2; i++) {
+                    queues[i] = new LinkedBlockingQueue<>();
+                }
+                queues[0].put(x);
+                queues[0].put(y);
+
+                try {
+                    interpretIntcode(memory, queues[0], queues[1], null);
+                } catch (InterruptedException e) {
+                    System.err.println("InterruptedException caught: " + e);
+                }
+
                 long beam = queues[1].take();
                 switch ((int) beam) {
                     case 0:
                         System.out.print(CHAR_NOBEAM);
                         break;
-
                     case 1:
                         System.out.print(CHAR_BEAM);
                         affected++;
                         break;
-
                     default:
                         throw new IllegalArgumentException("Value does not make sense for beam: " + beam);
                 }
