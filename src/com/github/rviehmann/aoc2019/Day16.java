@@ -1,5 +1,7 @@
 package com.github.rviehmann.aoc2019;
 
+import java.util.Arrays;
+
 import static java.lang.Math.abs;
 
 public class Day16 {
@@ -69,7 +71,10 @@ public class Day16 {
 
     public static void testWithExamplesForPuzzle1() {
         System.out.println("### Day 16: Examples for puzzle 1 ###");
-        System.out.println("This should yield '01029498': " + getFirst8AfterSomePhases(EXAMPLE1, 4));
+        System.out.println("This should yield '48226158': " + Arrays.toString(doRepeatedly(toIntArray(EXAMPLE1), 1)));
+        System.out.println("This should yield '34040438': " + Arrays.toString(doRepeatedly(toIntArray(EXAMPLE1), 2)));
+        System.out.println("This should yield '03415518': " + Arrays.toString(doRepeatedly(toIntArray(EXAMPLE1), 3)));
+        System.out.println("This should yield '01029498': " + Arrays.toString(doRepeatedly(toIntArray(EXAMPLE1), 4)));
         System.out.println("This should yield '24176176': " + getFirst8AfterSomePhases(EXAMPLE2, 100));
         System.out.println("This should yield '73745418': " + getFirst8AfterSomePhases(EXAMPLE3, 100));
         System.out.println("This should yield '52432133': " + getFirst8AfterSomePhases(EXAMPLE4, 100));
