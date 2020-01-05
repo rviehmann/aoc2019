@@ -36,22 +36,31 @@ public class Day16 {
     private static int[] doOnePhase(int[] input) {
         int[] output = new int[input.length];
         for (int position = 0; position < input.length; position++) {
-            output[position] = doOneDigit(input[position], position, input.length);
+            output[position] = generateOneOutputDigit(input, position);
         }
         return output;
     }
 
-    private static int doOneDigit(int digit, int position, int length) {
+    private static int generateOneOutputDigit(int[] input, int outputPosition) {
         long buffer = 0;
-        for (int i = 0; i < length; i++) {
-            buffer += digit * getPatternValue(i, position, length);
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < input.length; i++) {
+            int patternValue = getPatternValue(i, outputPosition);
+            buffer += input[i] * patternValue;
+            if (sb.length() > 0) {
+                sb.append(" + ");
+            }
+            sb.append(input[i]).append("*").append(patternValue);
         }
-        return (int) (abs(buffer) % 10);
+        int result = (int) (abs(buffer) % 10);
+        sb.append(" = ").append(result);
+        // System.out.println(sb.toString());
+        return result;
     }
 
-    private static int getPatternValue(int pointer, int position, int length) {
+    private static int getPatternValue(int pointer, int outputPosition) {
         // Position starts with 0, repetitions start with 1.
-        int repetition = position + 1;
+        int repetition = outputPosition + 1;
         int lengthOfRepeatedPattern = BASE_PATTERN.length * repetition;
 
         // We have to skip the very first position in the repeated pattern.
