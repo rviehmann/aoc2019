@@ -5,6 +5,7 @@ import com.github.rviehmann.aoc2019.Intcode.Memory;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import static com.github.rviehmann.aoc2019.Intcode.BLOCKING_INPUT;
 import static com.github.rviehmann.aoc2019.Intcode.interpretIntcode;
 
 public class Day07 {
@@ -68,7 +69,7 @@ public class Day07 {
         @Override
         public void run() {
             try {
-                interpretIntcode(memory, inputQueue, outputQueue, null);
+                interpretIntcode(memory, inputQueue, outputQueue, BLOCKING_INPUT, null);
             } catch (InterruptedException e) {
                 System.err.println("InterruptedException caught: " + e);
             }

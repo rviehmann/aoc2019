@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import static com.github.rviehmann.aoc2019.Intcode.BLOCKING_INPUT;
 import static com.github.rviehmann.aoc2019.Intcode.interpretIntcode;
 import static java.lang.Math.toIntExact;
 
@@ -66,7 +67,7 @@ public class Day13 {
         @Override
         public void run() {
             try {
-                interpretIntcode(memory, inputQueue, outputQueue, inputRequestQueue);
+                interpretIntcode(memory, inputQueue, outputQueue, BLOCKING_INPUT, inputRequestQueue);
             } catch (InterruptedException e) {
                 System.err.println("InterruptedException caught: " + e);
             }

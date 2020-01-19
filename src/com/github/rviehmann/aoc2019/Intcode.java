@@ -14,6 +14,10 @@ public class Intcode {
     private static final int RELATIVE_MODE = 2;
     private static final List<Integer> MODES = new ArrayList<>();
 
+    public static final int BLOCKING_INPUT = 0;
+    public static final int NONBLOCKING_INPUT = 1;
+    public static final int NO_INPUT_AVAILABLE = -1;
+
     static {
         MODES.add(POSITION_MODE);
         MODES.add(IMMEDIATE_MODE);
@@ -108,7 +112,7 @@ public class Intcode {
         for (long input : inputs) {
             queues[0].put(input);
         }
-        interpretIntcode(memory, queues[0], queues[1], null);
+        interpretIntcode(memory, queues[0], queues[1], BLOCKING_INPUT, null);
         List<Long> outputs = new ArrayList<>();
         while (!queues[1].isEmpty()) {
             outputs.add(queues[1].take());
@@ -117,7 +121,7 @@ public class Intcode {
         return outputs.toArray(new Long[outputs.size()]);
     }
 
-    public static void interpretIntcode(Memory memory, BlockingQueue<Long> inputQueue, BlockingQueue<Long> outputQueue, BlockingQueue<Long> inputRequestQueue) throws InterruptedException {
+    public static void interpretIntcode(Memory memory, BlockingQueue<Long> inputQueue, BlockingQueue<Long> outputQueue, int blockingMode, BlockingQueue<Long> inputRequestQueue) throws InterruptedException {
         int pc = 0;
         int relativeBase = 0;
 
@@ -160,10 +164,23 @@ public class Intcode {
                     break;
 
                 case 3: // read input
-                    if (inputRequestQueue != null) {
-                        inputRequestQueue.put(0L);
+                    switch (blockingMode) {
+                        case BLOCKING_INPUT:
+                            if (inputRequestQueue != null) {
+                                inputRequestQueue.put(0L);
+                            }
+                            input1 = inputQueue.take();
+                            break;
+                        case NONBLOCKING_INPUT:
+                            if (inputQueue.peek() != null) {
+                                input1 = inputQueue.take();
+                            } else {
+                                input1 = NO_INPUT_AVAILABLE;
+                            }
+                            break;
+                        default:
+                            throw new IllegalArgumentException("Invalid blockingMode: blockingMode=" + blockingMode);
                     }
-                    input1 = inputQueue.take();
                     memory.write(pc, 1, param1Mode, relativeBase, input1);
                     pc += 2;
                     break;
