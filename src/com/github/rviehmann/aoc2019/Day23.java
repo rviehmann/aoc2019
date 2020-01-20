@@ -17,23 +17,29 @@ public class Day23 {
     };
 
     private static final int NUM_COMPUTERS = 50;
+    private static final int NAT_ADDRESS = 255;
+
+    // Not stated in the specs, has been determined experimentally.
+    private static final int EMPTY_CYCLES_THRESHOLD = 100_000;
 
     public static class NIC implements Runnable {
 
         private final Memory memory;
         private final BlockingQueue<Long> inputQueue;
         private final BlockingQueue<Long> outputQueue;
+        private final BlockingQueue<Long> shutdownRequestQueue;
 
-        public NIC(Memory memory, BlockingQueue<Long> inputQueue, BlockingQueue<Long> outputQueue) {
+        public NIC(Memory memory, BlockingQueue<Long> inputQueue, BlockingQueue<Long> outputQueue, BlockingQueue<Long> shutdownRequestQueue) {
             this.memory = memory;
             this.inputQueue = inputQueue;
             this.outputQueue = outputQueue;
+            this.shutdownRequestQueue = shutdownRequestQueue;
         }
 
         @Override
         public void run() {
             try {
-                interpretIntcode(memory, inputQueue, outputQueue, NONBLOCKING_INPUT, null);
+                interpretIntcode(memory, inputQueue, outputQueue, NONBLOCKING_INPUT, null, shutdownRequestQueue);
             } catch (InterruptedException e) {
                 System.err.println("InterruptedException caught: " + e);
             }
@@ -44,10 +50,12 @@ public class Day23 {
 
         private final BlockingQueue<Long>[] inputQueues;
         private final BlockingQueue<Long>[] outputQueues;
+        private final boolean breakAfterFirstNatPacketReceived;
 
-        public Switch(BlockingQueue<Long>[] inputQueues, BlockingQueue<Long>[] outputQueues) {
+        public Switch(BlockingQueue<Long>[] inputQueues, BlockingQueue<Long>[] outputQueues, boolean breakAfterFirstNatPacketReceived) {
             this.inputQueues = inputQueues;
             this.outputQueues = outputQueues;
+            this.breakAfterFirstNatPacketReceived = breakAfterFirstNatPacketReceived;
         }
 
         @Override
@@ -55,22 +63,47 @@ public class Day23 {
             long address;
             long x;
             long y;
+            Long natX = null;
+            Long natY = null;
+            boolean emptyCycle;
+            long emptyCyclesInARow = 0;
+            Long lastNatYSentTo0 = null;
             try {
                 while (true) {
+                    emptyCycle = true;
                     for (int i = 0; i < NUM_COMPUTERS; i++) {
                         if (outputQueues[i].peek() != null) {
+                            emptyCycle = false;
                             address = outputQueues[i].take();
                             x = outputQueues[i].take();
                             y = outputQueues[i].take();
-
-                            if (address == 255) {
-                                System.out.println("Received packet with address=" + address + ", x=" + x + ", y=" + y);
+                            if (address == NAT_ADDRESS) {
+                                System.out.println("NAT received packet with address=" + address + ", x=" + x + ", y=" + y);
+                                if (breakAfterFirstNatPacketReceived) {
+                                    return;
+                                }
+                                natX = x;
+                                natY = y;
+                            } else {
+                                inputQueues[toIntExact(address)].put(x);
+                                inputQueues[toIntExact(address)].put(y);
+                            }
+                        }
+                    }
+                    if (emptyCycle) {
+                        emptyCyclesInARow++;
+                        if (emptyCyclesInARow >= EMPTY_CYCLES_THRESHOLD && natY != null) {
+                            inputQueues[0].put(natX);
+                            inputQueues[0].put(natY);
+                            if (lastNatYSentTo0 != null && lastNatYSentTo0.longValue() == natY.longValue()) {
+                                System.out.println("NAT sent y=" + natY + " twice in a row.");
                                 return;
                             }
-
-                            inputQueues[toIntExact(address)].put(x);
-                            inputQueues[toIntExact(address)].put(y);
+                            lastNatYSentTo0 = natY;
+                            emptyCyclesInARow = 0;
                         }
+                    } else {
+                        emptyCyclesInARow = 0;
                     }
                 }
             } catch (InterruptedException e) {
@@ -79,22 +112,24 @@ public class Day23 {
         }
     }
 
-    private static long runNetwork() throws InterruptedException {
+    private static long runNetwork(boolean breakAfterFirstNatPacketReceived) throws InterruptedException {
         BlockingQueue<Long>[] inputQueues = new BlockingQueue[NUM_COMPUTERS];
         BlockingQueue<Long>[] outputQueues = new BlockingQueue[NUM_COMPUTERS];
+        BlockingQueue<Long>[] shutdownRequestQueues = new BlockingQueue[NUM_COMPUTERS];
         NIC[] nics = new NIC[NUM_COMPUTERS];
         Thread[] threads = new Thread[NUM_COMPUTERS + 1];
 
         for (int i = 0; i < NUM_COMPUTERS; i++) {
             inputQueues[i] = new LinkedBlockingQueue<>();
             outputQueues[i] = new LinkedBlockingQueue<>();
+            shutdownRequestQueues[i] = new LinkedBlockingQueue<>();
             // Write network address.
             inputQueues[i].put((long) i);
-            nics[i] = new NIC(new Memory(MEMORY), inputQueues[i], outputQueues[i]);
+            nics[i] = new NIC(new Memory(MEMORY), inputQueues[i], outputQueues[i], shutdownRequestQueues[i]);
             threads[i] = new Thread(nics[i]);
         }
 
-        Switch _switch = new Switch(inputQueues, outputQueues);
+        Switch _switch = new Switch(inputQueues, outputQueues, breakAfterFirstNatPacketReceived);
         threads[NUM_COMPUTERS] = new Thread(_switch);
 
         for (int i = 0; i < NUM_COMPUTERS + 1; i++) {
@@ -105,12 +140,19 @@ public class Day23 {
         threads[NUM_COMPUTERS].join();
 
         // Afterwards, shut down whole network.
-        // TODO
+        for (int i = 0; i < NUM_COMPUTERS; i++) {
+            shutdownRequestQueues[i].put(0L);
+        }
         return 0;
     }
 
     public static long doPuzzle1() throws InterruptedException {
-        runNetwork();
+        runNetwork(true);
+        return 0;
+    }
+
+    public static long doPuzzle2() throws InterruptedException {
+        runNetwork(false);
         return 0;
     }
 }
