@@ -69,7 +69,7 @@ public class Day07 {
         @Override
         public void run() {
             try {
-                interpretIntcode(memory, inputQueue, outputQueue, BLOCKING_INPUT, null);
+                interpretIntcode(memory, inputQueue, outputQueue, BLOCKING_INPUT, null, null);
             } catch (InterruptedException e) {
                 System.err.println("InterruptedException caught: " + e);
             }

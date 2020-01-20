@@ -112,7 +112,7 @@ public class Intcode {
         for (long input : inputs) {
             queues[0].put(input);
         }
-        interpretIntcode(memory, queues[0], queues[1], BLOCKING_INPUT, null);
+        interpretIntcode(memory, queues[0], queues[1], BLOCKING_INPUT, null, null);
         List<Long> outputs = new ArrayList<>();
         while (!queues[1].isEmpty()) {
             outputs.add(queues[1].take());
@@ -121,11 +121,33 @@ public class Intcode {
         return outputs.toArray(new Long[outputs.size()]);
     }
 
-    public static void interpretIntcode(Memory memory, BlockingQueue<Long> inputQueue, BlockingQueue<Long> outputQueue, int blockingMode, BlockingQueue<Long> inputRequestQueue) throws InterruptedException {
+    /**
+     * Runs the interpreter with the given memory.
+     *
+     * @param memory               Initial memory to use. Will possibly be modified by the running program. Will grow as needed.
+     * @param inputQueue           The queue to take the input values from.
+     * @param outputQueue          The queue to write the output values to.
+     * @param blockingMode         Whether reading on an empty input queue will block until data is available (BLOCKING_INPUT),
+     *                             or return the fix value -1 immediately (NONBLOCKING_INPUT).
+     * @param inputRequestQueue    Only supported when blockingMode is BLOCKING_INPUT, optional in this case, ignored otherwise.
+     *                             If provided, a fix value of 0 is written to this queue before attempting to read from the inputQueue, so an input can be generated on demand.
+     * @param shutdownRequestQueue Optional. If provided, whenever any value is read from this queue, the interpreter is shut down.
+     *                             Typically, the interpreter shuts down on executing the opcode 99 (halt), but with this mechanism, a termination can be requested out-of-band.
+     * @throws InterruptedException
+     */
+    public static void interpretIntcode(Memory memory,
+                                        BlockingQueue<Long> inputQueue,
+                                        BlockingQueue<Long> outputQueue,
+                                        int blockingMode,
+                                        BlockingQueue<Long> inputRequestQueue,
+                                        BlockingQueue<Long> shutdownRequestQueue) throws InterruptedException {
         int pc = 0;
         int relativeBase = 0;
 
         while (true) {
+            if (shutdownRequestQueue != null && shutdownRequestQueue.peek() != null) {
+                return;
+            }
             long memAtPc = memory.getRaw(pc);
             int opcode = toIntExact(memAtPc % 100);
             int param1Mode = toIntExact((memAtPc / 100) % 10);

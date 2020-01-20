@@ -31,7 +31,7 @@ public class Day19 {
                 queues[0].put(y);
 
                 try {
-                    interpretIntcode(memory, queues[0], queues[1], BLOCKING_INPUT, null);
+                    interpretIntcode(memory, queues[0], queues[1], BLOCKING_INPUT, null, null);
                 } catch (InterruptedException e) {
                     System.err.println("InterruptedException caught: " + e);
                 }
