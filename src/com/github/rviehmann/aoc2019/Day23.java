@@ -20,7 +20,7 @@ public class Day23 {
     private static final int NAT_ADDRESS = 255;
 
     // Not stated in the specs, has been determined experimentally.
-    private static final int EMPTY_CYCLES_THRESHOLD = 100_000;
+    private static final int EMPTY_CYCLES_THRESHOLD = 100;
 
     public static class NIC implements Runnable {
 
@@ -65,15 +65,23 @@ public class Day23 {
             long y;
             Long natX = null;
             Long natY = null;
-            boolean emptyCycle;
+            boolean allInputQueuesEmpty;
+            boolean allOutputQueuesEmpty;
             long emptyCyclesInARow = 0;
             Long lastNatYSentTo0 = null;
             try {
                 while (true) {
-                    emptyCycle = true;
+                    allInputQueuesEmpty = true;
+                    allOutputQueuesEmpty = true;
+                    for (int i = 0; i < NUM_COMPUTERS; i++) {
+                        if (inputQueues[i].peek() != null) {
+                            allInputQueuesEmpty = false;
+                            break;
+                        }
+                    }
                     for (int i = 0; i < NUM_COMPUTERS; i++) {
                         if (outputQueues[i].peek() != null) {
-                            emptyCycle = false;
+                            allOutputQueuesEmpty = false;
                             address = outputQueues[i].take();
                             x = outputQueues[i].take();
                             y = outputQueues[i].take();
@@ -90,11 +98,12 @@ public class Day23 {
                             }
                         }
                     }
-                    if (emptyCycle) {
+                    if (allInputQueuesEmpty && allOutputQueuesEmpty) {
                         emptyCyclesInARow++;
                         if (emptyCyclesInARow >= EMPTY_CYCLES_THRESHOLD && natY != null) {
                             inputQueues[0].put(natX);
                             inputQueues[0].put(natY);
+                            System.out.println("NAT sent packet with address=" + 0 + ", x=" + natX + ", y=" + natY);
                             if (lastNatYSentTo0 != null && lastNatYSentTo0.longValue() == natY.longValue()) {
                                 System.out.println("NAT sent y=" + natY + " twice in a row.");
                                 return;
@@ -105,6 +114,7 @@ public class Day23 {
                     } else {
                         emptyCyclesInARow = 0;
                     }
+                    Thread.sleep(1);
                 }
             } catch (InterruptedException e) {
                 System.err.println("InterruptedException caught: " + e);
