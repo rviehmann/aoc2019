@@ -96,7 +96,7 @@ public class Main {
         } catch (InterruptedException e) {
             System.err.println("InterruptedException caught: " + e);
         }
-
+        /*
         System.out.println("### Solutions ###");
         try {
             System.out.println("Day 23, puzzle 1: " + Day23.doPuzzle1());
@@ -104,5 +104,6 @@ public class Main {
         } catch (InterruptedException e) {
             System.err.println("InterruptedException caught: " + e);
         }
+        */
     }
 }

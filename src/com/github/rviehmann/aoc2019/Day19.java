@@ -18,25 +18,29 @@ public class Day19 {
     private static final Character CHAR_BEAM = '#';
     private static final Character CHAR_NOBEAM = '.';
 
+    private static long deployDroneToLocation(long x, long y) throws InterruptedException {
+        Memory memory = new Memory(MEMORY);
+        BlockingQueue<Long>[] queues = new BlockingQueue[2];
+        for (int i = 0; i < 2; i++) {
+            queues[i] = new LinkedBlockingQueue<>();
+        }
+        queues[0].put(x);
+        queues[0].put(y);
+
+        try {
+            interpretIntcode(memory, queues[0], queues[1], BLOCKING_INPUT, null, null);
+        } catch (InterruptedException e) {
+            System.err.println("InterruptedException caught: " + e);
+        }
+
+        return queues[1].take();
+    }
+
     public static long doPuzzle1() throws InterruptedException {
         int affected = 0;
         for (long y = 0; y < 50; y++) {
             for (long x = 0; x < 50; x++) {
-                Memory memory = new Memory(MEMORY);
-                BlockingQueue<Long>[] queues = new BlockingQueue[2];
-                for (int i = 0; i < 2; i++) {
-                    queues[i] = new LinkedBlockingQueue<>();
-                }
-                queues[0].put(x);
-                queues[0].put(y);
-
-                try {
-                    interpretIntcode(memory, queues[0], queues[1], BLOCKING_INPUT, null, null);
-                } catch (InterruptedException e) {
-                    System.err.println("InterruptedException caught: " + e);
-                }
-
-                long beam = queues[1].take();
+                long beam = deployDroneToLocation(x, y);
                 switch ((int) beam) {
                     case 0:
                         System.out.print(CHAR_NOBEAM);
@@ -52,5 +56,10 @@ public class Day19 {
             System.out.print("\n");
         }
         return affected;
+    }
+
+    public static long doPuzzle2() throws InterruptedException {
+        // TODO Implement
+        return 0;
     }
 }
