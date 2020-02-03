@@ -2,9 +2,13 @@ package com.github.rviehmann.aoc2019;
 
 import com.github.rviehmann.aoc2019.Intcode.Memory;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import static com.github.rviehmann.aoc2019.Day19.BeamMode.INSIDE;
+import static com.github.rviehmann.aoc2019.Day19.BeamMode.LEFT;
 import static com.github.rviehmann.aoc2019.Intcode.BLOCKING_INPUT;
 import static com.github.rviehmann.aoc2019.Intcode.interpretIntcode;
 
@@ -17,6 +21,32 @@ public class Day19 {
 
     private static final Character CHAR_BEAM = '#';
     private static final Character CHAR_NOBEAM = '.';
+    private static final long SANTA_SHIP_WIDTH = 100;
+    private static final long SANTA_SHIP_HEIGHT = 100;
+
+    public enum BeamMode {
+        LEFT, INSIDE
+    }
+
+    /**
+     * For a given Y, encodes the min and max values for X that are covered by the beam.
+     */
+    public static class BeamArea {
+
+        public final long y;
+        public final long minX;
+        public final long maxX;
+
+        public BeamArea(long y, long minX, long maxX) {
+            this.y = y;
+            this.minX = minX;
+            this.maxX = maxX;
+        }
+
+        public long getWidth() {
+            return maxX - minX + 1;
+        }
+    }
 
     private static long deployDroneToLocation(long x, long y) throws InterruptedException {
         Memory memory = new Memory(MEMORY);
@@ -34,6 +64,22 @@ public class Day19 {
         }
 
         return queues[1].take();
+    }
+
+    private static BeamArea calculateBeamArea(long y) throws InterruptedException {
+        long minX = 0;
+        long x = 0;
+        BeamMode beamMode = LEFT;
+        while (true) {
+            long beam = deployDroneToLocation(x, y);
+            if (beamMode == LEFT && beam == 1) {
+                minX = x;
+                beamMode = INSIDE;
+            } else if (beamMode == INSIDE && beam == 0) {
+                return new BeamArea(y, minX, x - 1);
+            }
+            x++;
+        }
     }
 
     public static long doPuzzle1() throws InterruptedException {
@@ -59,6 +105,26 @@ public class Day19 {
     }
 
     public static long doPuzzle2() throws InterruptedException {
+        long y = 0;
+        long lowestRelevantY = -1;
+        Map<Long, BeamArea> relevantBeamAreas = new HashMap<>();
+
+        while (true) {
+            BeamArea beamArea = calculateBeamArea(y);
+            if (beamArea.getWidth() >= SANTA_SHIP_WIDTH) {
+                relevantBeamAreas.put(y, beamArea);
+
+                if (lowestRelevantY == -1) {
+                    lowestRelevantY = y;
+                }
+
+                if (relevantBeamAreas.size() >= SANTA_SHIP_HEIGHT) {
+                    // TODO Implement
+                }
+            }
+            y++;
+        }
+
         // TODO Implement
         return 0;
     }
