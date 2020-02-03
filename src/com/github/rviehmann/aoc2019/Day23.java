@@ -21,7 +21,7 @@ public class Day23 {
     private static final int NAT_ADDRESS = 255;
 
     // Not stated in the specs, has been determined experimentally.
-    private static final int EMPTY_CYCLES_THRESHOLD = 100;
+    private static final int EMPTY_CYCLES_THRESHOLD = 1000;
 
     public static class NIC implements Runnable {
 

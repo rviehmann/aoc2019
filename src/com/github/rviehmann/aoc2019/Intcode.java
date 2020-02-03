@@ -157,9 +157,6 @@ public class Intcode {
         int relativeBase = 0;
 
         while (true) {
-            if (shutdownRequest != null && shutdownRequest.isMustShutdown()) {
-                return;
-            }
             long memAtPc = memory.getRaw(pc);
             int opcode = toIntExact(memAtPc % 100);
             int param1Mode = toIntExact((memAtPc / 100) % 10);
@@ -198,6 +195,9 @@ public class Intcode {
                     break;
 
                 case 3: // read input
+                    if (shutdownRequest != null && shutdownRequest.isMustShutdown()) {
+                        return;
+                    }
                     switch (blockingMode) {
                         case BLOCKING_INPUT:
                             if (inputRequestQueue != null) {
