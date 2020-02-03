@@ -4,12 +4,9 @@ import com.github.rviehmann.aoc2019.Intcode.Memory;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import static com.github.rviehmann.aoc2019.Day19.BeamMode.INSIDE;
 import static com.github.rviehmann.aoc2019.Day19.BeamMode.LEFT;
-import static com.github.rviehmann.aoc2019.Intcode.BLOCKING_INPUT;
 import static com.github.rviehmann.aoc2019.Intcode.interpretIntcode;
 
 public class Day19 {
@@ -50,20 +47,8 @@ public class Day19 {
 
     private static long deployDroneToLocation(long x, long y) throws InterruptedException {
         Memory memory = new Memory(MEMORY);
-        BlockingQueue<Long>[] queues = new BlockingQueue[2];
-        for (int i = 0; i < 2; i++) {
-            queues[i] = new LinkedBlockingQueue<>();
-        }
-        queues[0].put(x);
-        queues[0].put(y);
-
-        try {
-            interpretIntcode(memory, queues[0], queues[1], BLOCKING_INPUT, null, null);
-        } catch (InterruptedException e) {
-            System.err.println("InterruptedException caught: " + e);
-        }
-
-        return queues[1].take();
+        Long[] outputs = interpretIntcode(memory, new long[]{x, y});
+        return outputs[0];
     }
 
     private static BeamArea calculateBeamArea(long y) throws InterruptedException {
