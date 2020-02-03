@@ -24,6 +24,18 @@ public class Intcode {
         MODES.add(RELATIVE_MODE);
     }
 
+    public static class ShutdownRequest {
+        private volatile boolean mustShutdown = false;
+
+        public void setMustShutdown(boolean mustShutdown) {
+            this.mustShutdown = mustShutdown;
+        }
+
+        public boolean isMustShutdown() {
+            return mustShutdown;
+        }
+    }
+
     public static class Memory {
         private long[] memory;
 
@@ -124,15 +136,15 @@ public class Intcode {
     /**
      * Runs the interpreter with the given memory.
      *
-     * @param memory               Initial memory to use. Will possibly be modified by the running program. Will grow as needed.
-     * @param inputQueue           The queue to take the input values from.
-     * @param outputQueue          The queue to write the output values to.
-     * @param blockingMode         Whether reading on an empty input queue will block until data is available (BLOCKING_INPUT),
-     *                             or return the fix value -1 immediately (NONBLOCKING_INPUT).
-     * @param inputRequestQueue    Only supported when blockingMode is BLOCKING_INPUT, optional in this case, ignored otherwise.
-     *                             If provided, a fix value of 0 is written to this queue before attempting to read from the inputQueue, so an input can be generated on demand.
-     * @param shutdownRequestQueue Optional. If provided, whenever any value is read from this queue, the interpreter is shut down.
-     *                             Typically, the interpreter shuts down on executing the opcode 99 (halt), but with this mechanism, a termination can be requested out-of-band.
+     * @param memory            Initial memory to use. Will possibly be modified by the running program. Will grow as needed.
+     * @param inputQueue        The queue to take the input values from.
+     * @param outputQueue       The queue to write the output values to.
+     * @param blockingMode      Whether reading on an empty input queue will block until data is available (BLOCKING_INPUT),
+     *                          or return the fix value -1 immediately (NONBLOCKING_INPUT).
+     * @param inputRequestQueue Only supported when blockingMode is BLOCKING_INPUT, optional in this case, ignored otherwise.
+     *                          If provided, a fix value of 0 is written to this queue before attempting to read from the inputQueue, so an input can be generated on demand.
+     * @param shutdownRequest   Optional. If provided, whenever true is returned by isMustShutdown(), the interpreter is shut down.
+     *                          Typically, the interpreter shuts down on executing the opcode 99 (halt), but with this mechanism, a termination can be requested out-of-band.
      * @throws InterruptedException
      */
     public static void interpretIntcode(Memory memory,
@@ -140,12 +152,12 @@ public class Intcode {
                                         BlockingQueue<Long> outputQueue,
                                         int blockingMode,
                                         BlockingQueue<Long> inputRequestQueue,
-                                        BlockingQueue<Long> shutdownRequestQueue) throws InterruptedException {
+                                        ShutdownRequest shutdownRequest) throws InterruptedException {
         int pc = 0;
         int relativeBase = 0;
 
         while (true) {
-            if (shutdownRequestQueue != null && shutdownRequestQueue.peek() != null) {
+            if (shutdownRequest != null && shutdownRequest.isMustShutdown()) {
                 return;
             }
             long memAtPc = memory.getRaw(pc);

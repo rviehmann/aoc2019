@@ -1,6 +1,7 @@
 package com.github.rviehmann.aoc2019;
 
 import com.github.rviehmann.aoc2019.Intcode.Memory;
+import com.github.rviehmann.aoc2019.Intcode.ShutdownRequest;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -27,19 +28,19 @@ public class Day23 {
         private final Memory memory;
         private final BlockingQueue<Long> inputQueue;
         private final BlockingQueue<Long> outputQueue;
-        private final BlockingQueue<Long> shutdownRequestQueue;
+        private final ShutdownRequest shutdownRequest;
 
-        public NIC(Memory memory, BlockingQueue<Long> inputQueue, BlockingQueue<Long> outputQueue, BlockingQueue<Long> shutdownRequestQueue) {
+        public NIC(Memory memory, BlockingQueue<Long> inputQueue, BlockingQueue<Long> outputQueue, ShutdownRequest shutdownRequest) {
             this.memory = memory;
             this.inputQueue = inputQueue;
             this.outputQueue = outputQueue;
-            this.shutdownRequestQueue = shutdownRequestQueue;
+            this.shutdownRequest = shutdownRequest;
         }
 
         @Override
         public void run() {
             try {
-                interpretIntcode(memory, inputQueue, outputQueue, NONBLOCKING_INPUT, null, shutdownRequestQueue);
+                interpretIntcode(memory, inputQueue, outputQueue, NONBLOCKING_INPUT, null, shutdownRequest);
             } catch (InterruptedException e) {
                 System.err.println("InterruptedException caught: " + e);
             }
@@ -125,17 +126,17 @@ public class Day23 {
     private static long runNetwork(boolean breakAfterFirstNatPacketReceived) throws InterruptedException {
         BlockingQueue<Long>[] inputQueues = new BlockingQueue[NUM_COMPUTERS];
         BlockingQueue<Long>[] outputQueues = new BlockingQueue[NUM_COMPUTERS];
-        BlockingQueue<Long>[] shutdownRequestQueues = new BlockingQueue[NUM_COMPUTERS];
         NIC[] nics = new NIC[NUM_COMPUTERS];
         Thread[] threads = new Thread[NUM_COMPUTERS + 1];
+        // Same object for all NICs, since we want to shut them down all at one.
+        ShutdownRequest shutdownRequest = new ShutdownRequest();
 
         for (int i = 0; i < NUM_COMPUTERS; i++) {
             inputQueues[i] = new LinkedBlockingQueue<>();
             outputQueues[i] = new LinkedBlockingQueue<>();
-            shutdownRequestQueues[i] = new LinkedBlockingQueue<>();
             // Write network address.
             inputQueues[i].put((long) i);
-            nics[i] = new NIC(new Memory(MEMORY), inputQueues[i], outputQueues[i], shutdownRequestQueues[i]);
+            nics[i] = new NIC(new Memory(MEMORY), inputQueues[i], outputQueues[i], shutdownRequest);
             threads[i] = new Thread(nics[i]);
         }
 
@@ -150,9 +151,7 @@ public class Day23 {
         threads[NUM_COMPUTERS].join();
 
         // Afterwards, shut down whole network.
-        for (int i = 0; i < NUM_COMPUTERS; i++) {
-            shutdownRequestQueues[i].put(0L);
-        }
+        shutdownRequest.setMustShutdown(true);
         return 0;
     }
 
