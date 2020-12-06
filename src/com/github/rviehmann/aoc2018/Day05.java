@@ -23,22 +23,18 @@ public class Day05 {
     }
 
     private static String doOneReductionRound(String input) {
-        StringBuilder output = new StringBuilder();
         for (int i = 0; i < input.length() - 1; i++) {
             char current = input.charAt(i);
             char next = input.charAt(i + 1);
             if (areOpposites(current, next)) {
                 // Skip over this one and the next one
-                i++;
-                System.out.println("doOneReductionRound: Found a pair: " + current + next);
-            } else {
-                output.append(current);
-                if (i == input.length() - 2) {
-                    output.append(next);
-                }
+                StringBuilder output = new StringBuilder();
+                if (i > 0) output.append(input.substring(0, i));
+                if (i < input.length() - 2) output.append(input.substring(i + 2));
+                return output.toString();
             }
         }
-        return output.toString();
+        return input;
     }
 
     private static boolean areOpposites(char c1, char c2) {
@@ -50,8 +46,12 @@ public class Day05 {
 
     public static void testWithExamplesForPuzzle1() {
         System.out.println("### Day 05: Examples for puzzle 1 ###");
+
         String result = doAllReductionRounds("dabAcCaCBAcCcaDA");
         System.out.println("Result of reduction: '" + result + "'.");
+
+        String result2 = doAllReductionRounds("AadabAcCaCBAcCcaDAzZ");
+        System.out.println("Result of reduction: '" + result2 + "'.");
     }
 
     public static long doPuzzle1() {
