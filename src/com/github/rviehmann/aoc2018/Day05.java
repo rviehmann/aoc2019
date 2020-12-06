@@ -18,7 +18,7 @@ public class Day05 {
             currentState = newState;
         }
         System.out.println("doAllReductionRounds: Output has length: " + newState.length());
-        System.out.println("doAllReductionRounds: Output is: '" + newState + "'.");
+        // System.out.println("doAllReductionRounds: Output is: '" + newState + "'.");
         return newState;
     }
 
@@ -60,7 +60,14 @@ public class Day05 {
     }
 
     public static long doPuzzle2() {
-        // TODO
-        return 0;
+        int shortest = Integer.MAX_VALUE;
+        for (char c = 'a'; c <= 'z'; c++) {
+            String input = INPUT.replace(String.valueOf(c), "")
+                    .replace(String.valueOf(c).toUpperCase(), "");
+            String result = doAllReductionRounds(input);
+            int length = result.length();
+            if (length < shortest) shortest = length;
+        }
+        return shortest;
     }
 }
