@@ -971,7 +971,7 @@ public class Day01 {
     }
 
     public static long doPuzzle2() {
-        Set<Long> frequencies = new HashSet();
+        Set<Long> frequencies = new HashSet<>();
         long frequency = 0;
         frequencies.add(frequency);
         while (true) {
