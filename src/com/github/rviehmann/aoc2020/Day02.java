@@ -1013,7 +1013,6 @@ public class Day02 {
 
         private static final String REGEX = "(\\d+)-(\\d+) (\\w): (\\w+)";
         private static final Pattern PATTERN = Pattern.compile(REGEX);
-
         final int min;
         final int max;
         final char character;
@@ -1052,7 +1051,6 @@ public class Day02 {
 
         private static final String REGEX = "(\\d+)-(\\d+) (\\w): (\\w+)";
         private static final Pattern PATTERN = Pattern.compile(REGEX);
-
         final int pos1;
         final int pos2;
         final char character;
