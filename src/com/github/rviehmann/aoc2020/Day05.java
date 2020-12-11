@@ -909,7 +909,9 @@ public class Day05 {
         int maxId = Integer.MIN_VALUE;
         for (String seatString : INPUT_AS_SEAT_ARRAY) {
             seats[index] = Seat.fromString(seatString);
-            if (seats[index].getSeatId() > maxId) maxId = seats[index].getSeatId();
+            if (seats[index].getSeatId() > maxId) {
+                maxId = seats[index].getSeatId();
+            }
             index++;
         }
         return maxId;
@@ -923,8 +925,12 @@ public class Day05 {
         int maxId = Integer.MIN_VALUE;
         for (String seatString : INPUT_AS_SEAT_ARRAY) {
             seats[index] = Seat.fromString(seatString);
-            if (seats[index].getSeatId() < minId) minId = seats[index].getSeatId();
-            if (seats[index].getSeatId() > maxId) maxId = seats[index].getSeatId();
+            if (seats[index].getSeatId() < minId) {
+                minId = seats[index].getSeatId();
+            }
+            if (seats[index].getSeatId() > maxId) {
+                maxId = seats[index].getSeatId();
+            }
             seatMap.put(seats[index].getSeatId(), seats[index]);
             index++;
         }

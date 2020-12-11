@@ -223,7 +223,9 @@ public class Day07 {
 
     private static Worker getFirstFreeWorker(List<Worker> workers, int globalSeconds) {
         for (Worker worker : workers) {
-            if (!worker.isStillWorking(globalSeconds)) return worker;
+            if (!worker.isStillWorking(globalSeconds)) {
+                return worker;
+            }
         }
         return null;
     }
@@ -278,21 +280,31 @@ public class Day07 {
 
     private static boolean canBeDone(Conditions conditions, List<Character> done, List<Character> inProgress, char c) {
         // Not an allowed step
-        if (!conditions.possibleSteps.contains(c)) return false;
+        if (!conditions.possibleSteps.contains(c)) {
+            return false;
+        }
 
         // Has been done already
-        if (done.contains(c)) return false;
+        if (done.contains(c)) {
+            return false;
+        }
 
         // Is already being done by someone
-        if (inProgress.contains(c)) return false;
+        if (inProgress.contains(c)) {
+            return false;
+        }
 
         // Step does not have any conditions, so can be done at any time
-        if (conditions.conditions.get(c) == null) return true;
+        if (conditions.conditions.get(c) == null) {
+            return true;
+        }
 
         // Check if all preconditions have been met already
         List<Character> necessarySteps = conditions.conditions.get(c);
         for (Character necessaryStep : necessarySteps) {
-            if (!done.contains(necessaryStep)) return false;
+            if (!done.contains(necessaryStep)) {
+                return false;
+            }
         }
         return true;
     }

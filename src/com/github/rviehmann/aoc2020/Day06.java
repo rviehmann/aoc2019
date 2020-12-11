@@ -2202,7 +2202,9 @@ public class Day06 {
             Set<Character> questionsEveryone = new HashSet<>();
 
             for (char c : entry.toCharArray()) {
-                if (((Character) c).toString().matches("[a-z]")) questionsAnyone.add(c);
+                if (((Character) c).toString().matches("[a-z]")) {
+                    questionsAnyone.add(c);
+                }
             }
 
             String[] inputLines = entry.split("\\R");
@@ -2212,7 +2214,9 @@ public class Day06 {
                 if (index == 0) {
                     for (char c : line.toCharArray()) {
                         // Add all at first
-                        if (((Character) c).toString().matches("[a-z]")) questionsEveryone.add(c);
+                        if (((Character) c).toString().matches("[a-z]")) {
+                            questionsEveryone.add(c);
+                        }
                     }
                 } else {
                     questionsEveryone.removeIf(c -> !line.matches(".*" + c + ".*"));

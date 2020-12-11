@@ -14,7 +14,9 @@ public class Day05 {
         String newState;
         while (true) {
             newState = doOneReductionRound(currentState);
-            if (newState.equals(currentState)) break;
+            if (newState.equals(currentState)) {
+                break;
+            }
             currentState = newState;
         }
         System.out.println("doAllReductionRounds: Output has length: " + newState.length());
@@ -29,8 +31,12 @@ public class Day05 {
             if (areOpposites(current, next)) {
                 // Skip over this one and the next one
                 StringBuilder output = new StringBuilder();
-                if (i > 0) output.append(input.substring(0, i));
-                if (i < input.length() - 2) output.append(input.substring(i + 2));
+                if (i > 0) {
+                    output.append(input.substring(0, i));
+                }
+                if (i < input.length() - 2) {
+                    output.append(input.substring(i + 2));
+                }
                 return output.toString();
             }
         }
@@ -63,10 +69,12 @@ public class Day05 {
         int shortest = Integer.MAX_VALUE;
         for (char c = 'a'; c <= 'z'; c++) {
             String input = INPUT.replace(String.valueOf(c), "")
-                    .replace(String.valueOf(c).toUpperCase(), "");
+                                .replace(String.valueOf(c).toUpperCase(), "");
             String result = doAllReductionRounds(input);
             int length = result.length();
-            if (length < shortest) shortest = length;
+            if (length < shortest) {
+                shortest = length;
+            }
         }
         return shortest;
     }

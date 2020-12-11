@@ -1395,8 +1395,12 @@ public class Day03 {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
             Claim claim = (Claim) o;
             return id == claim.id &&
                     x == claim.x &&
@@ -1424,7 +1428,9 @@ public class Day03 {
         }
         long count = 0;
         for (Map.Entry<Long, Integer> square : squares.entrySet()) {
-            if (square.getValue() > 1) count++;
+            if (square.getValue() > 1) {
+                count++;
+            }
         }
         return count;
     }

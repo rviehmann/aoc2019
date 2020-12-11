@@ -1040,7 +1040,9 @@ public class Day02 {
         public boolean isValid() {
             int counter = 0;
             for (char c : password.toCharArray()) {
-                if (c == character) counter++;
+                if (c == character) {
+                    counter++;
+                }
 
             }
             return counter >= min && counter <= max;
@@ -1088,7 +1090,9 @@ public class Day02 {
         int counter = 0;
         for (String entry : INPUT) {
             PasswordEntryPuzzle1 passwordEntryPuzzle1 = PasswordEntryPuzzle1.fromString(entry);
-            if (passwordEntryPuzzle1.isValid()) counter++;
+            if (passwordEntryPuzzle1.isValid()) {
+                counter++;
+            }
         }
         return counter;
     }
@@ -1097,7 +1101,9 @@ public class Day02 {
         int counter = 0;
         for (String entry : INPUT) {
             PasswordEntryPuzzle2 passwordEntryPuzzle2 = PasswordEntryPuzzle2.fromString(entry);
-            if (passwordEntryPuzzle2.isValid()) counter++;
+            if (passwordEntryPuzzle2.isValid()) {
+                counter++;
+            }
         }
         return counter;
     }

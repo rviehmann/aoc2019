@@ -280,7 +280,9 @@ public class Day02 {
 
         public boolean hasLetterNTimes(int n) {
             for (Map.Entry<Character, Integer> entry : charcount.entrySet()) {
-                if (entry.getValue() == n) return true;
+                if (entry.getValue() == n) {
+                    return true;
+                }
             }
             return false;
         }
@@ -292,7 +294,9 @@ public class Day02 {
         }
         long differences = 0;
         for (int i = 0; i < str1.length(); i++) {
-            if (str1.charAt(i) != str2.charAt(i)) differences++;
+            if (str1.charAt(i) != str2.charAt(i)) {
+                differences++;
+            }
         }
         return differences;
     }
@@ -303,7 +307,9 @@ public class Day02 {
         }
         StringBuilder output = new StringBuilder();
         for (int i = 0; i < str1.length(); i++) {
-            if (str1.charAt(i) == str2.charAt(i)) output.append(str1.charAt(i));
+            if (str1.charAt(i) == str2.charAt(i)) {
+                output.append(str1.charAt(i));
+            }
         }
         return output.toString();
     }
@@ -313,8 +319,12 @@ public class Day02 {
         long idsWithTripleLetters = 0;
         for (String line : INPUT_AS_LINE_ARRAY) {
             BoxId boxId = BoxId.fromString(line);
-            if (boxId.hasLetterNTimes(2)) idsWithDoubleLetters++;
-            if (boxId.hasLetterNTimes(3)) idsWithTripleLetters++;
+            if (boxId.hasLetterNTimes(2)) {
+                idsWithDoubleLetters++;
+            }
+            if (boxId.hasLetterNTimes(3)) {
+                idsWithTripleLetters++;
+            }
         }
         return idsWithDoubleLetters * idsWithTripleLetters;
     }

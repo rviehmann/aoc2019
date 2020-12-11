@@ -1236,43 +1236,67 @@ public class Day04 {
                 int numeric;
                 switch (name) {
                     case "byr":
-                        if (!value.matches("^\\d{4}$")) return false;
+                        if (!value.matches("^\\d{4}$")) {
+                            return false;
+                        }
                         numeric = Integer.parseInt(value);
-                        if (numeric < 1920 || numeric > 2002) return false;
+                        if (numeric < 1920 || numeric > 2002) {
+                            return false;
+                        }
                         break;
                     case "iyr":
-                        if (!value.matches("^\\d{4}$")) return false;
+                        if (!value.matches("^\\d{4}$")) {
+                            return false;
+                        }
                         numeric = Integer.parseInt(value);
-                        if (numeric < 2010 || numeric > 2020) return false;
+                        if (numeric < 2010 || numeric > 2020) {
+                            return false;
+                        }
                         break;
                     case "eyr":
-                        if (!value.matches("^\\d{4}$")) return false;
+                        if (!value.matches("^\\d{4}$")) {
+                            return false;
+                        }
                         numeric = Integer.parseInt(value);
-                        if (numeric < 2020 || numeric > 2030) return false;
+                        if (numeric < 2020 || numeric > 2030) {
+                            return false;
+                        }
                         break;
                     case "hgt":
                         String regex = "^(\\d+)(cm|in)$";
                         Pattern pattern = Pattern.compile(regex);
                         Matcher matcher = pattern.matcher(value);
-                        if (!matcher.matches()) return false;
+                        if (!matcher.matches()) {
+                            return false;
+                        }
                         int height = Integer.parseInt(matcher.group(1));
                         String unit = matcher.group(2);
                         if (unit.equals("cm")) {
-                            if (height < 150 || height > 193) return false;
+                            if (height < 150 || height > 193) {
+                                return false;
+                            }
                         } else if (unit.equals("in")) {
-                            if (height < 59 || height > 76) return false;
+                            if (height < 59 || height > 76) {
+                                return false;
+                            }
                         } else {
                             throw new IllegalArgumentException("Unit not understood: \"" + unit + "\"");
                         }
                         break;
                     case "hcl":
-                        if (!value.matches("^#[0-9a-f]{6}$")) return false;
+                        if (!value.matches("^#[0-9a-f]{6}$")) {
+                            return false;
+                        }
                         break;
                     case "ecl":
-                        if (!value.matches("^(amb|blu|brn|gry|grn|hzl|oth)$")) return false;
+                        if (!value.matches("^(amb|blu|brn|gry|grn|hzl|oth)$")) {
+                            return false;
+                        }
                         break;
                     case "pid":
-                        if (!value.matches("^\\d{9}$")) return false;
+                        if (!value.matches("^\\d{9}$")) {
+                            return false;
+                        }
                         break;
                 }
             }
@@ -1286,7 +1310,9 @@ public class Day04 {
         int valid = 0;
         for (String passportString : INPUT_AS_PASSPORT_ARRAY) {
             passports[index] = Passport.fromString(passportString);
-            if (passports[index].isValidForPuzzle1()) valid++;
+            if (passports[index].isValidForPuzzle1()) {
+                valid++;
+            }
             index++;
         }
         return valid;
@@ -1298,7 +1324,9 @@ public class Day04 {
         int valid = 0;
         for (String passportString : INPUT_AS_PASSPORT_ARRAY) {
             passports[index] = Passport.fromString(passportString);
-            if (passports[index].isValidForPuzzle2()) valid++;
+            if (passports[index].isValidForPuzzle2()) {
+                valid++;
+            }
             index++;
         }
         return valid;
