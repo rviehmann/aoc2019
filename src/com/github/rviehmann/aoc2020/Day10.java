@@ -159,7 +159,9 @@ public class Day10 {
     private static final String[] EXAMPLE2_AS_ARRAY = EXAMPLE2.split("\\R");
     private static final String[] INPUT_AS_ARRAY = INPUT.split("\\R");
 
-    private static long calculateDifferences(String[] input) {
+    private static long calculateDifferences(String[] input, boolean returnNumCombinations) {
+        System.out.println("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*");
+
         long[] numbers = new long[input.length];
         for (int i = 0; i < input.length; i++) {
             numbers[i] = Long.parseLong(input[i]);
@@ -168,6 +170,9 @@ public class Day10 {
 
         long count1 = 0;
         long count3 = 0;
+        long lengthOf1Series = 0;
+        long numCombinations = 1;
+
         for (int i = 0; i <= input.length; i++) {
             long me;
             long next;
@@ -188,31 +193,57 @@ public class Day10 {
             switch ((int) diff) {
                 case 1:
                     count1++;
+                    lengthOf1Series++;
                     break;
                 case 3:
                     count3++;
+                    if (lengthOf1Series > 0) {
+                        // System.out.println("LengthOf1Series: " + lengthOf1Series);
+                        long value = 1;
+                        switch ((int) lengthOf1Series) {
+                            case 1:
+                                value = 1;
+                                break;
+                            case 2:
+                                value = 2;
+                                break;
+                            case 3:
+                                value = 4;
+                                break;
+                            case 4:
+                                value = 7;
+                                break;
+                            default:
+                                throw new IllegalStateException("LengthOf1Series not supported: " + lengthOf1Series);
+                        }
+                        numCombinations *= value;
+                    }
+                    lengthOf1Series = 0;
                     break;
                 default:
                     throw new IllegalStateException("Difference other than one and three detected: " + diff);
             }
         }
+
         System.out.println("Diff 1: " + count1);
         System.out.println("Diff 3: " + count3);
-        return count1 * count3;
+        System.out.println("NumCombinations: " + numCombinations);
+        System.out.println("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*");
+
+        return returnNumCombinations ? numCombinations : count1 * count3;
     }
 
     public static void testWithExamplesForPuzzle1() {
         System.out.println("### Day 10: Examples for puzzle 1 ###");
-        calculateDifferences(EXAMPLE1_AS_ARRAY);
-        calculateDifferences(EXAMPLE2_AS_ARRAY);
+        calculateDifferences(EXAMPLE1_AS_ARRAY, false);
+        calculateDifferences(EXAMPLE2_AS_ARRAY, false);
     }
 
     public static long doPuzzle1() {
-        return calculateDifferences(INPUT_AS_ARRAY);
+        return calculateDifferences(INPUT_AS_ARRAY, false);
     }
 
     public static long doPuzzle2() {
-        //todo
-        return 0;
+        return calculateDifferences(INPUT_AS_ARRAY, true);
     }
 }
