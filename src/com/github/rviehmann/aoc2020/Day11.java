@@ -111,20 +111,21 @@ public class Day11 {
     private static final String[] EXAMPLE1_AS_ARRAY = EXAMPLE1.split("\\R");
     private static final String[] INPUT_AS_ARRAY = INPUT.split("\\R");
 
-    private static String[] deriveNextState(String[] currentState) {
+    private static String[] deriveNextState(String[] currentState, boolean simpleRules) {
+        int treshold = simpleRules ? 4 : 5;
         String[] nextState = new String[currentState.length];
         for (int row = 0; row < currentState.length; row++) {
             StringBuilder sb = new StringBuilder();
             for (int column = 0; column < currentState[0].length(); column++) {
                 char myself = currentState[row].charAt(column);
-                int numNeighbors = numNeighbors(currentState, column, row);
+                int numNeighbors = numNeighbors(currentState, column, row, simpleRules);
                 char next;
                 switch (myself) {
                     case '.': // Floor
                         next = myself;
                         break;
                     case '#': // Occupied
-                        next = numNeighbors >= 4 ? 'L' : '#';
+                        next = numNeighbors >= treshold ? 'L' : '#';
                         break;
                     case 'L': // Empty
                         next = numNeighbors == 0 ? '#' : 'L';
@@ -139,7 +140,7 @@ public class Day11 {
         return nextState;
     }
 
-    private static int numNeighbors(String[] currentState, int x, int y) {
+    private static int numNeighbors(String[] currentState, int x, int y, boolean simpleRules) {
         int numNeighbors = 0;
         for (int column = x - 1; column <= x + 1; column++) {
             for (int row = y - 1; row <= y + 1; row++) {
@@ -191,6 +192,10 @@ public class Day11 {
         return currentState[y].charAt(x);
     }
 
+    private static boolean placeExists(String[] currentState, int x, int y) {
+        return !(x < 0 || y < 0 || x >= currentState[0].length() || y >= currentState.length);
+    }
+
     private static void printState(String[] currentState) {
         System.out.println("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*");
         for (int row = 0; row < currentState.length; row++) {
@@ -205,7 +210,22 @@ public class Day11 {
         String[] currentState = EXAMPLE1_AS_ARRAY;
         printState(currentState);
         while (true) {
-            String[] nextState = deriveNextState(currentState);
+            String[] nextState = deriveNextState(currentState, true);
+            printState(nextState);
+            if (isUnchanged(currentState, nextState)) {
+                System.out.println("NumOccupiedSeats: " + numOccupiedSeats(nextState));
+                return;
+            }
+            currentState = nextState;
+        }
+    }
+
+    public static void testWithExamplesForPuzzle2() {
+        System.out.println("### Day 11: Examples for puzzle 2 ###");
+        String[] currentState = EXAMPLE1_AS_ARRAY;
+        printState(currentState);
+        while (true) {
+            String[] nextState = deriveNextState(currentState, false);
             printState(nextState);
             if (isUnchanged(currentState, nextState)) {
                 System.out.println("NumOccupiedSeats: " + numOccupiedSeats(nextState));
@@ -219,7 +239,7 @@ public class Day11 {
         String[] currentState = INPUT_AS_ARRAY;
         printState(currentState);
         while (true) {
-            String[] nextState = deriveNextState(currentState);
+            String[] nextState = deriveNextState(currentState, true);
             printState(nextState);
             if (isUnchanged(currentState, nextState)) {
                 System.out.println("NumOccupiedSeats: " + numOccupiedSeats(nextState));
