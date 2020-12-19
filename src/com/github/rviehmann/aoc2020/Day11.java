@@ -141,7 +141,12 @@ public class Day11 {
     }
 
     private static int numNeighbors(String[] currentState, int x, int y, boolean simpleRules) {
+        return simpleRules ? numNeighborsSimple(currentState, x, y) : numNeighborsNonSimple(currentState, x, y);
+    }
+
+    private static int numNeighborsSimple(String[] currentState, int x, int y) {
         int numNeighbors = 0;
+
         for (int column = x - 1; column <= x + 1; column++) {
             for (int row = y - 1; row <= y + 1; row++) {
                 char c = charInPos(currentState, column, row);
@@ -152,6 +157,38 @@ public class Day11 {
                 }
             }
         }
+
+        return numNeighbors;
+    }
+
+    private static int numNeighborsNonSimple(String[] currentState, int x, int y) {
+        int numNeighbors = 0;
+
+        for (int xIncrement = -1; xIncrement <= 1; xIncrement++) {
+            for (int yIncrement = -1; yIncrement <= 1; yIncrement++) {
+                if (xIncrement != 0 || yIncrement != 0) {
+                    int distance = 1;
+                    while (true) {
+                        int column = x + (xIncrement * distance);
+                        int row = y + (yIncrement * distance);
+
+                        if (!placeExists(currentState, column, row)) {
+                            break;
+                        }
+                        char c = charInPos(currentState, column, row);
+                        if (c == '#') { // Occupied
+                            numNeighbors++;
+                        }
+                        if (c != '.') { // Not floor (but seat)
+                            break;
+                        }
+
+                        distance++;
+                    }
+                }
+            }
+        }
+
         return numNeighbors;
     }
 
@@ -237,10 +274,10 @@ public class Day11 {
 
     public static long doPuzzle1() {
         String[] currentState = INPUT_AS_ARRAY;
-        printState(currentState);
+        // printState(currentState);
         while (true) {
             String[] nextState = deriveNextState(currentState, true);
-            printState(nextState);
+            // printState(nextState);
             if (isUnchanged(currentState, nextState)) {
                 System.out.println("NumOccupiedSeats: " + numOccupiedSeats(nextState));
                 return numOccupiedSeats(nextState);
@@ -250,7 +287,16 @@ public class Day11 {
     }
 
     public static long doPuzzle2() {
-        // todo
-        return 0;
+        String[] currentState = INPUT_AS_ARRAY;
+        // printState(currentState);
+        while (true) {
+            String[] nextState = deriveNextState(currentState, false);
+            // printState(nextState);
+            if (isUnchanged(currentState, nextState)) {
+                System.out.println("NumOccupiedSeats: " + numOccupiedSeats(nextState));
+                return numOccupiedSeats(nextState);
+            }
+            currentState = nextState;
+        }
     }
 }
