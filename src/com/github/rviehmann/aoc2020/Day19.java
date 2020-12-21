@@ -1,5 +1,9 @@
 package com.github.rviehmann.aoc2020;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Pattern;
+
 public class Day19 {
 
     // From: https://adventofcode.com/2020/day/19/input
@@ -593,13 +597,60 @@ public class Day19 {
     private static final String[] MESSAGES_AS_LINE_ARRAY = MESSAGES.split("\\R");
 
     private static String transformRulesIntoRegex(String[] rules) {
-        StringBuilder regex = new StringBuilder();
+        Map<Integer, String> ruleMap = new HashMap<>();
+        for (String rule : rules) {
+            String[] ruleParts = rule.split(":");
+            Integer ruleNr = Integer.parseInt(ruleParts[0].trim());
+            ruleMap.put(ruleNr, ruleParts[1].trim());
+        }
 
+        // 0 is the root of all rules
+        return getRegexForRule(ruleMap, 0);
+    }
+
+    private static String getRegexForRule(Map<Integer, String> ruleMap, int rule) {
+        String ruleStr = ruleMap.get(rule);
+        if (ruleStr.matches("^\".*\"$")) {
+            return ruleStr.replace("\"", "");
+        }
+
+        String[] ruleParts = ruleStr.split("\\|");
+        boolean firstPart = true;
+        StringBuilder regex = new StringBuilder();
+        regex.append("(");
+
+        for (String rulePart : ruleParts) {
+            if (!firstPart) {
+                regex.append("|");
+            }
+
+            rulePart = rulePart.trim();
+            String[] numbers = rulePart.split("\\s+");
+            for (String number : numbers) {
+                regex.append(getRegexForRule(ruleMap, Integer.parseInt(number)));
+            }
+
+            firstPart = false;
+        }
+
+        regex.append(")");
         return regex.toString();
     }
 
     public static void testWithExamplesForPuzzle1() {
         System.out.println("### Day 19: Examples for puzzle 1 ###");
         System.out.println("Generated regex for rules: " + transformRulesIntoRegex(RULES_AS_LINE_ARRAY));
+    }
+
+    public static long doPuzzle1() {
+        String regex = "^" + transformRulesIntoRegex(RULES_AS_LINE_ARRAY) + "$";
+        Pattern pattern = Pattern.compile(regex);
+        long accu = 0;
+        for (String message : MESSAGES_AS_LINE_ARRAY) {
+            if (pattern.matcher(message).matches()) {
+                accu++;
+            }
+        }
+        return accu;
     }
 }
