@@ -1,0 +1,75 @@
+options {
+  STATIC = false;
+}
+
+PARSER_BEGIN(Calculate)
+package com.github.rviehmann.aoc2020.Day18Part2;
+
+public class Calculate {
+    public static void main(String[] args)
+            throws ParseException, TokenMgrError {
+        Calculate calculate = new Calculate(System.in);
+        System.out.println(calculate.Line());
+    }
+}
+PARSER_END(Calculate)
+
+SKIP : { " " }
+TOKEN : { < PLUS : "+" > }
+TOKEN : { < STAR : "*" > }
+TOKEN : { < OPEN_PAR : "(" > }
+TOKEN : { < CLOSE_PAR : ")" > }
+TOKEN : { < NUMBER : (["0"-"9"])+ > }
+
+long Line() throws NumberFormatException:
+{
+  long value;
+}
+{
+  value = Expression()
+  <EOF>
+  { return value;}
+}
+
+long Expression() throws NumberFormatException:
+{
+  long i;
+  long value;
+}
+{
+  value = Sum()
+  (
+    <STAR>
+    i = Sum()
+    { value *= i; }
+  )*
+  { return value;}
+}
+
+long Sum() throws NumberFormatException:
+{
+  long i;
+  long value;
+}
+{
+  value = Primary()
+  (
+    <PLUS>
+    i = Primary()
+    { value += i; }
+  )*
+  { return value;}
+}
+
+long Primary() throws NumberFormatException:
+{
+  Token t;
+  long i;
+}
+{
+  t = <NUMBER>
+  { return Long.parseLong(t.image); }
+|
+  <OPEN_PAR> i = Expression() <CLOSE_PAR>
+  { return i; }
+}
