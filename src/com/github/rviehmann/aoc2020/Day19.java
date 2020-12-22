@@ -596,19 +596,55 @@ public class Day19 {
     private static final String[] RULES_AS_LINE_ARRAY = RULES.split("\\R");
     private static final String[] MESSAGES_AS_LINE_ARRAY = MESSAGES.split("\\R");
 
-    private static String transformRulesIntoRegex(String[] rules) {
+    private static String transformRulesIntoRegex(String[] rules, int root, boolean specialHandlingForPart2) {
         Map<Integer, String> ruleMap = new HashMap<>();
         for (String rule : rules) {
             String[] ruleParts = rule.split(":");
             Integer ruleNr = Integer.parseInt(ruleParts[0].trim());
             ruleMap.put(ruleNr, ruleParts[1].trim());
         }
-
-        // 0 is the root of all rules
-        return getRegexForRule(ruleMap, 0);
+        return getRegexForRule(ruleMap, root, specialHandlingForPart2);
     }
 
-    private static String getRegexForRule(Map<Integer, String> ruleMap, int rule) {
+    private static String getRegexForRule(Map<Integer, String> ruleMap, int rule, boolean specialHandlingForPart2) {
+        if (specialHandlingForPart2) {
+            String rule42 = getRegexForRule(ruleMap, 42, false);
+            String rule31 = getRegexForRule(ruleMap, 31, false);
+
+            // The spec says: "you only need to handle the rules you have", so this is quite hackish.
+            if (rule == 8) {
+                // 8: 42 | 42 8
+                return rule42 + "+";
+            } else if (rule == 11) {
+                // 11: 42 31 | 42 11 31
+
+                // Here, we have the problem that we have rule 42 n times, followed by rule 31 n times (n is of course the same value for both, and >= 1).
+                // The trouble is that regular expressions are not really powerful enough for this.
+                // But since this does not have to be a perfect solution, only good enough for our limited set of input strings, and we don't have absurdly large strings, we can build a wild hack.
+
+                boolean firstPart = true;
+                StringBuilder regex = new StringBuilder();
+                regex.append("(");
+
+                // 25 is quite arbitrary here, it only has to be big enough for our input strings.
+                for (int n = 1; n <= 25; n++) {
+                    if (!firstPart) {
+                        regex.append("|");
+                    }
+                    for (int i = 0; i < n; i++) {
+                        regex.append(rule42);
+                    }
+                    for (int i = 0; i < n; i++) {
+                        regex.append(rule31);
+                    }
+                    firstPart = false;
+                }
+
+                regex.append(")");
+                return regex.toString();
+            }
+        }
+
         String ruleStr = ruleMap.get(rule);
         if (ruleStr.matches("^\".*\"$")) {
             return ruleStr.replace("\"", "");
@@ -627,7 +663,7 @@ public class Day19 {
             rulePart = rulePart.trim();
             String[] numbers = rulePart.split("\\s+");
             for (String number : numbers) {
-                regex.append(getRegexForRule(ruleMap, Integer.parseInt(number)));
+                regex.append(getRegexForRule(ruleMap, Integer.parseInt(number), specialHandlingForPart2));
             }
 
             firstPart = false;
@@ -639,11 +675,34 @@ public class Day19 {
 
     public static void testWithExamplesForPuzzle1() {
         System.out.println("### Day 19: Examples for puzzle 1 ###");
-        System.out.println("Generated regex for rules: " + transformRulesIntoRegex(RULES_AS_LINE_ARRAY));
+        // 0 is the root of all rules
+        System.out.println("Generated regex for rule 0: " + transformRulesIntoRegex(RULES_AS_LINE_ARRAY, 0, false));
+    }
+
+    public static void testWithExamplesForPuzzle2() {
+        System.out.println("### Day 19: Examples for puzzle 2 ###");
+        // 0 is the root of all rules
+        System.out.println("Generated regex for rule 0: " + transformRulesIntoRegex(RULES_AS_LINE_ARRAY, 0, true));
+        System.out.println("Generated regex for rule 42: " + transformRulesIntoRegex(RULES_AS_LINE_ARRAY, 42, true));
+        System.out.println("Generated regex for rule 31: " + transformRulesIntoRegex(RULES_AS_LINE_ARRAY, 31, true));
     }
 
     public static long doPuzzle1() {
-        String regex = "^" + transformRulesIntoRegex(RULES_AS_LINE_ARRAY) + "$";
+        // 0 is the root of all rules
+        String regex = "^" + transformRulesIntoRegex(RULES_AS_LINE_ARRAY, 0, false) + "$";
+        Pattern pattern = Pattern.compile(regex);
+        long accu = 0;
+        for (String message : MESSAGES_AS_LINE_ARRAY) {
+            if (pattern.matcher(message).matches()) {
+                accu++;
+            }
+        }
+        return accu;
+    }
+
+    public static long doPuzzle2() {
+        // 0 is the root of all rules
+        String regex = "^" + transformRulesIntoRegex(RULES_AS_LINE_ARRAY, 0, true) + "$";
         Pattern pattern = Pattern.compile(regex);
         long accu = 0;
         for (String message : MESSAGES_AS_LINE_ARRAY) {
