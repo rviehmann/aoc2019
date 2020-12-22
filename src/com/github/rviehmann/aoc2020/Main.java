@@ -46,5 +46,17 @@ public class Main {
         System.out.println("### Solutions ###");
         System.out.println("Day 11, puzzle 1: " + Day11.doPuzzle1());
         System.out.println("Day 11, puzzle 2: " + Day11.doPuzzle2());
+
+        Day18.testWithExamplesForPuzzle1();
+        Day18.testWithExamplesForPuzzle2();
+        System.out.println("### Solutions ###");
+        System.out.println("Day 18, puzzle 1: " + Day18.doPuzzle1());
+        System.out.println("Day 18, puzzle 2: " + Day18.doPuzzle2());
+
+        Day19.testWithExamplesForPuzzle1();
+        Day19.testWithExamplesForPuzzle2();
+        System.out.println("### Solutions ###");
+        System.out.println("Day 19, puzzle 1: " + Day19.doPuzzle1());
+        System.out.println("Day 19, puzzle 2: " + Day19.doPuzzle2());
     }
 }
