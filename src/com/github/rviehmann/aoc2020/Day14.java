@@ -555,10 +555,10 @@ public class Day14 {
     private static final String[] EXAMPLE1_AS_ARRAY = EXAMPLE1.split("\\R");
     private static final String[] INPUT_AS_ARRAY = INPUT.split("\\R");
 
-    private static final String REGEX_MASK = "^mask = (.+)$";
+    private static final String REGEX_MASK = "^mask = ([01X]{36})$";
     private static final Pattern PATTERN_MASK = Pattern.compile(REGEX_MASK);
 
-    private static final String REGEX_MEM = "^mem\\[(.+)] = (.+)$";
+    private static final String REGEX_MEM = "^mem\\[([0-9]+)] = ([0-9]+)$";
     private static final Pattern PATTERN_MEM = Pattern.compile(REGEX_MEM);
 
     private static final long ALL_POSSIBLE_BITS = (2L << 36L) - 1;
