@@ -595,8 +595,8 @@ public class Day14 {
         }
     }
 
-    private static Map<Integer, Long> interpret(String[] commands) {
-        Map<Integer, Long> ram = new HashMap<>();
+    private static Map<Long, Long> interpret(String[] commands) {
+        Map<Long, Long> ram = new HashMap<>();
         Mask currentMask = new Mask(0, 0);
 
         for (String command : commands) {
@@ -606,10 +606,11 @@ public class Day14 {
             if (maskMatch.matches()) {
                 currentMask = Mask.fromString(maskMatch.group(1));
             } else if (memMatch.matches()) {
-                int address = Integer.parseInt(memMatch.group(1));
+                long address = Long.parseLong(memMatch.group(1));
                 long value = Long.parseLong(memMatch.group(2));
                 value = currentMask.applyTo(value);
                 // Make sure that only the lowest 36 bits are set
+                address = address & ALL_POSSIBLE_BITS;
                 value = value & ALL_POSSIBLE_BITS;
                 ram.put(address, value);
             } else {
@@ -619,9 +620,9 @@ public class Day14 {
         return ram;
     }
 
-    private static long sumAllRamCells(Map<Integer, Long> ram) {
+    private static long sumAllRamCells(Map<Long, Long> ram) {
         long accu = 0;
-        for (Map.Entry<Integer, Long> entry : ram.entrySet()) {
+        for (Map.Entry<Long, Long> entry : ram.entrySet()) {
             accu += entry.getValue();
         }
         return accu;
@@ -629,12 +630,12 @@ public class Day14 {
 
     public static void testWithExamplesForPuzzle1() {
         System.out.println("### Day 14: Examples for puzzle 1 ###");
-        Map<Integer, Long> ram = interpret(EXAMPLE1_AS_ARRAY);
+        Map<Long, Long> ram = interpret(EXAMPLE1_AS_ARRAY);
         System.out.println("Sum of all RAM cells in example 1: " + sumAllRamCells(ram));
     }
 
     public static long doPuzzle1() {
-        Map<Integer, Long> ram = interpret(INPUT_AS_ARRAY);
+        Map<Long, Long> ram = interpret(INPUT_AS_ARRAY);
         return sumAllRamCells(ram);
     }
 }
