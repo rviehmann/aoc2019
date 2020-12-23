@@ -591,7 +591,7 @@ public class Day14 {
         }
 
         public long applyTo(long input) {
-            return input | ones & ~zeroes;
+            return (input | ones) & (~zeroes);
         }
     }
 
