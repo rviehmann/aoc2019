@@ -7,8 +7,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static java.lang.Long.bitCount;
-
 public class Day14 {
 
     private static final String EXAMPLE1 =
@@ -620,14 +618,11 @@ public class Day14 {
          */
         private final long floating;
 
-        private final int numFloatingBits;
-
         private final Long[] possibleValuesForFloating;
 
-        public MaskPuzzle2(long ones, long floating, int numFloatingBits, Long[] possibleValuesForFloating) {
+        public MaskPuzzle2(long ones, long floating, Long[] possibleValuesForFloating) {
             this.ones = ones;
             this.floating = floating;
-            this.numFloatingBits = numFloatingBits;
             this.possibleValuesForFloating = possibleValuesForFloating;
         }
 
@@ -638,9 +633,8 @@ public class Day14 {
             String floatingString = input.replace("1", "0")
                                          .replace("X", "1");
             long floating = Long.parseLong(floatingString, 2);
-            int numFloatingBits = bitCount(floating);
 
-            return new MaskPuzzle2(ones, floating, numFloatingBits, generatePossibleValuesForFloating(input));
+            return new MaskPuzzle2(ones, floating, generatePossibleValuesForFloating(input));
         }
 
         private static Long[] generatePossibleValuesForFloating(String input) {
@@ -703,7 +697,7 @@ public class Day14 {
 
     private static Map<Long, Long> interpretPuzzle2(String[] commands) {
         Map<Long, Long> ram = new HashMap<>();
-        MaskPuzzle2 currentMaskPuzzle2 = new MaskPuzzle2(0, 0, 0, new Long[0]);
+        MaskPuzzle2 currentMaskPuzzle2 = new MaskPuzzle2(0, 0, new Long[0]);
 
         for (String command : commands) {
             Matcher maskMatch = PATTERN_MASK.matcher(command);
