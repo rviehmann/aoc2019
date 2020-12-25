@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.lang.Long.bitCount;
+
 public class Day14 {
 
     private static final String EXAMPLE1 =
@@ -563,7 +565,7 @@ public class Day14 {
 
     private static final long ALL_POSSIBLE_BITS = (2L << 36L) - 1;
 
-    public static class Mask {
+    public static class MaskPuzzle1 {
 
         /**
          * Here, all bits are true where there are ones in the bitmask.
@@ -575,19 +577,21 @@ public class Day14 {
          */
         private final long zeroes;
 
-        public Mask(long ones, long zeroes) {
+        public MaskPuzzle1(long ones, long zeroes) {
             this.ones = ones;
             this.zeroes = zeroes;
         }
 
-        public static Mask fromString(String input) {
+        public static MaskPuzzle1 fromString(String input) {
             String onesString = input.replace("X", "0");
             long ones = Long.parseLong(onesString, 2);
+
             String zeroesString = input.replace("1", "X")
                                        .replace("0", "1")
                                        .replace("X", "0");
             long zeroes = Long.parseLong(zeroesString, 2);
-            return new Mask(ones, zeroes);
+
+            return new MaskPuzzle1(ones, zeroes);
         }
 
         public long applyTo(long input) {
@@ -595,24 +599,94 @@ public class Day14 {
         }
     }
 
-    private static Map<Long, Long> interpret(String[] commands) {
+    public static class MaskPuzzle2 {
+
+        /**
+         * Here, all bits are true where there are ones in the bitmask.
+         */
+        private final long ones;
+
+        /**
+         * Here, all bits are true where there are floating bits in the bitmask.
+         */
+        private final long floating;
+
+        private final int numFloatingBits;
+
+        public MaskPuzzle2(long ones, long floating, int numFloatingBits) {
+            this.ones = ones;
+            this.floating = floating;
+            this.numFloatingBits = numFloatingBits;
+        }
+
+        public static MaskPuzzle2 fromString(String input) {
+            String onesString = input.replace("X", "0");
+            long ones = Long.parseLong(onesString, 2);
+
+            String floatingString = input.replace("1", "0")
+                                         .replace("X", "1");
+            long floating = Long.parseLong(floatingString, 2);
+            int numFloatingBits = bitCount(floating);
+
+            return new MaskPuzzle2(ones, floating, numFloatingBits);
+        }
+
+        public long[] applyTo(long input) {
+            input = input | ones;
+            int combinations = (int) Math.pow(2, numFloatingBits);
+            long[] values = new long[combinations];
+            for (int i = 0; i < combinations; i++) {
+                // todo
+            }
+            return values;
+        }
+    }
+
+    private static Map<Long, Long> interpretPuzzle1(String[] commands) {
         Map<Long, Long> ram = new HashMap<>();
-        Mask currentMask = new Mask(0, 0);
+        MaskPuzzle1 currentMaskPuzzle1 = new MaskPuzzle1(0, 0);
 
         for (String command : commands) {
             Matcher maskMatch = PATTERN_MASK.matcher(command);
             Matcher memMatch = PATTERN_MEM.matcher(command);
 
             if (maskMatch.matches()) {
-                currentMask = Mask.fromString(maskMatch.group(1));
+                currentMaskPuzzle1 = MaskPuzzle1.fromString(maskMatch.group(1));
             } else if (memMatch.matches()) {
                 long address = Long.parseLong(memMatch.group(1));
-                long value = Long.parseLong(memMatch.group(2));
-                value = currentMask.applyTo(value);
+                long rawValue = Long.parseLong(memMatch.group(2));
                 // Make sure that only the lowest 36 bits are set
                 address = address & ALL_POSSIBLE_BITS;
-                value = value & ALL_POSSIBLE_BITS;
+                rawValue = rawValue & ALL_POSSIBLE_BITS;
+                long value = currentMaskPuzzle1.applyTo(rawValue);
                 ram.put(address, value);
+            } else {
+                throw new IllegalArgumentException("Command has unknown structure: '" + command + "'.");
+            }
+        }
+        return ram;
+    }
+
+    private static Map<Long, Long> interpretPuzzle2(String[] commands) {
+        Map<Long, Long> ram = new HashMap<>();
+        MaskPuzzle2 currentMaskPuzzle2 = new MaskPuzzle2(0, 0, 0);
+
+        for (String command : commands) {
+            Matcher maskMatch = PATTERN_MASK.matcher(command);
+            Matcher memMatch = PATTERN_MEM.matcher(command);
+
+            if (maskMatch.matches()) {
+                currentMaskPuzzle2 = MaskPuzzle2.fromString(maskMatch.group(1));
+            } else if (memMatch.matches()) {
+                long rawAddress = Long.parseLong(memMatch.group(1));
+                long value = Long.parseLong(memMatch.group(2));
+                // Make sure that only the lowest 36 bits are set
+                rawAddress = rawAddress & ALL_POSSIBLE_BITS;
+                value = value & ALL_POSSIBLE_BITS;
+                long[] adresses = currentMaskPuzzle2.applyTo(rawAddress);
+                for (long address : adresses) {
+                    ram.put(address, value);
+                }
             } else {
                 throw new IllegalArgumentException("Command has unknown structure: '" + command + "'.");
             }
@@ -630,12 +704,17 @@ public class Day14 {
 
     public static void testWithExamplesForPuzzle1() {
         System.out.println("### Day 14: Examples for puzzle 1 ###");
-        Map<Long, Long> ram = interpret(EXAMPLE1_AS_ARRAY);
+        Map<Long, Long> ram = interpretPuzzle1(EXAMPLE1_AS_ARRAY);
         System.out.println("Sum of all RAM cells in example 1: " + sumAllRamCells(ram));
     }
 
     public static long doPuzzle1() {
-        Map<Long, Long> ram = interpret(INPUT_AS_ARRAY);
+        Map<Long, Long> ram = interpretPuzzle1(INPUT_AS_ARRAY);
+        return sumAllRamCells(ram);
+    }
+
+    public static long doPuzzle2() {
+        Map<Long, Long> ram = interpretPuzzle2(INPUT_AS_ARRAY);
         return sumAllRamCells(ram);
     }
 }
