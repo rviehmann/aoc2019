@@ -1,7 +1,9 @@
 package com.github.rviehmann.aoc2020;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,6 +16,12 @@ public class Day14 {
                     "mem[8] = 11\n" +
                     "mem[7] = 101\n" +
                     "mem[8] = 0";
+
+    private static final String EXAMPLE2 =
+            "mask = 000000000000000000000000000000X1001X\n" +
+                    "mem[42] = 100\n" +
+                    "mask = 00000000000000000000000000000000X0XX\n" +
+                    "mem[26] = 1";
 
     // From: https://adventofcode.com/2020/day/14/input
     private static final String INPUT =
@@ -555,6 +563,7 @@ public class Day14 {
                     "mem[64209] = 73142089";
 
     private static final String[] EXAMPLE1_AS_ARRAY = EXAMPLE1.split("\\R");
+    private static final String[] EXAMPLE2_AS_ARRAY = EXAMPLE2.split("\\R");
     private static final String[] INPUT_AS_ARRAY = INPUT.split("\\R");
 
     private static final String REGEX_MASK = "^mask = ([01X]{36})$";
@@ -613,10 +622,13 @@ public class Day14 {
 
         private final int numFloatingBits;
 
-        public MaskPuzzle2(long ones, long floating, int numFloatingBits) {
+        private final Long[] possibleValuesForFloating;
+
+        public MaskPuzzle2(long ones, long floating, int numFloatingBits, Long[] possibleValuesForFloating) {
             this.ones = ones;
             this.floating = floating;
             this.numFloatingBits = numFloatingBits;
+            this.possibleValuesForFloating = possibleValuesForFloating;
         }
 
         public static MaskPuzzle2 fromString(String input) {
@@ -628,17 +640,39 @@ public class Day14 {
             long floating = Long.parseLong(floatingString, 2);
             int numFloatingBits = bitCount(floating);
 
-            return new MaskPuzzle2(ones, floating, numFloatingBits);
+            return new MaskPuzzle2(ones, floating, numFloatingBits, generatePossibleValuesForFloating(input));
         }
 
-        public long[] applyTo(long input) {
-            input = input | ones;
-            int combinations = (int) Math.pow(2, numFloatingBits);
-            long[] values = new long[combinations];
-            for (int i = 0; i < combinations; i++) {
-                // todo
+        private static Long[] generatePossibleValuesForFloating(String input) {
+            input = input.replace("1", "0");
+            Set<Long> values = new HashSet<>();
+            addAllPossibleValuesForFloatingToSet(values, input);
+            return values.toArray(new Long[0]);
+        }
+
+        private static void addAllPossibleValuesForFloatingToSet(Set<Long> values, String input) {
+            if (!input.matches("^[01X]{36}$")) {
+                throw new IllegalArgumentException("Input has unknown structure: '" + input + "'.");
             }
-            return values;
+            if (!input.contains("X")) {
+                values.add(Long.parseLong(input, 2));
+            } else {
+                int pos = input.indexOf("X");
+                String before = input.substring(0, pos);
+                String after = input.substring(pos + 1);
+                addAllPossibleValuesForFloatingToSet(values, before + "0" + after);
+                addAllPossibleValuesForFloatingToSet(values, before + "1" + after);
+            }
+        }
+
+        public Long[] applyTo(long input) {
+            input = input | ones;
+            Set<Long> values = new HashSet<>();
+            for (long l : possibleValuesForFloating) {
+                long tmpVal = l | (input & (~floating));
+                values.add(tmpVal);
+            }
+            return values.toArray(new Long[0]);
         }
     }
 
@@ -669,7 +703,7 @@ public class Day14 {
 
     private static Map<Long, Long> interpretPuzzle2(String[] commands) {
         Map<Long, Long> ram = new HashMap<>();
-        MaskPuzzle2 currentMaskPuzzle2 = new MaskPuzzle2(0, 0, 0);
+        MaskPuzzle2 currentMaskPuzzle2 = new MaskPuzzle2(0, 0, 0, new Long[0]);
 
         for (String command : commands) {
             Matcher maskMatch = PATTERN_MASK.matcher(command);
@@ -683,8 +717,8 @@ public class Day14 {
                 // Make sure that only the lowest 36 bits are set
                 rawAddress = rawAddress & ALL_POSSIBLE_BITS;
                 value = value & ALL_POSSIBLE_BITS;
-                long[] adresses = currentMaskPuzzle2.applyTo(rawAddress);
-                for (long address : adresses) {
+                Long[] adresses = currentMaskPuzzle2.applyTo(rawAddress);
+                for (Long address : adresses) {
                     ram.put(address, value);
                 }
             } else {
@@ -706,6 +740,12 @@ public class Day14 {
         System.out.println("### Day 14: Examples for puzzle 1 ###");
         Map<Long, Long> ram = interpretPuzzle1(EXAMPLE1_AS_ARRAY);
         System.out.println("Sum of all RAM cells in example 1: " + sumAllRamCells(ram));
+    }
+
+    public static void testWithExamplesForPuzzle2() {
+        System.out.println("### Day 14: Examples for puzzle 2 ###");
+        Map<Long, Long> ram = interpretPuzzle2(EXAMPLE2_AS_ARRAY);
+        System.out.println("Sum of all RAM cells in example 2: " + sumAllRamCells(ram));
     }
 
     public static long doPuzzle1() {
