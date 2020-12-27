@@ -60,8 +60,10 @@ public class Main {
         System.out.println("Day 14, puzzle 2: " + Day14.doPuzzle2());
 
         Day15.testWithExamplesForPuzzle1();
+        // Day15.testWithExamplesForPuzzle2();
         System.out.println("### Solutions ###");
         System.out.println("Day 15, puzzle 1: " + Day15.doPuzzle1());
+        System.out.println("Day 15, puzzle 2: " + Day15.doPuzzle2());
 
         System.out.println("### Solutions ###");
         System.out.println("Day 17, puzzle 1: " + Day17.doPuzzle1());
