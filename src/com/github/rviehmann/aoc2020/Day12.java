@@ -775,7 +775,7 @@ public class Day12 {
     private static final String[] EXAMPLE1_AS_ARRAY = EXAMPLE1.split("\\R");
     private static final String[] INPUT_AS_ARRAY = INPUT.split("\\R");
 
-    public static class Ship {
+    public static class ShipPuzzle1 {
         /**
          * Increases to the East, decreases to the West.
          */
@@ -859,20 +859,114 @@ public class Day12 {
         }
     }
 
+    public static class ShipPuzzle2 {
+        /**
+         * Increases to the East, decreases to the West.
+         */
+        long posX = 0;
+
+        /**
+         * Increases to the South, decreases to the North.
+         */
+        long posY = 0;
+
+        /**
+         * The waypoint starts 10 units east and 1 unit north relative to the ship.
+         */
+        long waypointX = 10;
+
+        /**
+         * The waypoint starts 10 units east and 1 unit north relative to the ship.
+         */
+        long waypointY = -1;
+
+        public long manhattanDistance() {
+            return Math.abs(posX) + Math.abs(posY);
+        }
+
+        public void navigateOneStep(String step) {
+            char command = step.charAt(0);
+            long value = Long.parseLong(step.substring(1));
+            long rotations;
+            long tmpWaypointVar;
+
+            switch (command) {
+                case 'N':
+                    waypointY -= value;
+                    break;
+
+                case 'S':
+                    waypointY += value;
+                    break;
+
+                case 'E':
+                    waypointX += value;
+                    break;
+
+                case 'W':
+                    waypointX -= value;
+                    break;
+
+                case 'L':
+                    rotations = value / 90;
+                    for (int i = 0; i < rotations; i++) {
+                        tmpWaypointVar = waypointX;
+                        waypointX = waypointY;
+                        waypointY = -tmpWaypointVar;
+                    }
+                    break;
+
+                case 'R':
+                    rotations = value / 90;
+                    for (int i = 0; i < rotations; i++) {
+                        tmpWaypointVar = waypointY;
+                        waypointY = waypointX;
+                        waypointX = -tmpWaypointVar;
+                    }
+                    break;
+
+                case 'F':
+                    posX += (waypointX * value);
+                    posY += (waypointY * value);
+                    break;
+
+                default:
+                    throw new IllegalArgumentException("Command not recognized: " + command);
+            }
+        }
+    }
+
     public static void testWithExamplesForPuzzle1() {
         System.out.println("### Day 12: Examples for puzzle 1 ###");
-        Ship ship = new Ship();
+        ShipPuzzle1 shipPuzzle1 = new ShipPuzzle1();
         for (String step : EXAMPLE1_AS_ARRAY) {
-            ship.navigateOneStep(step);
+            shipPuzzle1.navigateOneStep(step);
         }
-        System.out.println("Manhattan distance in example 1: " + ship.manhattanDistance());
+        System.out.println("Manhattan distance in example 1: " + shipPuzzle1.manhattanDistance());
+    }
+
+    public static void testWithExamplesForPuzzle2() {
+        System.out.println("### Day 12: Examples for puzzle 2 ###");
+        ShipPuzzle2 shipPuzzle2 = new ShipPuzzle2();
+        for (String step : EXAMPLE1_AS_ARRAY) {
+            shipPuzzle2.navigateOneStep(step);
+        }
+        System.out.println("Manhattan distance in example 2: " + shipPuzzle2.manhattanDistance());
     }
 
     public static long doPuzzle1() {
-        Ship ship = new Ship();
+        ShipPuzzle1 shipPuzzle1 = new ShipPuzzle1();
         for (String step : INPUT_AS_ARRAY) {
-            ship.navigateOneStep(step);
+            shipPuzzle1.navigateOneStep(step);
         }
-        return ship.manhattanDistance();
+        return shipPuzzle1.manhattanDistance();
+    }
+
+    public static long doPuzzle2() {
+        ShipPuzzle2 shipPuzzle2 = new ShipPuzzle2();
+        for (String step : INPUT_AS_ARRAY) {
+            shipPuzzle2.navigateOneStep(step);
+        }
+        return shipPuzzle2.manhattanDistance();
     }
 }
