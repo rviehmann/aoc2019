@@ -676,15 +676,15 @@ public class Day19 {
     public static void testWithExamplesForPuzzle1() {
         System.out.println("### Day 19: Examples for puzzle 1 ###");
         // 0 is the root of all rules
-        System.out.println("Generated regex for rule 0: " + transformRulesIntoRegex(RULES_AS_LINE_ARRAY, 0, false));
+        // System.out.println("Generated regex for rule 0: " + transformRulesIntoRegex(RULES_AS_LINE_ARRAY, 0, false));
     }
 
     public static void testWithExamplesForPuzzle2() {
         System.out.println("### Day 19: Examples for puzzle 2 ###");
         // 0 is the root of all rules
-        System.out.println("Generated regex for rule 0: " + transformRulesIntoRegex(RULES_AS_LINE_ARRAY, 0, true));
-        System.out.println("Generated regex for rule 42: " + transformRulesIntoRegex(RULES_AS_LINE_ARRAY, 42, true));
-        System.out.println("Generated regex for rule 31: " + transformRulesIntoRegex(RULES_AS_LINE_ARRAY, 31, true));
+        // System.out.println("Generated regex for rule 0: " + transformRulesIntoRegex(RULES_AS_LINE_ARRAY, 0, true));
+        // System.out.println("Generated regex for rule 42: " + transformRulesIntoRegex(RULES_AS_LINE_ARRAY, 42, true));
+        // System.out.println("Generated regex for rule 31: " + transformRulesIntoRegex(RULES_AS_LINE_ARRAY, 31, true));
     }
 
     public static long doPuzzle1() {
