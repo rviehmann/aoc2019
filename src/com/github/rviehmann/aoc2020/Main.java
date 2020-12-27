@@ -47,6 +47,22 @@ public class Main {
         System.out.println("Day 11, puzzle 1: " + Day11.doPuzzle1());
         System.out.println("Day 11, puzzle 2: " + Day11.doPuzzle2());
 
+        Day12.testWithExamplesForPuzzle1();
+        Day12.testWithExamplesForPuzzle2();
+        System.out.println("### Solutions ###");
+        System.out.println("Day 12, puzzle 1: " + Day12.doPuzzle1());
+        System.out.println("Day 12, puzzle 2: " + Day12.doPuzzle2());
+
+        Day14.testWithExamplesForPuzzle1();
+        Day14.testWithExamplesForPuzzle2();
+        System.out.println("### Solutions ###");
+        System.out.println("Day 14, puzzle 1: " + Day14.doPuzzle1());
+        System.out.println("Day 14, puzzle 2: " + Day14.doPuzzle2());
+
+        System.out.println("### Solutions ###");
+        System.out.println("Day 17, puzzle 1: " + Day17.doPuzzle1());
+        System.out.println("Day 17, puzzle 2: " + Day17.doPuzzle2());
+
         Day18.testWithExamplesForPuzzle1();
         Day18.testWithExamplesForPuzzle2();
         System.out.println("### Solutions ###");
@@ -58,5 +74,9 @@ public class Main {
         System.out.println("### Solutions ###");
         System.out.println("Day 19, puzzle 1: " + Day19.doPuzzle1());
         System.out.println("Day 19, puzzle 2: " + Day19.doPuzzle2());
+
+        Day25.testWithExamplesForPuzzle1();
+        System.out.println("### Solutions ###");
+        System.out.println("Day 25, puzzle 1: " + Day25.doPuzzle1());
     }
 }
