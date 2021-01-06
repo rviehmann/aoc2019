@@ -53,6 +53,11 @@ public class Main {
         System.out.println("Day 12, puzzle 1: " + Day12.doPuzzle1());
         System.out.println("Day 12, puzzle 2: " + Day12.doPuzzle2());
 
+        Day13.testWithExamplesForPuzzle1();
+        System.out.println("### Solutions ###");
+        System.out.println("Day 13, puzzle 1: " + Day13.doPuzzle1());
+
+        /*
         Day14.testWithExamplesForPuzzle1();
         Day14.testWithExamplesForPuzzle2();
         System.out.println("### Solutions ###");
@@ -84,5 +89,6 @@ public class Main {
         Day25.testWithExamplesForPuzzle1();
         System.out.println("### Solutions ###");
         System.out.println("Day 25, puzzle 1: " + Day25.doPuzzle1());
+        */
     }
 }
