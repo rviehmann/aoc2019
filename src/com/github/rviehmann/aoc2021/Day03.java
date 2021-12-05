@@ -1,8 +1,26 @@
 package com.github.rviehmann.aoc2021;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static java.lang.Long.parseLong;
 
 public class Day03 {
+
+    private static final String SAMPLE =
+            "00100\n" +
+                    "11110\n" +
+                    "10110\n" +
+                    "10111\n" +
+                    "10101\n" +
+                    "01111\n" +
+                    "00111\n" +
+                    "11100\n" +
+                    "10000\n" +
+                    "11001\n" +
+                    "00010\n" +
+                    "01010";
 
     // From: https://adventofcode.com/2021/day/3/input
     private static final String INPUT =
@@ -1007,26 +1025,78 @@ public class Day03 {
                     "001110001101\n" +
                     "111001101111\n";
 
+    private static final String[] SAMPLE_AS_LINE_ARRAY = SAMPLE.split("\\R");
+
     private static final String[] INPUT_AS_LINE_ARRAY = INPUT.split("\\R");
 
-    private static int getMostCommonValue(int pos) {
+    private static long puzzle2Logic(String[] input) {
+        long oxygen = 0;
+        long co2 = 0;
+        List<String> remainingForOxygen = Arrays.asList(input);
+        List<String> remainingForCo2 = Arrays.asList(input);
+
+        for (int pos = 0; pos < input[0].length(); pos++) {
+            int common = getMostCommonValue(input, pos);
+            if (common < 0) {
+                common = 1;
+            }
+            int finalPos = pos;
+            int finalCommon = common;
+            remainingForOxygen = remainingForOxygen.stream()
+                                                   .filter(value -> value.charAt(finalPos) == ('0' + finalCommon))
+                                                   .collect(Collectors.toList());
+
+            if (remainingForOxygen.size() == 1) {
+                oxygen = parseLong(remainingForOxygen.get(0), 2);
+            }
+
+            remainingForCo2 = remainingForCo2.stream()
+                                             .filter(value -> value.charAt(finalPos) != ('0' + finalCommon))
+                                             .collect(Collectors.toList());
+
+            if (remainingForCo2.size() == 1) {
+                co2 = parseLong(remainingForCo2.get(0), 2);
+            }
+
+            if (oxygen > 0 && co2 > 0) {
+                break;
+            }
+        }
+        System.out.println("Oxygen: " + oxygen);
+        System.out.println("CO2: " + co2);
+        return oxygen * co2;
+    }
+
+    private static int getMostCommonValue(String[] input, int pos) {
         long zeroes = 0;
         long ones = 0;
-        for (int i = 0; i < INPUT_AS_LINE_ARRAY.length; i++) {
-            if (INPUT_AS_LINE_ARRAY[i].charAt(pos) == '0') {
+        for (int i = 0; i < input.length; i++) {
+            if (input[i].charAt(pos) == '0') {
                 zeroes++;
             } else {
                 ones++;
             }
         }
+        if (zeroes == ones) {
+            return -1; // Equally common
+        }
         return zeroes > ones ? 0 : 1;
+    }
+
+    private static int getMostCommonValue(List<String> input, int pos) {
+        return getMostCommonValue(input.toArray(new String[0]), pos);
+    }
+
+    public static void testWithExamplesForPuzzle2() {
+        System.out.println("### Day 03: Examples for puzzle 2 ###");
+        puzzle2Logic(SAMPLE_AS_LINE_ARRAY);
     }
 
     public static long doPuzzle1() {
         StringBuilder gamma = new StringBuilder();
         StringBuilder epsilon = new StringBuilder();
         for (int pos = 0; pos < INPUT_AS_LINE_ARRAY[0].length(); pos++) {
-            switch (getMostCommonValue(pos)) {
+            switch (getMostCommonValue(INPUT_AS_LINE_ARRAY, pos)) {
                 case 0:
                     gamma.append("0");
                     epsilon.append("1");
@@ -1038,7 +1108,7 @@ public class Day03 {
                     break;
 
                 default:
-                    throw new IllegalArgumentException("getMostCommonValue is invalid: " + getMostCommonValue(pos));
+                    throw new IllegalArgumentException("getMostCommonValue is invalid: " + getMostCommonValue(INPUT_AS_LINE_ARRAY, pos));
             }
         }
         long gammaValue = parseLong(gamma.toString(), 2);
@@ -1047,7 +1117,6 @@ public class Day03 {
     }
 
     public static long doPuzzle2() {
-        // TODO
-        return 0;
+        return puzzle2Logic(INPUT_AS_LINE_ARRAY);
     }
 }
