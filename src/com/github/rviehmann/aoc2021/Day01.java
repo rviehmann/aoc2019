@@ -1,11 +1,11 @@
 package com.github.rviehmann.aoc2021;
 
-public class Day01 {
+import static java.lang.Long.parseLong;
 
+public class Day01 {
 
     // From: https://adventofcode.com/2021/day/1/input
     private static final String INPUT =
-
             "170\n" +
                     "176\n" +
                     "179\n" +
@@ -2007,8 +2007,38 @@ public class Day01 {
                     "7179\n" +
                     "7181\n";
 
-
     private static final String[] INPUT_AS_LINE_ARRAY = INPUT.split("\\R");
 
+    public static long doPuzzle1() {
+        long larger = 0;
+        for (int pos = 1; pos < INPUT_AS_LINE_ARRAY.length; pos++) {
+            long previous = parseLong(INPUT_AS_LINE_ARRAY[pos - 1]);
+            long current = parseLong(INPUT_AS_LINE_ARRAY[pos]);
 
+            if (current > previous) {
+                larger++;
+            }
+        }
+        return larger;
+    }
+
+    private static long getValueForWindow(int lowestPos) {
+        return parseLong(INPUT_AS_LINE_ARRAY[lowestPos])
+                + parseLong(INPUT_AS_LINE_ARRAY[lowestPos + 1])
+                + parseLong(INPUT_AS_LINE_ARRAY[lowestPos + 2]);
+    }
+
+    public static long doPuzzle2() {
+        long larger = 0;
+        for (int pos = 3; pos < INPUT_AS_LINE_ARRAY.length; pos++) {
+            long previous = getValueForWindow(pos - 3);
+            long current = getValueForWindow(pos - 2);
+
+            if (current > previous) {
+                larger++;
+            }
+        }
+
+        return larger;
+    }
 }
