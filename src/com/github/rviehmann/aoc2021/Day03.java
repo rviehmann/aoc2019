@@ -1036,24 +1036,31 @@ public class Day03 {
         List<String> remainingForCo2 = Arrays.asList(input);
 
         for (int pos = 0; pos < input[0].length(); pos++) {
-            int common = getMostCommonValue(input, pos);
-            if (common < 0) {
-                common = 1;
-            }
             int finalPos = pos;
-            int finalCommon = common;
-            remainingForOxygen = remainingForOxygen.stream()
-                                                   .filter(value -> value.charAt(finalPos) == ('0' + finalCommon))
-                                                   .collect(Collectors.toList());
 
+            int commonForOxygen = getMostCommonValue(remainingForOxygen, pos);
+            if (commonForOxygen < 0) {
+                commonForOxygen = 1;
+            }
+
+            int commonForCo2 = getMostCommonValue(remainingForCo2, pos);
+            if (commonForCo2 < 0) {
+                commonForCo2 = 1;
+            }
+
+            int finalCommonForOxygen = commonForOxygen;
+            int finalCommonForCo2 = commonForCo2;
+
+            remainingForOxygen = remainingForOxygen.stream()
+                                                   .filter(value -> value.charAt(finalPos) == ('0' + finalCommonForOxygen))
+                                                   .collect(Collectors.toList());
             if (remainingForOxygen.size() == 1) {
                 oxygen = parseLong(remainingForOxygen.get(0), 2);
             }
 
             remainingForCo2 = remainingForCo2.stream()
-                                             .filter(value -> value.charAt(finalPos) != ('0' + finalCommon))
+                                             .filter(value -> value.charAt(finalPos) != ('0' + finalCommonForCo2))
                                              .collect(Collectors.toList());
-
             if (remainingForCo2.size() == 1) {
                 co2 = parseLong(remainingForCo2.get(0), 2);
             }
