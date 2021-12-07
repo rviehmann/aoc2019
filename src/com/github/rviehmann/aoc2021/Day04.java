@@ -732,7 +732,38 @@ public class Day04 {
                 }
             }
         }
-        throw new IllegalArgumentException("Sequence of numbers did not yield a winning sequence.");
+        throw new IllegalArgumentException("Sequence of numbers did not yield a winning board.");
+    }
+
+    private static long generateFinalScoreForPuzzle2(long[] numbers, String boards) {
+        String[] boardsAsStrings = boards.split("\\R\\R");
+        List<Board> boardList = Arrays.stream(boardsAsStrings)
+                                      .map(Board::new)
+                                      .collect(Collectors.toList());
+
+        Board lastToWin = null;
+        long lastNumber = -1;
+
+        for (long number : numbers) {
+            for (Board board : boardList) {
+                if (!board.hasWon()) {
+                    board.mark(number);
+                    if (board.hasWon()) {
+                        lastToWin = board;
+                        lastNumber = number;
+                    }
+                }
+            }
+        }
+
+        if (lastToWin == null) {
+            throw new IllegalArgumentException("Sequence of numbers did not yield a winning board.");
+        }
+
+        long sumAllUnmarked = lastToWin.sumAllUnmarked();
+        System.out.println("sumAllUnmarked: " + sumAllUnmarked);
+        System.out.println("Number called: " + lastNumber);
+        return sumAllUnmarked * lastNumber;
     }
 
     public static void testWithExamplesForPuzzle1() {
@@ -740,7 +771,16 @@ public class Day04 {
         System.out.println("Final score: " + generateFinalScoreForPuzzle1(SAMPLE_NUMBERS, SAMPLE_BOARDS));
     }
 
+    public static void testWithExamplesForPuzzle2() {
+        System.out.println("### Day 04: Examples for puzzle 2 ###");
+        System.out.println("Final score: " + generateFinalScoreForPuzzle2(SAMPLE_NUMBERS, SAMPLE_BOARDS));
+    }
+
     public static long doPuzzle1() {
         return generateFinalScoreForPuzzle1(INPUT_NUMBERS, INPUT_BOARDS);
+    }
+
+    public static long doPuzzle2() {
+        return generateFinalScoreForPuzzle2(INPUT_NUMBERS, INPUT_BOARDS);
     }
 }
