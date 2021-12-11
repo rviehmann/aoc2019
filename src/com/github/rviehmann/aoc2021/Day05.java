@@ -526,41 +526,77 @@ public class Day05 {
 
     private static final int FIELD_SIZE = 1000;
 
-    private static long countOverlappingPointsForPuzzle1(String[] vectors) {
+    private static long countOverlappingPoints(String[] vectors, boolean considerDiagonals, boolean printField) {
         int[][] field = new int[FIELD_SIZE][FIELD_SIZE];
+        int maxX = 0;
+        int maxY = 0;
         String regex = "([0-9]+),([0-9]+) -> ([0-9]+),([0-9]+)";
         Pattern pattern = Pattern.compile(regex);
 
         for (String vector : vectors) {
             Matcher matcher = pattern.matcher(vector);
             matcher.find();
-
             int x1 = Integer.parseInt(matcher.group(1));
             int y1 = Integer.parseInt(matcher.group(2));
             int x2 = Integer.parseInt(matcher.group(3));
             int y2 = Integer.parseInt(matcher.group(4));
-            for (int x = x1; x <= x2; x++) {
-                for (int y = y1; y <= y2; y++) {
-                    field[x][y]++;
+            boolean isHorizontalOrVertical = isHorizontalOrVertical(x1, y1, x2, y2);
+            if (printField) {
+                System.out.println(x1 + "|" + y1 + " -> " + x2 + "|" + y2 + " -> " + isHorizontalOrVertical);
+            }
+            if (considerDiagonals || isHorizontalOrVertical) {
+                for (int y = Math.min(y1, y2); y <= Math.max(y1, y2); y++) {
+                    for (int x = Math.min(x1, x2); x <= Math.max(x1, x2); x++) {
+                        if (isHorizontalOrVertical) {
+                            field[x][y]++;
+                        } else {
+                            int diffX = x - Math.min(x1, x2);
+                            int diffY = y - Math.min(y1, y2);
+                            if (diffX == diffY) {
+                                field[x][y]++;
+                            }
+                        }
+                        if (x > maxX) {
+                            maxX = x;
+                        }
+                        if (y > maxY) {
+                            maxY = y;
+                        }
+                    }
                 }
             }
         }
 
         int counter = 0;
-        for (int x = 0; x < FIELD_SIZE; x++) {
-            for (int y = 0; y < FIELD_SIZE; y++) {
+        StringBuilder sb = new StringBuilder();
+        for (int y = 0; y <= maxY; y++) {
+            for (int x = 0; x <= maxX; x++) {
+                sb.append(field[x][y] > 0 ? Integer.toString(field[x][y]) : ".");
                 counter += (field[x][y] >= 2 ? 1 : 0);
             }
+            sb.append("\n");
+        }
+        if (printField) {
+            System.out.println(sb);
         }
         return counter;
     }
 
+    private static boolean isHorizontalOrVertical(int x1, int y1, int x2, int y2) {
+        return x1 == x2 || y1 == y2;
+    }
+
     public static void testWithExamplesForPuzzle1() {
         System.out.println("### Day 05: Examples for puzzle 1 ###");
-        System.out.println("Overlapping points: " + countOverlappingPointsForPuzzle1(SAMPLE_AS_LINE_ARRAY));
+        System.out.println("Overlapping points: " + countOverlappingPoints(SAMPLE_AS_LINE_ARRAY, false, true));
+    }
+
+    public static void testWithExamplesForPuzzle2() {
+        System.out.println("### Day 05: Examples for puzzle 2 ###");
+        System.out.println("Overlapping points: " + countOverlappingPoints(SAMPLE_AS_LINE_ARRAY, true, true));
     }
 
     public static long doPuzzle1() {
-        return countOverlappingPointsForPuzzle1(INPUT_AS_LINE_ARRAY);
+        return countOverlappingPoints(INPUT_AS_LINE_ARRAY, false, false);
     }
 }
