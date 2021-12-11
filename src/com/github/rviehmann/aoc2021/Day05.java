@@ -541,9 +541,14 @@ public class Day05 {
             int x2 = Integer.parseInt(matcher.group(3));
             int y2 = Integer.parseInt(matcher.group(4));
             boolean isHorizontalOrVertical = isHorizontalOrVertical(x1, y1, x2, y2);
+
             if (printField) {
                 System.out.println(x1 + "|" + y1 + " -> " + x2 + "|" + y2 + " -> " + isHorizontalOrVertical);
             }
+
+            maxX = Math.max(maxX, Math.max(x1, x2));
+            maxY = Math.max(maxY, Math.max(y1, y2));
+
             if (considerDiagonals || isHorizontalOrVertical) {
                 for (int y = Math.min(y1, y2); y <= Math.max(y1, y2); y++) {
                     for (int x = Math.min(x1, x2); x <= Math.max(x1, x2); x++) {
@@ -555,12 +560,6 @@ public class Day05 {
                             if (diffX == diffY) {
                                 field[x][y]++;
                             }
-                        }
-                        if (x > maxX) {
-                            maxX = x;
-                        }
-                        if (y > maxY) {
-                            maxY = y;
                         }
                     }
                 }
