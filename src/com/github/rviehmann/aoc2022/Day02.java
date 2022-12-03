@@ -2510,20 +2510,26 @@ public class Day02 {
     private static final long scoreForDraw = 3;
     private static final long scoreForLose = 0;
 
-    private static long calculateScoreForRound(String round) {
+    private static long calculateScoreForRoundPart1(String round) {
         // The first column is what your opponent is going to play: A for Rock, B for Paper, and C for Scissors.
         // The second column, you reason, must be what you should play in response: X for Rock, Y for Paper, and Z for Scissors.
         // The score for a single round is the score for the shape you selected (1 for Rock, 2 for Paper, and 3 for Scissors)
         // plus the score for the outcome of the round (0 if you lost, 3 if the round was a draw, and 6 if you won).
-        long scoreForShape = round.toCharArray()[2] - 'X' + 1;
-        long scoreForOutcome = calculateScoreForOutcome(round);
+        long scoreForMyShape = round.toCharArray()[2] - 'X' + 1;
+        long scoreForOutcome = calculateScoreForOutcomePart1(round);
 
-        // System.out.println("Round: " + round + " yields scoreForShape: " + scoreForShape + ", scoreForOutcome: " + scoreForOutcome);
+        // System.out.println("Round: " + round + " yields scoreForMyShape: " + scoreForMyShape + ", scoreForOutcome: " + scoreForOutcome);
 
-        return scoreForShape + scoreForOutcome;
+        return scoreForMyShape + scoreForOutcome;
     }
 
-    private static long calculateScoreForOutcome(String round) {
+    private static long calculateScoreForRoundPart2(String round) {
+        long scoreForMyShape = calculateMyShapePart2(round) - 'X' + 1;
+        long scoreForOutcome = (round.toCharArray()[2] - 'X') * 3;
+        return scoreForMyShape + scoreForOutcome;
+    }
+
+    private static long calculateScoreForOutcomePart1(String round) {
         switch (round) {
             case "A X": /*Same*/
                 return scoreForDraw;
@@ -2551,16 +2557,47 @@ public class Day02 {
         }
     }
 
+    private static char calculateMyShapePart2(String round) {
+        switch (round) {
+            case "A X": /*I lose*/
+                return 'Z';
+            case "A Y": /*draw*/
+                return 'X';
+            case "A Z": /*I win*/
+                return 'Y';
+
+            case "B X": /*I lose*/
+                return 'X';
+            case "B Y": /*draw*/
+                return 'Y';
+            case "B Z": /*I win*/
+                return 'Z';
+
+            case "C X": /*I lose*/
+                return 'Y';
+            case "C Y": /*draw*/
+                return 'Z';
+            case "C Z": /*I win*/
+                return 'X';
+
+            default:
+                throw new IllegalArgumentException("Invalid round: " + round);
+        }
+    }
+
     public static long doPuzzle1() {
         long sum = 0;
         for (String round : INPUT_AS_LINE_ARRAY) {
-            sum += calculateScoreForRound(round);
+            sum += calculateScoreForRoundPart1(round);
         }
         return sum;
     }
 
     public static long doPuzzle2() {
-        //TODO
-        return 0;
+        long sum = 0;
+        for (String round : INPUT_AS_LINE_ARRAY) {
+            sum += calculateScoreForRoundPart2(round);
+        }
+        return sum;
     }
 }
