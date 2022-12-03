@@ -33,5 +33,8 @@ public class Main {
         System.out.println("### Solutions ###");
         System.out.println("Day 08, puzzle 1: " + Day08.doPuzzle1());
         System.out.println("Day 08, puzzle 2: " + Day08.doPuzzle2());
+
+        System.out.println("### Solutions ###");
+        System.out.println("Day 11, puzzle 1: " + Day11.doPuzzle1());
     }
 }
