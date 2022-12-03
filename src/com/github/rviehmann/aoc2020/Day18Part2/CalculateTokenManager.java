@@ -281,7 +281,6 @@ public class CalculateTokenManager implements CalculateConstants {
 
     public void ReInit(SimpleCharStream stream) {
 
-
         jjmatchedPos =
                 jjnewStateCnt =
                         0;
@@ -316,7 +315,6 @@ public class CalculateTokenManager implements CalculateConstants {
             curLexState = lexState;
         }
     }
-
 
     /**
      * Lexer state names.

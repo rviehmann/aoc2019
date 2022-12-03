@@ -62,7 +62,6 @@ public class ParseException extends Exception {
         super(message);
     }
 
-
     /**
      * This is the last token that has been consumed successfully.  If
      * this object has been created due to a parse error, the token
@@ -130,7 +129,6 @@ public class ParseException extends Exception {
         }
         retval += "." + EOL;
 
-
         if (expectedTokenSequences.length == 0) {
             // Nothing to add here
         } else {
@@ -144,7 +142,6 @@ public class ParseException extends Exception {
 
         return retval;
     }
-
 
     /**
      * Used to convert raw characters to their escaped version

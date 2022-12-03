@@ -262,7 +262,6 @@ public class Calculate implements CalculateConstants {
         throw generateParseException();
     }
 
-
     /**
      * Get the next Token.
      */

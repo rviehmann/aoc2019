@@ -321,7 +321,6 @@ public class Calculator3 implements Calculator3Constants {
         throw generateParseException();
     }
 
-
     /**
      * Get the next Token.
      */
