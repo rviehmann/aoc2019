@@ -2,7 +2,7 @@ package com.github.rviehmann.aoc2018;
 
 public class Day11 {
 
-    private static final int gridSerialNumber = 8772;
+    private static final int GRID_SERIAL_NUMBER = 8772;
 
     private static int[][] calculateCells() {
         int[][] cells = new int[300][300];
@@ -15,7 +15,7 @@ public class Day11 {
     }
 
     private static int calculateCell(int x, int y) {
-        int power = (((x + 10) * y) + gridSerialNumber) * (x + 10);
+        int power = (((x + 10) * y) + GRID_SERIAL_NUMBER) * (x + 10);
         int hundrets = (power / 100) % 10;
         return hundrets - 5;
     }

@@ -2506,9 +2506,9 @@ public class Day02 {
                     "A Y\n";
 
     private static final String[] INPUT_AS_LINE_ARRAY = INPUT.split("\\R");
-    private static final long scoreForWin = 6;
-    private static final long scoreForDraw = 3;
-    private static final long scoreForLose = 0;
+    private static final long SCORE_FOR_WIN = 6;
+    private static final long SCORE_FOR_DRAW = 3;
+    private static final long SCORE_FOR_LOSE = 0;
 
     private static long calculateScoreForRoundPart1(String round) {
         // The first column is what your opponent is going to play: A for Rock, B for Paper, and C for Scissors.
@@ -2532,25 +2532,25 @@ public class Day02 {
     private static long calculateScoreForOutcomePart1(String round) {
         switch (round) {
             case "A X": /*Same*/
-                return scoreForDraw;
+                return SCORE_FOR_DRAW;
             case "A Y": /*Opponent: Rock, me: Paper*/
-                return scoreForWin;
+                return SCORE_FOR_WIN;
             case "A Z": /*Opponent: Rock, me: Scissors*/
-                return scoreForLose;
+                return SCORE_FOR_LOSE;
 
             case "B X": /*Opponent: Paper, me: Rock*/
-                return scoreForLose;
+                return SCORE_FOR_LOSE;
             case "B Y": /*Same*/
-                return scoreForDraw;
+                return SCORE_FOR_DRAW;
             case "B Z": /*Opponent: Paper, me: Scissors*/
-                return scoreForWin;
+                return SCORE_FOR_WIN;
 
             case "C X": /*Opponent: Scissors, me: Rock*/
-                return scoreForWin;
+                return SCORE_FOR_WIN;
             case "C Y": /*Opponent: Scissors, me: Paper*/
-                return scoreForLose;
+                return SCORE_FOR_LOSE;
             case "C Z": /*Same*/
-                return scoreForDraw;
+                return SCORE_FOR_DRAW;
 
             default:
                 throw new IllegalArgumentException("Invalid round: " + round);

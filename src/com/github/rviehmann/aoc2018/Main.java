@@ -37,5 +37,9 @@ public class Main {
         System.out.println("### Solutions ###");
         System.out.println("Day 11, puzzle 1: " + Day11.doPuzzle1());
         System.out.println("Day 11, puzzle 2: " + Day11.doPuzzle2());
+
+        Day12.testWithExamplesForPuzzle1();
+        System.out.println("### Solutions ###");
+        System.out.println("Day 12, puzzle 1: " + Day12.doPuzzle1());
     }
 }
