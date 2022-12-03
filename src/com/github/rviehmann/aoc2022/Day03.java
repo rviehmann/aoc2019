@@ -1,5 +1,8 @@
 package com.github.rviehmann.aoc2022;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Day03 {
 
     // From: https://adventofcode.com/2022/day/3/input
@@ -343,10 +346,49 @@ public class Day03 {
         throw new IllegalArgumentException("Invalid item: " + item);
     }
 
+    private static List<String[]> getGroups(String[] rucksacks) {
+        List<String[]> groups = new ArrayList<>();
+        for (int i = 0; i < rucksacks.length; i += 3) {
+            groups.add(new String[]{
+                    rucksacks[i],
+                    rucksacks[i + 1],
+                    rucksacks[i + 2]
+            });
+        }
+        return groups;
+    }
+
+    private static char getCommonItem(String[] group) {
+        for (char itemInFirst : group[0].toCharArray()) {
+            if (contains(group[1].toCharArray(), itemInFirst) && contains(group[2].toCharArray(), itemInFirst)) {
+                return itemInFirst;
+            }
+        }
+        throw new IllegalArgumentException("Could not find common item.");
+    }
+
+    private static boolean contains(char[] haystack, char needle) {
+        for (char item : haystack) {
+            if (item == needle) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static long doPuzzle1() {
         long sum = 0;
         for (String rucksack : INPUT_AS_LINE_ARRAY) {
             sum += getPriority(getDuplicatedItem(getCompartments(rucksack)));
+        }
+        return sum;
+    }
+
+    public static long doPuzzle2() {
+        List<String[]> groups = getGroups(INPUT_AS_LINE_ARRAY);
+        long sum = 0;
+        for (String[] group : groups) {
+            sum += getPriority(getCommonItem(group));
         }
         return sum;
     }

@@ -13,5 +13,6 @@ public class Main {
 
         System.out.println("### Solutions ###");
         System.out.println("Day 03, puzzle 1: " + Day03.doPuzzle1());
+        System.out.println("Day 03, puzzle 2: " + Day03.doPuzzle2());
     }
 }
