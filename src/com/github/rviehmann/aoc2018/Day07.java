@@ -275,7 +275,7 @@ public class Day07 {
             sb.append("\t\t");
         }
         done.forEach(sb::append);
-        System.out.println(sb.toString());
+        System.out.println(sb);
     }
 
     private static boolean canBeDone(Conditions conditions, List<Character> done, List<Character> inProgress, char c) {

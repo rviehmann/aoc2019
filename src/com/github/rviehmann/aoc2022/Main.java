@@ -6,5 +6,9 @@ public class Main {
         System.out.println("### Solutions ###");
         System.out.println("Day 01, puzzle 1: " + Day01.doPuzzle1());
         System.out.println("Day 01, puzzle 2: " + Day01.doPuzzle2());
+
+        System.out.println("### Solutions ###");
+        System.out.println("Day 02, puzzle 1: " + Day02.doPuzzle1());
+        System.out.println("Day 02, puzzle 2: " + Day02.doPuzzle2());
     }
 }
