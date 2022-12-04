@@ -46,5 +46,6 @@ public class Main {
         Day16.testWithExamplesForPuzzle1();
         System.out.println("### Solutions ###");
         System.out.println("Day 16, puzzle 1: " + Day16.doPuzzle1());
+        System.out.println("Day 16, puzzle 2: " + Day16.doPuzzle2());
     }
 }
