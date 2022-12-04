@@ -1,5 +1,7 @@
 package com.github.rviehmann.aoc2019;
 
+import static java.lang.Integer.parseInt;
+
 public class Day04 {
 
     // From: https://adventofcode.com/2019/day/4
@@ -21,8 +23,8 @@ public class Day04 {
 
         boolean hasAdjacent = false;
         for (int i = 0; i < (asString.length() - 1); i++) {
-            int thisDigit = Integer.parseInt(asString.substring(i, i + 1));
-            int nextDigit = Integer.parseInt(asString.substring(i + 1, i + 2));
+            int thisDigit = parseInt(asString.substring(i, i + 1));
+            int nextDigit = parseInt(asString.substring(i + 1, i + 2));
             if (thisDigit == nextDigit) {
                 hasAdjacent = true;
                 break;
@@ -34,8 +36,8 @@ public class Day04 {
         }
 
         for (int i = 0; i < (asString.length() - 1); i++) {
-            int thisDigit = Integer.parseInt(asString.substring(i, i + 1));
-            int nextDigit = Integer.parseInt(asString.substring(i + 1, i + 2));
+            int thisDigit = parseInt(asString.substring(i, i + 1));
+            int nextDigit = parseInt(asString.substring(i + 1, i + 2));
             if (nextDigit < thisDigit) {
                 // System.out.println("Does have decreasing digits for: " + number + ", thisDigit: " + thisDigit + ", nextDigit: " + nextDigit);
                 return false;

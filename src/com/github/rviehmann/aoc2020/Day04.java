@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.lang.Integer.parseInt;
+
 public class Day04 {
 
     // From: https://adventofcode.com/2020/day/4/input
@@ -1239,7 +1241,7 @@ public class Day04 {
                         if (!value.matches("^\\d{4}$")) {
                             return false;
                         }
-                        numeric = Integer.parseInt(value);
+                        numeric = parseInt(value);
                         if (numeric < 1920 || numeric > 2002) {
                             return false;
                         }
@@ -1248,7 +1250,7 @@ public class Day04 {
                         if (!value.matches("^\\d{4}$")) {
                             return false;
                         }
-                        numeric = Integer.parseInt(value);
+                        numeric = parseInt(value);
                         if (numeric < 2010 || numeric > 2020) {
                             return false;
                         }
@@ -1257,7 +1259,7 @@ public class Day04 {
                         if (!value.matches("^\\d{4}$")) {
                             return false;
                         }
-                        numeric = Integer.parseInt(value);
+                        numeric = parseInt(value);
                         if (numeric < 2020 || numeric > 2030) {
                             return false;
                         }
@@ -1269,7 +1271,7 @@ public class Day04 {
                         if (!matcher.matches()) {
                             return false;
                         }
-                        int height = Integer.parseInt(matcher.group(1));
+                        int height = parseInt(matcher.group(1));
                         String unit = matcher.group(2);
                         if (unit.equals("cm")) {
                             if (height < 150 || height > 193) {

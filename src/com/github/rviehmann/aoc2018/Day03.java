@@ -8,6 +8,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.lang.Integer.parseInt;
+
 public class Day03 {
 
     // From: https://adventofcode.com/2018/day/3/input
@@ -1385,11 +1387,11 @@ public class Day03 {
             if (!matcher.matches()) {
                 throw new IllegalArgumentException("Input does not match pattern.");
             }
-            int id = Integer.parseInt(matcher.group(1));
-            int x = Integer.parseInt(matcher.group(2));
-            int y = Integer.parseInt(matcher.group(3));
-            int w = Integer.parseInt(matcher.group(4));
-            int h = Integer.parseInt(matcher.group(5));
+            int id = parseInt(matcher.group(1));
+            int x = parseInt(matcher.group(2));
+            int y = parseInt(matcher.group(3));
+            int w = parseInt(matcher.group(4));
+            int h = parseInt(matcher.group(5));
             return new Claim(id, x, y, w, h);
         }
 

@@ -3,6 +3,8 @@ package com.github.rviehmann.aoc2021;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.lang.Integer.parseInt;
+
 public class Day05 {
 
     private static final String SAMPLE =
@@ -536,10 +538,10 @@ public class Day05 {
         for (String vector : vectors) {
             Matcher matcher = pattern.matcher(vector);
             matcher.find();
-            int x1 = Integer.parseInt(matcher.group(1));
-            int y1 = Integer.parseInt(matcher.group(2));
-            int x2 = Integer.parseInt(matcher.group(3));
-            int y2 = Integer.parseInt(matcher.group(4));
+            int x1 = parseInt(matcher.group(1));
+            int y1 = parseInt(matcher.group(2));
+            int x2 = parseInt(matcher.group(3));
+            int y2 = parseInt(matcher.group(4));
             boolean isHorizontalOrVertical = isHorizontalOrVertical(x1, y1, x2, y2);
 
             if (printField) {

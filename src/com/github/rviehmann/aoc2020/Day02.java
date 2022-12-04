@@ -3,6 +3,8 @@ package com.github.rviehmann.aoc2020;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.lang.Integer.parseInt;
+
 public class Day02 {
 
     // From: https://adventofcode.com/2020/day/2/input
@@ -1030,8 +1032,8 @@ public class Day02 {
             if (!matcher.matches()) {
                 throw new IllegalArgumentException("Input does not match pattern.");
             }
-            int min = Integer.parseInt(matcher.group(1));
-            int max = Integer.parseInt(matcher.group(2));
+            int min = parseInt(matcher.group(1));
+            int max = parseInt(matcher.group(2));
             char character = matcher.group(3).charAt(0);
             String password = matcher.group(4);
             return new PasswordEntryPuzzle1(min, max, character, password);
@@ -1070,8 +1072,8 @@ public class Day02 {
             if (!matcher.matches()) {
                 throw new IllegalArgumentException("Input does not match pattern.");
             }
-            int pos1 = Integer.parseInt(matcher.group(1));
-            int pos2 = Integer.parseInt(matcher.group(2));
+            int pos1 = parseInt(matcher.group(1));
+            int pos2 = parseInt(matcher.group(2));
             char character = matcher.group(3).charAt(0);
             String password = matcher.group(4);
             return new PasswordEntryPuzzle2(pos1, pos2, character, password);
