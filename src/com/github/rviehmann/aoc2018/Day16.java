@@ -1,6 +1,10 @@
 package com.github.rviehmann.aoc2018;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Day16 {
 
@@ -4222,9 +4226,11 @@ public class Day16 {
         return new Command(parsed);
     }
 
-    private static Command decodeCommand(Command encodedCmd) {
-        //todo
-        return encodedCmd;
+    private static Command decodeCommand(Command encodedCmd, Map<Integer, Integer> mappings) {
+        if (mappings.containsKey(encodedCmd.opcode)) {
+            return new Command(mappings.get(encodedCmd.opcode), encodedCmd.A, encodedCmd.B, encodedCmd.C);
+        }
+        throw new IllegalArgumentException("Invalid encoded command: opcode=" + encodedCmd.opcode);
     }
 
     private static int[] execute(int[] before, Command cmd) {
@@ -4308,32 +4314,44 @@ public class Day16 {
         return after;
     }
 
-    private static int countPossibleOpcodes(String sample) {
+    private static int countPossibleOpcodes(String sample, Map<Integer, Integer> alreadyKnownMappings) {
+        return findPossibleOpcodes(sample, alreadyKnownMappings).size();
+    }
+
+    private static List<Integer> findPossibleOpcodes(String sample, Map<Integer, Integer> alreadyKnownMappings) {
         String[] lines = sample.split("\\R");
         int[] before = parseBeforeOrAfter(lines[0]);
         Command cmd = parseCommand(lines[1]);
-        int[] after = parseBeforeOrAfter(lines[2]);
 
-        int count = 0;
+        if (alreadyKnownMappings.containsKey(cmd.opcode)) {
+            // No need to brute force if we already know the mapping for this opcode.
+            return List.of(alreadyKnownMappings.get(cmd.opcode));
+        }
+
+        int[] after = parseBeforeOrAfter(lines[2]);
+        List<Integer> possibleOpcodes = new ArrayList<>();
         for (int opcode = 0; opcode <= 15; opcode++) {
-            Command cmdToExecute = new Command(opcode, cmd.A, cmd.B, cmd.C);
-            int[] result = execute(before, cmdToExecute);
-            if (Arrays.equals(result, after)) {
-                count++;
+            // If this opcode is already a known mapping target, we need to ignore it.
+            if (!alreadyKnownMappings.containsValue(opcode)) {
+                Command cmdToExecute = new Command(opcode, cmd.A, cmd.B, cmd.C);
+                int[] result = execute(before, cmdToExecute);
+                if (Arrays.equals(result, after)) {
+                    possibleOpcodes.add(opcode);
+                }
             }
         }
-        return count;
+        return possibleOpcodes;
     }
 
     public static void testWithExamplesForPuzzle1() {
         System.out.println("### Day 16: Examples for puzzle 1 ###");
-        System.out.println("Number of possible opcodes: " + countPossibleOpcodes(SAMPLE));
+        System.out.println("Number of possible opcodes: " + countPossibleOpcodes(SAMPLE, Map.of()));
     }
 
     public static long doPuzzle1() {
         int count = 0;
         for (String sample : INPUT_AS_SAMPLES_ARRAY) {
-            if (countPossibleOpcodes(sample) >= 3) {
+            if (countPossibleOpcodes(sample, Map.of()) >= 3) {
                 count++;
             }
         }
@@ -4341,9 +4359,26 @@ public class Day16 {
     }
 
     public static long doPuzzle2() {
+        // Phase 1: Build decryption mapping for opcodes.
+        // For each encrypted opcode, the decrypted opcode needs to be found.
+        // All encrypted opcodes and also all decrypted opcodes are integer >= 0 and <= 15.
+        Map<Integer, Integer> alreadyKnownMappings = new HashMap<>();
+        boolean mappingEnhanced = false;
+        do {
+            for (String sample : INPUT_AS_SAMPLES_ARRAY) {
+                List<Integer> possibleOpcodes = findPossibleOpcodes(sample, alreadyKnownMappings);
+                if (possibleOpcodes.size() == 1) {
+                    String[] lines = sample.split("\\R");
+                    Command cmd = parseCommand(lines[1]);
+                    mappingEnhanced = (alreadyKnownMappings.put(cmd.opcode, possibleOpcodes.get(0)) == null);
+                }
+            }
+        } while (mappingEnhanced);
+
+        // Phase 2: With this mapping in place, we can now run the code, decrypting each single command before executing it, to yield a result.
         int[] registers = new int[4]; // Automatically initialized by the programming language to be all zero, which is what we need here.
         for (String line : CODE_AS_COMMAND_ARRAY) {
-            Command cmd = decodeCommand(parseCommand(line));
+            Command cmd = decodeCommand(parseCommand(line), alreadyKnownMappings);
             registers = execute(registers, cmd);
         }
         return registers[0];
