@@ -1,5 +1,8 @@
 package com.github.rviehmann.aoc2021;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
@@ -113,11 +116,18 @@ public class Day10 {
 
     private static final String[] INPUT_AS_LINE_ARRAY = INPUT.split("\\R");
 
-    private static final Map<Character, Integer> WORTH = Map.of(
+    private static final Map<Character, Integer> WORTH_PUZZLE_1 = Map.of(
             ')', 3,
             ']', 57,
             '}', 1197,
             '>', 25137
+    );
+
+    private static final Map<Character, Integer> WORTH_PUZZLE_2 = Map.of(
+            ')', 1,
+            ']', 2,
+            '}', 3,
+            '>', 4
     );
 
     private static final Map<Character, Character> CORRESPONDING = Map.of(
@@ -148,13 +158,46 @@ public class Day10 {
         return null;
     }
 
+    private static String getMissingRest(String line) {
+        Stack<Character> stack = new Stack<>();
+        char[] chars = line.toCharArray();
+        for (char c : chars) {
+            if (CORRESPONDING.containsKey(c)) {
+                // It's a opening bracket.
+                stack.push(c);
+            }
+            if (CORRESPONDING.containsValue(c)) {
+                // It's a closing bracket.
+                Character found = c;
+                Character expected = CORRESPONDING.get(stack.pop());
+                if (!found.equals(expected)) {
+                    throw new IllegalArgumentException("Got an incorrect char.");
+                }
+            }
+        }
+        // No illegal chars found. Stack is quite likely not empty.
+        StringBuilder sb = new StringBuilder();
+        while (!stack.empty()) {
+            sb.append(CORRESPONDING.get(stack.pop()));
+        }
+        return sb.toString();
+    }
+
+    private static long getScoreForMissingRest(String missingRest) {
+        long sum = 0;
+        for (char c : missingRest.toCharArray()) {
+            sum = sum * 5 + WORTH_PUZZLE_2.get(c);
+        }
+        return sum;
+    }
+
     public static void testWithExamplesForPuzzle1() {
         System.out.println("### Day 10: Examples for puzzle 1 ###");
         int sum = 0;
         for (String line : SAMPLE_AS_LINE_ARRAY) {
             Character c = findFirstIllegalChar(line);
             if (c != null) {
-                sum += WORTH.get(c);
+                sum += WORTH_PUZZLE_1.get(c);
             }
         }
         System.out.println("Total syntax error score: " + sum);
@@ -165,9 +208,24 @@ public class Day10 {
         for (String line : INPUT_AS_LINE_ARRAY) {
             Character c = findFirstIllegalChar(line);
             if (c != null) {
-                sum += WORTH.get(c);
+                sum += WORTH_PUZZLE_1.get(c);
             }
         }
         return sum;
+    }
+
+    public static long doPuzzle2() {
+        List<Long> scores = new ArrayList<>();
+        for (String line : INPUT_AS_LINE_ARRAY) {
+            Character c = findFirstIllegalChar(line);
+            if (c == null) {
+                long score = getScoreForMissingRest(getMissingRest(line));
+                scores.add(score);
+            }
+        }
+        Collections.sort(scores);
+        // This is automatically rounded down, so for example, a list of 5 elements would have the index of the middle as 2.
+        int indexOfMiddle = scores.size() / 2;
+        return scores.get(indexOfMiddle);
     }
 }
