@@ -332,8 +332,9 @@ public class Day16 {
         return fields;
     }
 
-    private static boolean isTicketValid(List<Field> fields, String ticket) {
+    private static List<Integer> findInvalidEntries(List<Field> fields, String ticket) {
         String[] ticketEntries = ticket.split(",");
+        List<Integer> invalidEntries = new ArrayList<>();
         for (String ticketEntry : ticketEntries) {
             int ticketEntryNumeric = parseInt(ticketEntry);
             boolean thisIsValid = false;
@@ -343,32 +344,34 @@ public class Day16 {
                 }
             }
             if (!thisIsValid) {
-                return false;
+                invalidEntries.add(ticketEntryNumeric);
             }
         }
-        return true;
+        return invalidEntries;
     }
 
     public static void testWithExamplesForPuzzle1() {
         System.out.println("### Day 16: Examples for puzzle 1 ###");
         List<Field> fields = parseFields(FIELDS_EXAMPLE_ARRAY);
-        int counter = 0;
+        int sum = 0;
         for (String ticket : OTHER_TICKETS_EXAMPLE_ARRAY) {
-            if (!isTicketValid(fields, ticket)) {
-                counter++;
+            List<Integer> invalidEntries = findInvalidEntries(fields, ticket);
+            for (Integer invalidEntry : invalidEntries) {
+                sum += invalidEntry;
             }
         }
-        System.out.println("Nr. of invalid tickets in example: " + counter);
+        System.out.println("Sum of invalid ticket entries in example: " + sum);
     }
 
     public static long doPuzzle1() {
         List<Field> fields = parseFields(FIELDS_REAL_ARRAY);
-        int counter = 0;
+        int sum = 0;
         for (String ticket : OTHER_TICKETS_REAL_ARRAY) {
-            if (!isTicketValid(fields, ticket)) {
-                counter++;
+            List<Integer> invalidEntries = findInvalidEntries(fields, ticket);
+            for (Integer invalidEntry : invalidEntries) {
+                sum += invalidEntry;
             }
         }
-        return counter;
+        return sum;
     }
 }
