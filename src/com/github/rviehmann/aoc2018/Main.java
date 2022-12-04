@@ -20,7 +20,6 @@ public class Main {
         System.out.println("### Solutions ###");
         System.out.println("Day 05, puzzle 1: " + Day05.doPuzzle1());
         System.out.println("Day 05, puzzle 2: " + Day05.doPuzzle2());
-        */
 
         Day07.testWithExamplesForPuzzle1();
         Day07.testWithExamplesForPuzzle2();
@@ -37,6 +36,7 @@ public class Main {
         System.out.println("### Solutions ###");
         System.out.println("Day 11, puzzle 1: " + Day11.doPuzzle1());
         System.out.println("Day 11, puzzle 2: " + Day11.doPuzzle2());
+        */
 
         Day12.testWithExamplesForPuzzle1();
         System.out.println("### Solutions ###");

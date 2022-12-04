@@ -89,8 +89,10 @@ public class Day12 {
 
     private static State deriveStateAfterSeveralGenerations(State startState, String[] rules, int generations) {
         State currentState = startState;
+        // System.out.println(currentState.stateString);
         for (int generation = 1; generation <= generations; generation++) {
             currentState = deriveState(currentState, rules);
+            // System.out.println(currentState.stateString);
         }
         return currentState;
     }
@@ -100,23 +102,31 @@ public class Day12 {
         char[] newState = new char[startState.stateString.length() + 2];
         int potNumber = startState.potNumberOfLeftmostCharacter - 1;
         for (int pos = 0; pos < newState.length; pos++) {
-            newState[pos] = derivePlantAtPotNumber(startState, rules, potNumber++);
+            newState[pos] = derivePlantAtPot(startState, rules, potNumber++);
         }
         return new State(new String(newState), startState.potNumberOfLeftmostCharacter - 1);
     }
 
-    private static char derivePlantAtPotNumber(State startState, String[] rules, int potNumber) {
+    private static char derivePlantAtPot(State startState, String[] rules, int potNumber) {
         for (String rule : rules) {
-            if (ruleMatches()) {
+            if (ruleMatches(startState, rule, potNumber)) {
                 // Return the last char of the string (which is either '#' (plant) or '.' (no plant)).
                 return rule.toCharArray()[rule.length() - 1];
             }
         }
-        throw new IllegalArgumentException("Could not derive plant.");
+        return '.'; // No plant
     }
 
-    private static boolean ruleMatches() {
-        // todo
+    private static boolean ruleMatches(State startState, String rule, int potNumber) {
+        int ruleLength = rule.indexOf(' ');
+        String longerStartState = "..." + startState.stateString + "...";
+        // Leftmost char in longerStartState has pot number (startState.potNumberOfLeftmostCharacter - 3).
+        // Leftmost char we are interested in has pot number (potNumber - 2).
+        int start = (potNumber - 2) - (startState.potNumberOfLeftmostCharacter - 3);
+        int end = start + ruleLength;
+        String relevantStartStatePart = longerStartState.substring(start, end);
+        String relevantRulePart = rule.substring(0, ruleLength);
+        return relevantStartStatePart.equals(relevantRulePart);
     }
 
     public static void testWithExamplesForPuzzle1() {
