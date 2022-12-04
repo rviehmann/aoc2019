@@ -77,7 +77,7 @@ public class Day12 {
         }
     }
 
-    private static int countPlants(State state) {
+    private static int countPlantationValue(State state) {
         int count = 0;
         int potNumber = state.potNumberOfLeftmostCharacter;
         for (char c : state.stateString.toCharArray()) {
@@ -89,12 +89,16 @@ public class Day12 {
 
     private static State deriveStateAfterSeveralGenerations(State startState, String[] rules, int generations) {
         State currentState = startState;
-        // System.out.println(currentState.stateString);
+        printState(currentState, 0);
         for (int generation = 1; generation <= generations; generation++) {
-            currentState = deriveState(currentState, rules);
-            // System.out.println(currentState.stateString);
+            currentState = shortenState(deriveState(currentState, rules));
+            printState(currentState, generation);
         }
         return currentState;
+    }
+
+    private static void printState(State state, int generation) {
+        System.out.println(generation + ": " + state.stateString + " (potNumberOfLeftmostCharacter: " + state.potNumberOfLeftmostCharacter + ", value: " + countPlantationValue(state) + ")");
     }
 
     private static State deriveState(State startState, String[] rules) {
@@ -105,6 +109,12 @@ public class Day12 {
             newState[pos] = derivePlantAtPot(startState, rules, potNumber++);
         }
         return new State(new String(newState), startState.potNumberOfLeftmostCharacter - 1);
+    }
+
+    private static State shortenState(State state) {
+        String stateString = state.stateString.replace('.', ' ').trim().replace(' ', '.');
+        int potNumberOfLeftmostCharacter = state.potNumberOfLeftmostCharacter + state.stateString.indexOf('#');
+        return new State(stateString, potNumberOfLeftmostCharacter);
     }
 
     private static char derivePlantAtPot(State startState, String[] rules, int potNumber) {
@@ -131,12 +141,25 @@ public class Day12 {
 
     public static void testWithExamplesForPuzzle1() {
         System.out.println("### Day 12: Examples for puzzle 1 ###");
-        System.out.println("Sum of number of pots after 20 generations: " + countPlants(deriveStateAfterSeveralGenerations(
+        System.out.println("Sum of number of pots after 20 generations: " + countPlantationValue(deriveStateAfterSeveralGenerations(
                 new State(SAMPLE_INITIAL_STATE), SAMPLE_AS_RULE_ARRAY, 20)));
     }
 
     public static long doPuzzle1() {
-        return countPlants(deriveStateAfterSeveralGenerations(
+        return countPlantationValue(deriveStateAfterSeveralGenerations(
                 new State(REAL_INITIAL_STATE), INPUT_AS_RULE_ARRAY, 20));
+    }
+
+    public static long doPuzzle2() {
+        /*
+        We find out the following:
+        * Generation 96 is the same as generation 95, just shifted one position to the right.
+        * Therefore, the difference in value between g96 and g95 is 91.
+        * Therefore, each further iteration will be identical, just shifted to the right each time.
+        * The g95 has a value of 10756.
+        * Therefore, we can find out the value for a generation G with this formula (if G>=95): ((G-95) * 91) + 10756
+        */
+        long generation = 50000000000L;
+        return ((generation - 95) * 91) + 10756;
     }
 }
