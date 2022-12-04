@@ -42,5 +42,9 @@ public class Main {
         System.out.println("### Solutions ###");
         System.out.println("Day 12, puzzle 1: " + Day12.doPuzzle1());
         System.out.println("Day 12, puzzle 2: " + Day12.doPuzzle2());
+
+        Day16.testWithExamplesForPuzzle1();
+        System.out.println("### Solutions ###");
+        System.out.println("Day 16, puzzle 1: " + Day16.doPuzzle1());
     }
 }

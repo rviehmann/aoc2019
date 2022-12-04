@@ -1,5 +1,7 @@
 package com.github.rviehmann.aoc2018;
 
+import java.util.Arrays;
+
 public class Day16 {
 
     private static final String SAMPLE =
@@ -3170,73 +3172,73 @@ public class Day16 {
         System.arraycopy(before, 0, after, 0, before.length);
         switch (cmd.opcode) {
             // Addition:
-            case 1: /*addr (add register)*/
+            case 0: /*addr (add register)*/
                 after[cmd.C] = before[cmd.A] + before[cmd.B];
                 break;
 
-            case 2: /*addi (add immediate)*/
+            case 1: /*addi (add immediate)*/
                 after[cmd.C] = before[cmd.A] + cmd.B;
                 break;
 
             // Multiplication:
-            case 3: /*mulr (multiply register)*/
+            case 2: /*mulr (multiply register)*/
                 after[cmd.C] = before[cmd.A] * before[cmd.B];
                 break;
 
-            case 4: /*muli (multiply immediate)*/
+            case 3: /*muli (multiply immediate)*/
                 after[cmd.C] = before[cmd.A] * cmd.B;
                 break;
 
             // Bitwise AND:
-            case 5: /*banr (bitwise AND register)*/
+            case 4: /*banr (bitwise AND register)*/
                 after[cmd.C] = before[cmd.A] & before[cmd.B];
                 break;
 
-            case 6: /*bani (bitwise AND immediate)*/
+            case 5: /*bani (bitwise AND immediate)*/
                 after[cmd.C] = before[cmd.A] & cmd.B;
                 break;
 
             // Bitwise OR:
-            case 7: /*borr (bitwise OR register)*/
+            case 6: /*borr (bitwise OR register)*/
                 after[cmd.C] = before[cmd.A] | before[cmd.B];
                 break;
 
-            case 8: /*bori (bitwise OR immediate)*/
+            case 7: /*bori (bitwise OR immediate)*/
                 after[cmd.C] = before[cmd.A] | cmd.B;
                 break;
 
             // Assignment:
-            case 9: /*setr (set register)*/
+            case 8: /*setr (set register)*/
                 after[cmd.C] = before[cmd.A];
                 break;
 
-            case 10: /*seti (set immediate)*/
+            case 9: /*seti (set immediate)*/
                 after[cmd.C] = cmd.A;
                 break;
 
             // Greater-than testing:
-            case 11: /*gtir (greater-than immediate/register)*/
+            case 10: /*gtir (greater-than immediate/register)*/
                 after[cmd.C] = cmd.A > before[cmd.B] ? 1 : 0;
                 break;
 
-            case 12: /*gtri (greater-than register/immediate)*/
+            case 11: /*gtri (greater-than register/immediate)*/
                 after[cmd.C] = before[cmd.A] > cmd.B ? 1 : 0;
                 break;
 
-            case 13: /*gtrr (greater-than register/register)*/
+            case 12: /*gtrr (greater-than register/register)*/
                 after[cmd.C] = before[cmd.A] > before[cmd.B] ? 1 : 0;
                 break;
 
             // Equality testing:
-            case 14: /*eqir (equal immediate/register)*/
+            case 13: /*eqir (equal immediate/register)*/
                 after[cmd.C] = cmd.A == before[cmd.B] ? 1 : 0;
                 break;
 
-            case 15: /*eqri (equal register/immediate)*/
+            case 14: /*eqri (equal register/immediate)*/
                 after[cmd.C] = before[cmd.A] == cmd.B ? 1 : 0;
                 break;
 
-            case 16: /*eqrr (equal register/register)*/
+            case 15: /*eqrr (equal register/register)*/
                 after[cmd.C] = before[cmd.A] == before[cmd.B] ? 1 : 0;
                 break;
 
@@ -3244,5 +3246,37 @@ public class Day16 {
                 throw new IllegalArgumentException("Invalid command: opcode=" + cmd.opcode);
         }
         return after;
+    }
+
+    private static int countPossibleOpcodes(String sample) {
+        String[] lines = sample.split("\\R");
+        int[] before = parseBeforeOrAfter(lines[0]);
+        Command cmd = parseCommand(lines[1]);
+        int[] after = parseBeforeOrAfter(lines[2]);
+
+        int count = 0;
+        for (int opcode = 0; opcode <= 15; opcode++) {
+            Command cmdToExecute = new Command(opcode, cmd.A, cmd.B, cmd.C);
+            int[] result = execute(before, cmdToExecute);
+            if (Arrays.equals(result, after)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public static void testWithExamplesForPuzzle1() {
+        System.out.println("### Day 16: Examples for puzzle 1 ###");
+        System.out.println("Number of possible opcodes: " + countPossibleOpcodes(SAMPLE));
+    }
+
+    public static long doPuzzle1() {
+        int count = 0;
+        for (String sample : INPUT_AS_SAMPLES_ARRAY) {
+            if (countPossibleOpcodes(sample) >= 3) {
+                count++;
+            }
+        }
+        return count;
     }
 }
