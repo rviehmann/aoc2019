@@ -3,6 +3,7 @@ package com.github.rviehmann.aoc2020;
 public class Main {
 
     public static void main(String[] args) {
+        /*
         System.out.println("### Solutions ###");
         System.out.println("Day 01, puzzle 1: " + Day01.doPuzzle1());
         System.out.println("Day 01, puzzle 2: " + Day01.doPuzzle2());
@@ -57,7 +58,6 @@ public class Main {
         System.out.println("### Solutions ###");
         System.out.println("Day 13, puzzle 1: " + Day13.doPuzzle1());
 
-        /*
         Day14.testWithExamplesForPuzzle1();
         Day14.testWithExamplesForPuzzle2();
         System.out.println("### Solutions ###");
@@ -69,7 +69,13 @@ public class Main {
         System.out.println("### Solutions ###");
         System.out.println("Day 15, puzzle 1: " + Day15.doPuzzle1());
         System.out.println("Day 15, puzzle 2: " + Day15.doPuzzle2());
+        */
 
+        Day16.testWithExamplesForPuzzle1();
+        System.out.println("### Solutions ###");
+        System.out.println("Day 16, puzzle 1: " + Day16.doPuzzle1());
+
+        /*
         System.out.println("### Solutions ###");
         System.out.println("Day 17, puzzle 1: " + Day17.doPuzzle1());
         System.out.println("Day 17, puzzle 2: " + Day17.doPuzzle2());
