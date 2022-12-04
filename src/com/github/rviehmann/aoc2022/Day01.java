@@ -2,6 +2,8 @@ package com.github.rviehmann.aoc2022;
 
 import java.util.Arrays;
 
+import static java.lang.Long.parseLong;
+
 public class Day01 {
 
     // From: https://adventofcode.com/2022/day/1/input
@@ -2236,7 +2238,7 @@ public class Day01 {
         String[] foodItems = elf.split("\\R");
         long sum = 0;
         for (String foodItem : foodItems) {
-            sum += Long.parseLong(foodItem, 10);
+            sum += parseLong(foodItem, 10);
         }
         return sum;
     }

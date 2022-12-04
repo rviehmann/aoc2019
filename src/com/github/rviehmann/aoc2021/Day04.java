@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.lang.Long.parseLong;
+
 public class Day04 {
 
     private static final long[] SAMPLE_NUMBERS = {
@@ -649,7 +651,7 @@ public class Day04 {
                 inputLine = inputLine.trim();
                 final String[] inputValues = inputLine.split("\\s+");
                 for (int column = 0; column < SIZE; column++) {
-                    values[column][row] = Long.parseLong(inputValues[column]);
+                    values[column][row] = parseLong(inputValues[column]);
                 }
                 row++;
             }

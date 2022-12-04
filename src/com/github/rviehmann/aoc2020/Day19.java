@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import static java.lang.Integer.parseInt;
+
 public class Day19 {
 
     // From: https://adventofcode.com/2020/day/19/input
@@ -600,7 +602,7 @@ public class Day19 {
         Map<Integer, String> ruleMap = new HashMap<>();
         for (String rule : rules) {
             String[] ruleParts = rule.split(":");
-            Integer ruleNr = Integer.parseInt(ruleParts[0].trim());
+            Integer ruleNr = parseInt(ruleParts[0].trim());
             ruleMap.put(ruleNr, ruleParts[1].trim());
         }
         return getRegexForRule(ruleMap, root, specialHandlingForPart2);
@@ -631,12 +633,8 @@ public class Day19 {
                     if (!firstPart) {
                         regex.append("|");
                     }
-                    for (int i = 0; i < n; i++) {
-                        regex.append(rule42);
-                    }
-                    for (int i = 0; i < n; i++) {
-                        regex.append(rule31);
-                    }
+                    regex.append(rule42.repeat(n));
+                    regex.append(rule31.repeat(n));
                     firstPart = false;
                 }
 
@@ -663,7 +661,7 @@ public class Day19 {
             rulePart = rulePart.trim();
             String[] numbers = rulePart.split("\\s+");
             for (String number : numbers) {
-                regex.append(getRegexForRule(ruleMap, Integer.parseInt(number), specialHandlingForPart2));
+                regex.append(getRegexForRule(ruleMap, parseInt(number), specialHandlingForPart2));
             }
 
             firstPart = false;

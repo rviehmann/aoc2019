@@ -7,6 +7,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.lang.Long.parseLong;
+
 public class Day14 {
 
     private static final String EXAMPLE1 =
@@ -591,12 +593,12 @@ public class Day14 {
 
         public static MaskPuzzle1 fromString(String input) {
             String onesString = input.replace("X", "0");
-            long ones = Long.parseLong(onesString, 2);
+            long ones = parseLong(onesString, 2);
 
             String zeroesString = input.replace("1", "X")
                                        .replace("0", "1")
                                        .replace("X", "0");
-            long zeroes = Long.parseLong(zeroesString, 2);
+            long zeroes = parseLong(zeroesString, 2);
 
             return new MaskPuzzle1(ones, zeroes);
         }
@@ -628,11 +630,11 @@ public class Day14 {
 
         public static MaskPuzzle2 fromString(String input) {
             String onesString = input.replace("X", "0");
-            long ones = Long.parseLong(onesString, 2);
+            long ones = parseLong(onesString, 2);
 
             String floatingString = input.replace("1", "0")
                                          .replace("X", "1");
-            long floating = Long.parseLong(floatingString, 2);
+            long floating = parseLong(floatingString, 2);
 
             return new MaskPuzzle2(ones, floating, generatePossibleValuesForFloating(input));
         }
@@ -649,7 +651,7 @@ public class Day14 {
                 throw new IllegalArgumentException("Input has unknown structure: '" + input + "'.");
             }
             if (!input.contains("X")) {
-                values.add(Long.parseLong(input, 2));
+                values.add(parseLong(input, 2));
             } else {
                 int pos = input.indexOf("X");
                 String before = input.substring(0, pos);
@@ -681,8 +683,8 @@ public class Day14 {
             if (maskMatch.matches()) {
                 currentMaskPuzzle1 = MaskPuzzle1.fromString(maskMatch.group(1));
             } else if (memMatch.matches()) {
-                long address = Long.parseLong(memMatch.group(1));
-                long rawValue = Long.parseLong(memMatch.group(2));
+                long address = parseLong(memMatch.group(1));
+                long rawValue = parseLong(memMatch.group(2));
                 // Make sure that only the lowest 36 bits are set
                 address = address & ALL_POSSIBLE_BITS;
                 rawValue = rawValue & ALL_POSSIBLE_BITS;
@@ -706,8 +708,8 @@ public class Day14 {
             if (maskMatch.matches()) {
                 currentMaskPuzzle2 = MaskPuzzle2.fromString(maskMatch.group(1));
             } else if (memMatch.matches()) {
-                long rawAddress = Long.parseLong(memMatch.group(1));
-                long value = Long.parseLong(memMatch.group(2));
+                long rawAddress = parseLong(memMatch.group(1));
+                long value = parseLong(memMatch.group(2));
                 // Make sure that only the lowest 36 bits are set
                 rawAddress = rawAddress & ALL_POSSIBLE_BITS;
                 value = value & ALL_POSSIBLE_BITS;
