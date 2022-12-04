@@ -3165,47 +3165,84 @@ public class Day16 {
         return new Command(parsed);
     }
 
-    private static int[] execute(int[] registersBefore, Command command) {
-        int[] registersAfter = new int[registersBefore.length];
-        System.arraycopy(registersBefore, 0, registersAfter, 0, registersBefore.length);
-        switch (command.opcode) {
+    private static int[] execute(int[] before, Command cmd) {
+        int[] after = new int[before.length];
+        System.arraycopy(before, 0, after, 0, before.length);
+        switch (cmd.opcode) {
             // Addition:
             case 1: /*addr (add register)*/
-                registersAfter[command.C] = registersBefore[command.A] + registersBefore[command.B];
+                after[cmd.C] = before[cmd.A] + before[cmd.B];
                 break;
 
             case 2: /*addi (add immediate)*/
-                registersAfter[command.C] = registersBefore[command.A] + command.B;
+                after[cmd.C] = before[cmd.A] + cmd.B;
                 break;
 
             // Multiplication:
             case 3: /*mulr (multiply register)*/
-                registersAfter[command.C] = registersBefore[command.A] * registersBefore[command.B];
+                after[cmd.C] = before[cmd.A] * before[cmd.B];
                 break;
 
             case 4: /*muli (multiply immediate)*/
-                registersAfter[command.C] = registersBefore[command.A] * command.B;
+                after[cmd.C] = before[cmd.A] * cmd.B;
                 break;
 
             // Bitwise AND:
             case 5: /*banr (bitwise AND register)*/
-                registersAfter[command.C] = registersBefore[command.A] & registersBefore[command.B];
+                after[cmd.C] = before[cmd.A] & before[cmd.B];
                 break;
 
             case 6: /*bani (bitwise AND immediate)*/
-                registersAfter[command.C] = registersBefore[command.A] & command.B;
+                after[cmd.C] = before[cmd.A] & cmd.B;
                 break;
 
             // Bitwise OR:
             case 7: /*borr (bitwise OR register)*/
-                registersAfter[command.C] = registersBefore[command.A] | registersBefore[command.B];
+                after[cmd.C] = before[cmd.A] | before[cmd.B];
                 break;
 
             case 8: /*bori (bitwise OR immediate)*/
-                registersAfter[command.C] = registersBefore[command.A] | command.B;
+                after[cmd.C] = before[cmd.A] | cmd.B;
                 break;
 
+            // Assignment:
+            case 9: /*setr (set register)*/
+                after[cmd.C] = before[cmd.A];
+                break;
+
+            case 10: /*seti (set immediate)*/
+                after[cmd.C] = cmd.A;
+                break;
+
+            // Greater-than testing:
+            case 11: /*gtir (greater-than immediate/register)*/
+                after[cmd.C] = cmd.A > before[cmd.B] ? 1 : 0;
+                break;
+
+            case 12: /*gtri (greater-than register/immediate)*/
+                after[cmd.C] = before[cmd.A] > cmd.B ? 1 : 0;
+                break;
+
+            case 13: /*gtrr (greater-than register/register)*/
+                after[cmd.C] = before[cmd.A] > before[cmd.B] ? 1 : 0;
+                break;
+
+            // Equality testing:
+            case 14: /*eqir (equal immediate/register)*/
+                after[cmd.C] = cmd.A == before[cmd.B] ? 1 : 0;
+                break;
+
+            case 15: /*eqri (equal register/immediate)*/
+                after[cmd.C] = before[cmd.A] == cmd.B ? 1 : 0;
+                break;
+
+            case 16: /*eqrr (equal register/register)*/
+                after[cmd.C] = before[cmd.A] == before[cmd.B] ? 1 : 0;
+                break;
+
+            default:
+                throw new IllegalArgumentException("Invalid command: opcode=" + cmd.opcode);
         }
-        return registersAfter;
+        return after;
     }
 }
