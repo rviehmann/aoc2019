@@ -211,8 +211,11 @@ public class Day14 {
                 System.out.println("After step " + i + ": " + current);
             }
         }
-        System.out.println("Most common: " + getMostCommon(countQuantities(current)));
-        System.out.println("Least common: " + getLeastCommon(countQuantities(current)));
+        Map<Character, Integer> qty = countQuantities(current);
+        int most = getMostCommon(qty);
+        int least = getLeastCommon(qty);
+        System.out.println("Most common: " + most);
+        System.out.println("Least common: " + least);
     }
 
     public static long doPuzzle1() {
@@ -221,11 +224,25 @@ public class Day14 {
         for (int i = 1; i <= 10; i++) {
             current = applyRules(current, ruleMap);
         }
-        return getMostCommon(countQuantities(current)) - getLeastCommon(countQuantities(current));
+        Map<Character, Integer> qty = countQuantities(current);
+        int most = getMostCommon(qty);
+        int least = getLeastCommon(qty);
+        return most - least;
     }
 
     public static long doPuzzle2() {
-        //todo
+        String current = REAL_TEMPLATE;
+        Map<String, String> ruleMap = buildRuleMap(REAL_RULES_ARRAY);
+        for (int i = 1; i <= 23; i++) {
+            long currentMillisBefore = System.currentTimeMillis();
+            current = applyRules(current, ruleMap);
+            Map<Character, Integer> qty = countQuantities(current);
+            int most = getMostCommon(qty);
+            int least = getLeastCommon(qty);
+            long currentMillisAfter = System.currentTimeMillis();
+            System.out.println("After step " + i + ": most: " + most + ", least: " + least + ", difference: " + (most - least) + ", runtime millis: " + (currentMillisAfter - currentMillisBefore));
+        }
+        // todo
         return 0;
     }
 }
