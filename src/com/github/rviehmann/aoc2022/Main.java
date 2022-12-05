@@ -18,5 +18,11 @@ public class Main {
         System.out.println("### Solutions ###");
         System.out.println("Day 04, puzzle 1: " + Day04.doPuzzle1());
         System.out.println("Day 04, puzzle 2: " + Day04.doPuzzle2());
+
+        Day05.testWithExamplesForPuzzle1();
+        Day05.testWithExamplesForPuzzle2();
+        System.out.println("### Solutions ###");
+        System.out.println("Day 05, puzzle 1: " + Day05.doPuzzle1());
+        System.out.println("Day 05, puzzle 2: " + Day05.doPuzzle2());
     }
 }
