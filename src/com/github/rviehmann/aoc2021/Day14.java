@@ -1,8 +1,8 @@
 package com.github.rviehmann.aoc2021;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -190,15 +190,19 @@ public class Day14 {
     }
 
     private static int getMostCommon(Map<Character, Integer> qty) {
-        Integer[] values = qty.values().toArray(new Integer[0]);
-        Arrays.sort(values);
-        return values[values.length - 1];
+        return qty.values()
+                  .stream()
+                  .mapToInt(v -> v)
+                  .max()
+                  .orElseThrow(NoSuchElementException::new);
     }
 
     private static int getLeastCommon(Map<Character, Integer> qty) {
-        Integer[] values = qty.values().toArray(new Integer[0]);
-        Arrays.sort(values);
-        return values[0];
+        return qty.values()
+                  .stream()
+                  .mapToInt(v -> v)
+                  .min()
+                  .orElseThrow(NoSuchElementException::new);
     }
 
     public static void testWithExamplesForPuzzle1() {
@@ -233,7 +237,13 @@ public class Day14 {
     public static long doPuzzle2() {
         String current = REAL_TEMPLATE;
         Map<String, String> ruleMap = buildRuleMap(REAL_RULES_ARRAY);
-        for (int i = 1; i <= 23; i++) {
+
+        int oldMost = 0;
+        int oldLeast = 0;
+        int oldDifference = 0;
+        long oldRuntime = 0;
+
+        for (int i = 1; i <= 25; i++) {
             long currentMillisBefore = System.currentTimeMillis();
             current = applyRules(current, ruleMap);
             Map<Character, Integer> qty = countQuantities(current);
@@ -241,6 +251,18 @@ public class Day14 {
             int least = getLeastCommon(qty);
             long currentMillisAfter = System.currentTimeMillis();
             System.out.println("After step " + i + ": most: " + most + ", least: " + least + ", difference: " + (most - least) + ", runtime millis: " + (currentMillisAfter - currentMillisBefore));
+            if (i > 1) {
+                double factorMost = (double) most / (double) oldMost;
+                double factorLeast = (double) least / (double) oldLeast;
+                double factorDifference = (double) (most - least) / (double) oldDifference;
+                double factorRuntime = (double) (currentMillisAfter - currentMillisBefore) / (double) oldRuntime;
+                System.out.println("Factor compared to " + (i - 1) + ": most: " + factorMost + ", least: " + factorLeast + ", difference: " + factorDifference + ", runtime millis: " + factorRuntime);
+            }
+            // For the next iteration
+            oldMost = most;
+            oldLeast = least;
+            oldDifference = most - least;
+            oldRuntime = currentMillisAfter - currentMillisBefore;
         }
         // todo
         return 0;
