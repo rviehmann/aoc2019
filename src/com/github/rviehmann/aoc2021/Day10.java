@@ -113,7 +113,6 @@ public class Day10 {
                     "([[[(<{(({({<[{}()]<[]{}>>[<<><>>(<><>)]}[{<<>>([]{})}([{}[]]{<><>])]){[({()()}((){}))[[[]";
 
     private static final String[] SAMPLE_AS_LINE_ARRAY = SAMPLE.split("\\R");
-
     private static final String[] INPUT_AS_LINE_ARRAY = INPUT.split("\\R");
 
     private static final Map<Character, Integer> WORTH_PUZZLE_1 = Map.of(
