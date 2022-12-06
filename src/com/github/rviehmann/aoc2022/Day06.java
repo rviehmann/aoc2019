@@ -1,5 +1,7 @@
 package com.github.rviehmann.aoc2022;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,10 +45,18 @@ public class Day06 {
     }
 
     public static long doPuzzle1() {
-        return getIndexOfFirstMarker(REAL_INPUT, 4);
+        Instant start = Instant.now();
+        int index = getIndexOfFirstMarker(REAL_INPUT, 4);
+        Instant end = Instant.now();
+        System.out.println("Elapsed: " + Duration.between(start, end));
+        return index;
     }
 
     public static long doPuzzle2() {
-        return getIndexOfFirstMarker(REAL_INPUT, 14);
+        Instant start = Instant.now();
+        int index = getIndexOfFirstMarker(REAL_INPUT, 14);
+        Instant end = Instant.now();
+        System.out.println("Elapsed: " + Duration.between(start, end));
+        return index;
     }
 }
