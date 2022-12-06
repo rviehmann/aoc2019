@@ -22,7 +22,6 @@ public class Main {
         System.out.println("### Solutions ###");
         System.out.println("Day 04, puzzle 1: " + Day04.doPuzzle1());
         System.out.println("Day 04, puzzle 2: " + Day04.doPuzzle2());
-        */
 
         Day10.testWithExamplesForPuzzle1();
         System.out.println("### Solutions ###");
@@ -33,5 +32,12 @@ public class Main {
         System.out.println("### Solutions ###");
         System.out.println("Day 14, puzzle 1: " + Day14.doPuzzle1());
         System.out.println("Day 14, puzzle 2: " + Day14.doPuzzle2());
+        */
+
+        Day20.testWithExamplesForPuzzle1();
+        Day20.testWithExamplesForPuzzle2();
+        System.out.println("### Solutions ###");
+        System.out.println("Day 20, puzzle 1: " + Day20.doPuzzle1());
+        System.out.println("Day 20, puzzle 2: " + Day20.doPuzzle2());
     }
 }
