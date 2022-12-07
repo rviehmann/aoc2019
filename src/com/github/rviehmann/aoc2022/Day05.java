@@ -1,8 +1,9 @@
 package com.github.rviehmann.aoc2022;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
-import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -526,19 +527,19 @@ public class Day05 {
     private static final String REGEX = "^move (\\d+) from (\\d+) to (\\d+)$";
     private static final Pattern PATTERN = Pattern.compile(REGEX);
 
-    private static List<Stack<Character>> getStacksForExample() {
-        List<Stack<Character>> stacks = new ArrayList<>();
+    private static List<Deque<Character>> getStacksForExample() {
+        List<Deque<Character>> stacks = new ArrayList<>();
 
-        Stack<Character> stack1 = new Stack<>();
+        Deque<Character> stack1 = new ArrayDeque<>();
         stack1.push('Z');
         stack1.push('N');
 
-        Stack<Character> stack2 = new Stack<>();
+        Deque<Character> stack2 = new ArrayDeque<>();
         stack2.push('M');
         stack2.push('C');
         stack2.push('D');
 
-        Stack<Character> stack3 = new Stack<>();
+        Deque<Character> stack3 = new ArrayDeque<>();
         stack3.push('P');
 
         stacks.add(stack1);
@@ -547,10 +548,10 @@ public class Day05 {
         return stacks;
     }
 
-    private static List<Stack<Character>> getStacksForReal() {
-        List<Stack<Character>> stacks = new ArrayList<>();
+    private static List<Deque<Character>> getStacksForReal() {
+        List<Deque<Character>> stacks = new ArrayList<>();
 
-        Stack<Character> stack1 = new Stack<>();
+        Deque<Character> stack1 = new ArrayDeque<>();
         stack1.push('F');
         stack1.push('C');
         stack1.push('P');
@@ -558,20 +559,20 @@ public class Day05 {
         stack1.push('Q');
         stack1.push('R');
 
-        Stack<Character> stack2 = new Stack<>();
+        Deque<Character> stack2 = new ArrayDeque<>();
         stack2.push('W');
         stack2.push('T');
         stack2.push('C');
         stack2.push('P');
 
-        Stack<Character> stack3 = new Stack<>();
+        Deque<Character> stack3 = new ArrayDeque<>();
         stack3.push('B');
         stack3.push('H');
         stack3.push('P');
         stack3.push('M');
         stack3.push('C');
 
-        Stack<Character> stack4 = new Stack<>();
+        Deque<Character> stack4 = new ArrayDeque<>();
         stack4.push('L');
         stack4.push('T');
         stack4.push('Q');
@@ -580,7 +581,7 @@ public class Day05 {
         stack4.push('P');
         stack4.push('R');
 
-        Stack<Character> stack5 = new Stack<>();
+        Deque<Character> stack5 = new ArrayDeque<>();
         stack5.push('P');
         stack5.push('H');
         stack5.push('J');
@@ -589,12 +590,12 @@ public class Day05 {
         stack5.push('G');
         stack5.push('N');
 
-        Stack<Character> stack6 = new Stack<>();
+        Deque<Character> stack6 = new ArrayDeque<>();
         stack6.push('D');
         stack6.push('P');
         stack6.push('J');
 
-        Stack<Character> stack7 = new Stack<>();
+        Deque<Character> stack7 = new ArrayDeque<>();
         stack7.push('L');
         stack7.push('G');
         stack7.push('P');
@@ -604,7 +605,7 @@ public class Day05 {
         stack7.push('T');
         stack7.push('R');
 
-        Stack<Character> stack8 = new Stack<>();
+        Deque<Character> stack8 = new ArrayDeque<>();
         stack8.push('N');
         stack8.push('L');
         stack8.push('H');
@@ -614,7 +615,7 @@ public class Day05 {
         stack8.push('T');
         stack8.push('J');
 
-        Stack<Character> stack9 = new Stack<>();
+        Deque<Character> stack9 = new ArrayDeque<>();
         stack9.push('G');
         stack9.push('V');
         stack9.push('Z');
@@ -636,7 +637,7 @@ public class Day05 {
         return stacks;
     }
 
-    private static List<Stack<Character>> executeCommands(List<Stack<Character>> stacks, String[] commands, boolean preserveOrder) {
+    private static List<Deque<Character>> executeCommands(List<Deque<Character>> stacks, String[] commands, boolean preserveOrder) {
         for (String command : commands) {
             Matcher matcher = PATTERN.matcher(command);
             if (!matcher.matches()) {
@@ -645,15 +646,15 @@ public class Day05 {
             int count = parseInt(matcher.group(1));
             int a = parseInt(matcher.group(2));
             int b = parseInt(matcher.group(3));
-            Stack<Character> A = stacks.get(a - 1);
-            Stack<Character> B = stacks.get(b - 1);
+            Deque<Character> A = stacks.get(a - 1);
+            Deque<Character> B = stacks.get(b - 1);
 
             if (!preserveOrder) {
                 for (int i = 0; i < count; i++) {
                     B.push(A.pop());
                 }
             } else {
-                Stack<Character> temp = new Stack<>();
+                Deque<Character> temp = new ArrayDeque<>();
                 for (int i = 0; i < count; i++) {
                     temp.push(A.pop());
                 }
@@ -665,9 +666,9 @@ public class Day05 {
         return stacks;
     }
 
-    private static String getHighestFromEachStack(List<Stack<Character>> stacks) {
+    private static String getHighestFromEachStack(List<Deque<Character>> stacks) {
         StringBuilder sb = new StringBuilder();
-        for (Stack<Character> stack : stacks) {
+        for (Deque<Character> stack : stacks) {
             sb.append(stack.pop());
         }
         return sb.toString();

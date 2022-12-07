@@ -1,10 +1,11 @@
 package com.github.rviehmann.aoc2021;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
 
 public class Day10 {
 
@@ -137,7 +138,7 @@ public class Day10 {
     );
 
     private static Character findFirstIllegalChar(String line) {
-        Stack<Character> stack = new Stack<>();
+        Deque<Character> stack = new ArrayDeque<>();
         char[] chars = line.toCharArray();
         for (char c : chars) {
             if (CORRESPONDING.containsKey(c)) {
@@ -158,7 +159,7 @@ public class Day10 {
     }
 
     private static String getMissingRest(String line) {
-        Stack<Character> stack = new Stack<>();
+        Deque<Character> stack = new ArrayDeque<>();
         char[] chars = line.toCharArray();
         for (char c : chars) {
             if (CORRESPONDING.containsKey(c)) {
@@ -176,7 +177,7 @@ public class Day10 {
         }
         // No illegal chars found. Stack is quite likely not empty.
         StringBuilder sb = new StringBuilder();
-        while (!stack.empty()) {
+        while (stack.size() > 0) {
             sb.append(CORRESPONDING.get(stack.pop()));
         }
         return sb.toString();
