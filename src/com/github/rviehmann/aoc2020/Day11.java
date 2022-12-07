@@ -235,8 +235,7 @@ public class Day11 {
 
     private static void printState(String[] currentState) {
         System.out.println("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*");
-        for (int row = 0; row < currentState.length; row++) {
-            String currentRow = currentState[row];
+        for (String currentRow : currentState) {
             System.out.println(currentRow);
         }
         System.out.println("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*");

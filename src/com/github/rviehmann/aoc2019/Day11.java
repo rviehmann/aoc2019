@@ -154,7 +154,7 @@ public class Day11 {
                 }
                 sb.append("\n");
             }
-            System.out.print(sb.toString());
+            System.out.print(sb);
         }
 
         private void paintCurrentField(long color) {
@@ -203,9 +203,7 @@ public class Day11 {
         }
 
         private long getColorOfPanel(long x, long y) {
-            if (paintedPanels.size() == 0) {
-                return BLACK;
-            } else {
+            if (paintedPanels.size() != 0) {
                 // Iterate from the end, since if we paint the same panel more than once, only the last color will be visible.
                 for (int index = paintedPanels.size() - 1; index >= 0; index--) {
                     PaintedPanel panel = paintedPanels.get(index);
@@ -213,8 +211,8 @@ public class Day11 {
                         return panel.color;
                     }
                 }
-                return BLACK;
             }
+            return BLACK;
         }
 
         public List<PaintedPanel> getPaintedPanels() {

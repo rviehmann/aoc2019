@@ -132,8 +132,8 @@ public class Day07 {
 
     public static class Conditions {
         // Read like this: Character C has conditions: X, Y, Z.
-        Map<Character, List<Character>> conditions;
-        Set<Character> possibleSteps;
+        final Map<Character, List<Character>> conditions;
+        final Set<Character> possibleSteps;
 
         public Conditions(Map<Character, List<Character>> conditions, Set<Character> possibleSteps) {
             this.conditions = conditions;

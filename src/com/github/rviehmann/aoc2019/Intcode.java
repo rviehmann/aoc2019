@@ -130,7 +130,7 @@ public class Intcode {
             outputs.add(queues[1].take());
         }
         // Memory has been modified by this method. But we also return the outputs (if any).
-        return outputs.toArray(new Long[outputs.size()]);
+        return outputs.toArray(new Long[0]);
     }
 
     /**

@@ -51,7 +51,7 @@ public class Day16 {
             long buffer = 0;
             for (int inputPosition = 0; inputPosition < input.length; inputPosition++) {
                 int patternValue = getPatternValue(inputPosition, outputPosition);
-                buffer += input[inputPosition] * patternValue;
+                buffer += (long) input[inputPosition] * patternValue;
             }
             int result = (int) (abs(buffer) % 10);
             output[outputPosition] = result;

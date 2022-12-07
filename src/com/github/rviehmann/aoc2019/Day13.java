@@ -176,7 +176,7 @@ public class Day13 {
                 }
                 sb.append("\n");
             }
-            System.out.print(sb.toString());
+            System.out.print(sb);
         }
 
         private void paintTile(long x, long y, long tileId) {
@@ -208,9 +208,7 @@ public class Day13 {
         }
 
         private long getTileIdOfTile(long x, long y) {
-            if (paintedTiles.size() == 0) {
-                return TILE_EMPTY;
-            } else {
+            if (paintedTiles.size() != 0) {
                 // Iterate from the end, since if we paint the same tile more than once, only the last color will be visible.
                 for (int index = paintedTiles.size() - 1; index >= 0; index--) {
                     PaintedTile tile = paintedTiles.get(index);
@@ -218,8 +216,8 @@ public class Day13 {
                         return tile.tileId;
                     }
                 }
-                return TILE_EMPTY;
             }
+            return TILE_EMPTY;
         }
 
         public List<PaintedTile> getPaintedTiles() {

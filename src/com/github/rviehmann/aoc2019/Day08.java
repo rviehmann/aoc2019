@@ -101,7 +101,7 @@ public class Day08 {
         }
 
         int[] count = countDigits(layers[indexForFewest]);
-        return count[1] * count[2];
+        return (long) count[1] * count[2];
     }
 
     public static long doPuzzle2() {

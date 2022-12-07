@@ -199,7 +199,7 @@ public class Day10 {
                     count3++;
                     if (lengthOf1Series > 0) {
                         // System.out.println("LengthOf1Series: " + lengthOf1Series);
-                        long value = 1;
+                        long value;
                         switch ((int) lengthOf1Series) {
                             case 1:
                                 value = 1;

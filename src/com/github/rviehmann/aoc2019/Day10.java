@@ -146,9 +146,6 @@ public class Day10 {
 
         /**
          * Calculates the distance between this and another asteroid.
-         *
-         * @param other
-         * @return
          */
         public double distance(Asteroid other) {
             double q1 = pow((double) (other.x - x), 2);
@@ -158,9 +155,6 @@ public class Day10 {
 
         /**
          * Calculates the angle between this and another asteroid in degrees (360 degrees == 1 circle).
-         *
-         * @param other
-         * @return
          */
         public double angle(Asteroid other) {
             double angle = toDegrees(atan2(other.y - y, other.x - x));
@@ -176,10 +170,6 @@ public class Day10 {
 
         /**
          * Determines whether this asteroid can detect the other one, given the whole field.
-         *
-         * @param other
-         * @param asteroidField
-         * @return
          */
         public boolean canDetect(Asteroid other, List<Asteroid> asteroidField) {
             if (other.equals(this)) {

@@ -52,5 +52,5 @@ public class Day25 {
         return determineEncryptionKey(1717001, loopDoor);
     }
 
-    // There is not puzzle 2 for this day.
+    // There is no puzzle 2 for this day.
 }

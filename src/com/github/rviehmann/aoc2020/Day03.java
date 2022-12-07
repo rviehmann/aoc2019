@@ -352,10 +352,6 @@ public class Day03 {
      * Get tree character at specified position (or null if y is out of range).
      * Top left position is 1:1, x increases to the right, y increases to the bottom.
      * Note that the pattern repeats any number of times to the right, but not to the bottom.
-     *
-     * @param x
-     * @param y
-     * @return
      */
     private static Character getTreeAt(int x, int y) {
         int technicalX = x - 1;
