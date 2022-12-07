@@ -638,8 +638,8 @@ public class Day04 {
 
     public static class Board {
         private static final int SIZE = 5;
-        long[][] values;
-        boolean[][] marked;
+        final long[][] values;
+        final boolean[][] marked;
 
         public Board(String input) {
             values = new long[SIZE][SIZE];
