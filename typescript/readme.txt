@@ -6,10 +6,10 @@ Execute:
 $> npm install --global typescript
 
 Each .ts file is self-contained, and can be compiled with:
-$> tsc -target es2015 sample.ts
+$> tsc -target es2016 sample.ts
 A .js file with the same name will be generated, which can be run with:
 $> node sample.js
 
 Both can be combined as follows:
-$> tsc -target es2015 sample.ts && node sample.js
+$> tsc -target es2016 sample.ts && node sample.js
 This is especially helpful if you want to be sure that the most current version of some code is run at all times. The TypeScript compiler seems to be very fast, so it does not add too much overhead.
