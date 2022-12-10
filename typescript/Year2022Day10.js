@@ -301,46 +301,70 @@ function parseIntoCommand(commandAsString) {
     }
     return { command: input[0], argument: Number(input[1]) };
 }
-function executeCommands(commands, numCycles) {
+function executeCommands(commands) {
     var registerX = 1;
     var cycle = 1;
     // Programm counter, a pointer to the currently executed command
     var pc = 0;
+    var allCommandsExecuted = false;
     var cycleForCurrentCommand = 1;
     var sumStrengths = 0;
     const importantCycles = [20, 60, 100, 140, 180, 220];
+    var crtX = 0;
+    var crtY = 0;
+    var crtScreen = "";
     do {
+        if (importantCycles.includes(cycle)) {
+            sumStrengths += (registerX * cycle);
+        }
+        if (Math.abs(registerX - crtX) <= 1) {
+            crtScreen += "█"; // White, should be "#", but this is better to read.
+        }
+        else {
+            crtScreen += "."; // Black.
+        }
+        crtX++;
+        if (crtX == 40) {
+            crtX = 0;
+            crtY++;
+            crtScreen += "\n";
+        }
         var command = commands[pc];
+        var holdPc = false;
         switch (command.command.toLowerCase()) {
             case "addx":
                 if (cycleForCurrentCommand == 2) {
                     registerX += command.argument;
-                    pc++;
                     cycleForCurrentCommand = 1;
                 }
                 else {
-                    cycleForCurrentCommand++;
+                    // During the first cycle of the two-cycle add command, we must not modify the PC or the register.
+                    cycleForCurrentCommand++; // Prepare for the next cycle.
+                    holdPc = true;
                 }
                 break;
             case "noop":
-                pc++;
                 break;
             default:
                 console.log("Invalid command: " + command.command);
         }
-        if (importantCycles.includes(cycle)) {
-            sumStrengths += (registerX * cycle);
+        if (!holdPc) {
+            pc++; // Prepare for the next cycle.
+            if (pc >= commands.length) {
+                allCommandsExecuted = true; // There is no next cycle.
+            }
         }
         cycle++;
-    } while (cycle <= numCycles);
+    } while (!allCommandsExecuted);
+    console.log(crtScreen);
     return sumStrengths;
 }
-console.log("Year 2022, Day 10, Puzzle 1");
+console.log("Year 2022, Day 10, Puzzle 1 and 2");
 // Example
 var commands = parseIntoCommands(SAMPLE_COMMANDS_AS_TEXT);
-var result = executeCommands(commands, 220);
+var result = executeCommands(commands);
 console.log("Result (example): " + result);
 // Real
 var commands = parseIntoCommands(REAL_COMMANDS_AS_TEXT);
-var result = executeCommands(commands, 220);
+var result = executeCommands(commands);
 console.log("Result (real): " + result);
