@@ -1,4 +1,4 @@
-const SAMPLE_MOVEMENTS_AS_TEXT = `R 4
+const SAMPLE_MOVEMENTS1_AS_TEXT = `R 4
 U 4
 L 3
 D 1
@@ -6,6 +6,15 @@ R 4
 D 1
 L 5
 R 2`;
+
+const SAMPLE_MOVEMENTS2_AS_TEXT = `R 5
+U 8
+L 8
+D 3
+R 17
+D 10
+L 25
+U 20`;
 
 const REAL_MOVEMENTS_AS_TEXT = `D 2
 R 1
@@ -2073,20 +2082,27 @@ function getNewHeadPosition(head: Position, direction: string): Position {
     }
 }
 
-function mapAllTailPositions(movements: Movement[]): Map<string, number> {
+function mapAllTailPositions(movements: Movement[], numKnots: number): Map<string, number> {
     var tailPositions = new Map<string, number>();
-    var head: Position = { x: 0, y: 0 };
-    var tail: Position = { x: 0, y: 0 };
+
+    // knots[0] is the head, the last knot in the array is the tail.
+    var knots: Position[] = [];
+    for (var knot: number = 0; knot < numKnots; knot++) {
+        knots[knot] = { x: 0, y: 0 };
+    }
+
     // For now, it does not matter if a position has been visited more than once, so we just use the hardcoded value 1.
-    tailPositions.set(toStringWithSeparator(tail), 1);
+    tailPositions.set(toStringWithSeparator(knots[numKnots - 1]), 1);
 
     for (var i: number = 0; i < movements.length; i++) {
         var move = movements[i];
         for (var step: number = 0; step < move.steps; step++) {
-            head = getNewHeadPosition(head, move.direction);
-            tail = getNewTailPosition(head, tail);
+            knots[0] = getNewHeadPosition(knots[0], move.direction);
+            for (var knot: number = 1; knot < numKnots; knot++) {
+                knots[knot] = getNewTailPosition(knots[knot - 1], knots[knot]);
+            }
             // For now, it does not matter if a position has been visited more than once, so we just use the hardcoded value 1.
-            tailPositions.set(toStringWithSeparator(tail), 1);
+            tailPositions.set(toStringWithSeparator(knots[numKnots - 1]), 1);
         }
     }
     return tailPositions;
@@ -2095,8 +2111,8 @@ function mapAllTailPositions(movements: Movement[]): Map<string, number> {
 console.log("Year 2022, Day 09, Puzzle 1");
 
 // Example
-var movements = parseIntoMovements(SAMPLE_MOVEMENTS_AS_TEXT);
-var tailPositions = mapAllTailPositions(movements);
+var movements = parseIntoMovements(SAMPLE_MOVEMENTS1_AS_TEXT);
+var tailPositions = mapAllTailPositions(movements, 2);
 for (let [key, value] of tailPositions) {
     // console.log(key, value);
 }
@@ -2104,5 +2120,23 @@ console.log("Unique positions (example): " + tailPositions.size);
 
 // Real
 var movements = parseIntoMovements(REAL_MOVEMENTS_AS_TEXT);
-var tailPositions = mapAllTailPositions(movements);
+var tailPositions = mapAllTailPositions(movements, 2);
+console.log("Unique positions (real): " + tailPositions.size);
+
+// ---------------------------------------------------------------
+
+console.log("Year 2022, Day 09, Puzzle 2");
+
+// Example
+var movements = parseIntoMovements(SAMPLE_MOVEMENTS1_AS_TEXT);
+var tailPositions = mapAllTailPositions(movements, 10);
+console.log("Unique positions (example 1): " + tailPositions.size);
+
+var movements = parseIntoMovements(SAMPLE_MOVEMENTS2_AS_TEXT);
+var tailPositions = mapAllTailPositions(movements, 10);
+console.log("Unique positions (example 2): " + tailPositions.size);
+
+// Real
+var movements = parseIntoMovements(REAL_MOVEMENTS_AS_TEXT);
+var tailPositions = mapAllTailPositions(movements, 10);
 console.log("Unique positions (real): " + tailPositions.size);
