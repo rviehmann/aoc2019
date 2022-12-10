@@ -2070,14 +2070,14 @@ function getNewHeadPosition(head, direction) {
     }
 }
 function mapAllTailPositions(movements, numKnots) {
-    var tailPositions = new Map();
     // knots[0] is the head, the last knot in the array is the tail.
     var knots = [];
     for (var knot = 0; knot < numKnots; knot++) {
+        // All knots start in the same place (0|0).
         knots[knot] = { x: 0, y: 0 };
     }
-    // For now, it does not matter if a position has been visited more than once, so we just use the hardcoded value 1.
-    tailPositions.set(toStringWithSeparator(knots[numKnots - 1]), 1);
+    var tailPositions = new Set();
+    tailPositions.add(toStringWithSeparator(knots[numKnots - 1]));
     for (var i = 0; i < movements.length; i++) {
         var move = movements[i];
         for (var step = 0; step < move.steps; step++) {
@@ -2085,8 +2085,7 @@ function mapAllTailPositions(movements, numKnots) {
             for (var knot = 1; knot < numKnots; knot++) {
                 knots[knot] = getNewTailPosition(knots[knot - 1], knots[knot]);
             }
-            // For now, it does not matter if a position has been visited more than once, so we just use the hardcoded value 1.
-            tailPositions.set(toStringWithSeparator(knots[numKnots - 1]), 1);
+            tailPositions.add(toStringWithSeparator(knots[numKnots - 1]));
         }
     }
     return tailPositions;

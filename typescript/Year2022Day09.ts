@@ -2082,18 +2082,15 @@ function getNewHeadPosition(head: Position, direction: string): Position {
     }
 }
 
-function mapAllTailPositions(movements: Movement[], numKnots: number): Map<string, number> {
-    var tailPositions = new Map<string, number>();
-
+function mapAllTailPositions(movements: Movement[], numKnots: number): Set<string> {
     // knots[0] is the head, the last knot in the array is the tail.
     var knots: Position[] = [];
     for (var knot: number = 0; knot < numKnots; knot++) {
+        // All knots start in the same place (0|0).
         knots[knot] = { x: 0, y: 0 };
     }
-
-    // For now, it does not matter if a position has been visited more than once, so we just use the hardcoded value 1.
-    tailPositions.set(toStringWithSeparator(knots[numKnots - 1]), 1);
-
+    var tailPositions = new Set<string>();
+    tailPositions.add(toStringWithSeparator(knots[numKnots - 1]));
     for (var i: number = 0; i < movements.length; i++) {
         var move = movements[i];
         for (var step: number = 0; step < move.steps; step++) {
@@ -2101,8 +2098,7 @@ function mapAllTailPositions(movements: Movement[], numKnots: number): Map<strin
             for (var knot: number = 1; knot < numKnots; knot++) {
                 knots[knot] = getNewTailPosition(knots[knot - 1], knots[knot]);
             }
-            // For now, it does not matter if a position has been visited more than once, so we just use the hardcoded value 1.
-            tailPositions.set(toStringWithSeparator(knots[numKnots - 1]), 1);
+            tailPositions.add(toStringWithSeparator(knots[numKnots - 1]));
         }
     }
     return tailPositions;
