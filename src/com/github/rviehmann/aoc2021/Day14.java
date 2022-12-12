@@ -235,6 +235,7 @@ public class Day14 {
     }
 
     public static long doPuzzle2() {
+        // Good idea, will try: https://ghost.kevintarta.com/aoc-2021-day-14/
         String current = REAL_TEMPLATE;
         Map<String, String> ruleMap = buildRuleMap(REAL_RULES_ARRAY);
 
