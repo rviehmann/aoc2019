@@ -109,22 +109,22 @@ const REAL_TREES_AS_TEXT = `2021202110202201001312313000320214303204140255234254
 012222011131320223314434023203204242422214333553453521411121253534102241322012401302102303122022201`;
 
 function getTreesAsArray(treesAsString: string): number[][] {
-    var multilineString = treesAsString.split(/\r?\n/);
-    var output: number[][] = [];
-    var lineSplit = multilineString[0].split("");
-    for (var x: number = 0; x < lineSplit.length; x++) {
+    const multilineString = treesAsString.split(/\r?\n/);
+    const output: number[][] = [];
+    let lineSplit = multilineString[0].split("");
+    for (let x: number = 0; x < lineSplit.length; x++) {
         output[x] = [];
     }
-    for (var y: number = 0; y < multilineString.length; y++) {
-        var lineSplit = multilineString[y].split("");
-        for (var x: number = 0; x < lineSplit.length; x++) {
+    for (let y: number = 0; y < multilineString.length; y++) {
+        let lineSplit = multilineString[y].split("");
+        for (let x: number = 0; x < lineSplit.length; x++) {
             output[x][y] = Number(lineSplit[x]);
         }
     }
     // output.length is the length of one row, output[0].length is the number of rows.
     const dimensions = [output.length, output[0].length];
-    for (var y: number = 0; y < output[0].length; y++) {
-        for (var x: number = 0; x < output.length; x++) {
+    for (let y: number = 0; y < output[0].length; y++) {
+        for (let x: number = 0; x < output.length; x++) {
             // console.log("x:" + x + " y: " + y + " value: " + output[x][y]);
         }
     }
@@ -133,13 +133,13 @@ function getTreesAsArray(treesAsString: string): number[][] {
 
 function calculateVisibilityForAll(trees: number[][]): boolean[][] {
     // Prepare array
-    var output: boolean[][] = [];
-    for (var x: number = 0; x < trees.length; x++) {
+    const output: boolean[][] = [];
+    for (let x: number = 0; x < trees.length; x++) {
         output[x] = [];
     }
     // Fill array
-    for (var y: number = 0; y < trees[0].length; y++) {
-        for (var x: number = 0; x < trees.length; x++) {
+    for (let y: number = 0; y < trees[0].length; y++) {
+        for (let x: number = 0; x < trees.length; x++) {
             output[x][y] = calculateVisibilityForOne(trees, x, y);
         }
     }
@@ -153,29 +153,29 @@ function calculateVisibilityForOne(trees: number[][], x: number, y: number): boo
     if (y == 0 || y == (trees[0].length - 1)) {
         return true; // Left or right edge, visible
     }
-    var northVisible = true;
-    var southVisible = true;
-    var eastVisible = true;
-    var westVisible = true;
-    for (var tempX: number = x - 1; tempX >= 0; tempX--) {
+    let northVisible = true;
+    let southVisible = true;
+    let eastVisible = true;
+    let westVisible = true;
+    for (let tempX: number = x - 1; tempX >= 0; tempX--) {
         if (trees[tempX][y] >= trees[x][y]) {
             eastVisible = false; // Hidden by bigger tree
             break;
         }
     }
-    for (var tempX: number = x + 1; tempX < trees.length; tempX++) {
+    for (let tempX: number = x + 1; tempX < trees.length; tempX++) {
         if (trees[tempX][y] >= trees[x][y]) {
             westVisible = false; // Hidden by bigger tree
             break;
         }
     }
-    for (var tempY: number = y - 1; tempY >= 0; tempY--) {
+    for (let tempY: number = y - 1; tempY >= 0; tempY--) {
         if (trees[x][tempY] >= trees[x][y]) {
             northVisible = false; // Hidden by bigger tree
             break;
         }
     }
-    for (var tempY: number = y + 1; tempY < trees[0].length; tempY++) {
+    for (let tempY: number = y + 1; tempY < trees[0].length; tempY++) {
         if (trees[x][tempY] >= trees[x][y]) {
             southVisible = false; // Hidden by bigger tree
             break;
@@ -185,10 +185,10 @@ function calculateVisibilityForOne(trees: number[][], x: number, y: number): boo
 }
 
 function countVisible(trees: boolean[][]): number {
-    var count = 0;
-    for (var y: number = 0; y < trees[0].length; y++) {
-        var buffer = "";
-        for (var x: number = 0; x < trees.length; x++) {
+    let count = 0;
+    for (let y: number = 0; y < trees[0].length; y++) {
+        let buffer = "";
+        for (let x: number = 0; x < trees.length; x++) {
             count += (trees[x][y] ? 1 : 0);
             buffer += (trees[x][y] ? "1" : "0");
         }
@@ -199,13 +199,13 @@ function countVisible(trees: boolean[][]): number {
 
 function calculateScenicScoreForAll(trees: number[][]): number[][] {
     // Prepare array
-    var output: number[][] = [];
-    for (var x: number = 0; x < trees.length; x++) {
+    const output: number[][] = [];
+    for (let x: number = 0; x < trees.length; x++) {
         output[x] = [];
     }
     // Fill array
-    for (var y: number = 0; y < trees[0].length; y++) {
-        for (var x: number = 0; x < trees.length; x++) {
+    for (let y: number = 0; y < trees[0].length; y++) {
+        for (let x: number = 0; x < trees.length; x++) {
             output[x][y] = calculateScenicScoreForOne(trees, x, y);
         }
     }
@@ -219,29 +219,29 @@ function calculateScenicScoreForOne(trees: number[][], x: number, y: number): nu
     if (y == 0 || y == (trees[0].length - 1)) {
         return 0; // Left or right edge, edges always have 0.
     }
-    var northVisible = 0;
-    var southVisible = 0;
-    var eastVisible = 0;
-    var westVisible = 0;
-    for (var tempX: number = x - 1; tempX >= 0; tempX--) {
+    let northVisible = 0;
+    let southVisible = 0;
+    let eastVisible = 0;
+    let westVisible = 0;
+    for (let tempX: number = x - 1; tempX >= 0; tempX--) {
         eastVisible++;
         if (trees[tempX][y] >= trees[x][y]) {
             break;
         }
     }
-    for (var tempX: number = x + 1; tempX < trees.length; tempX++) {
+    for (let tempX: number = x + 1; tempX < trees.length; tempX++) {
         westVisible++;
         if (trees[tempX][y] >= trees[x][y]) {
             break;
         }
     }
-    for (var tempY: number = y - 1; tempY >= 0; tempY--) {
+    for (let tempY: number = y - 1; tempY >= 0; tempY--) {
         northVisible++;
         if (trees[x][tempY] >= trees[x][y]) {
             break;
         }
     }
-    for (var tempY: number = y + 1; tempY < trees[0].length; tempY++) {
+    for (let tempY: number = y + 1; tempY < trees[0].length; tempY++) {
         southVisible++;
         if (trees[x][tempY] >= trees[x][y]) {
             break;
@@ -251,8 +251,8 @@ function calculateScenicScoreForOne(trees: number[][], x: number, y: number): nu
 }
 
 function getHighestScore(scores: number[][]) {
-    var highscore = 0;
-    for (var x: number = 0; x < scores.length; x++) {
+    let highscore = 0;
+    for (let x: number = 0; x < scores.length; x++) {
         highscore = Math.max(highscore, Math.max(...scores[x]));
     }
     return highscore;
@@ -261,15 +261,15 @@ function getHighestScore(scores: number[][]) {
 console.log("Year 2022, Day 08, Puzzle 1");
 
 // Example
-var trees = getTreesAsArray(SAMPLE_TREES_AS_TEXT);
-var visibility = calculateVisibilityForAll(trees);
-var visible = countVisible(visibility);
+let trees = getTreesAsArray(SAMPLE_TREES_AS_TEXT);
+let visibility = calculateVisibilityForAll(trees);
+let visible = countVisible(visibility);
 console.log("Visible trees (example): " + visible);
 
 // Real
-var trees = getTreesAsArray(REAL_TREES_AS_TEXT);
-var visibility = calculateVisibilityForAll(trees);
-var visible = countVisible(visibility);
+trees = getTreesAsArray(REAL_TREES_AS_TEXT);
+visibility = calculateVisibilityForAll(trees);
+visible = countVisible(visibility);
 console.log("Visible trees (real): " + visible);
 
 // ---------------------------------------------------------------
@@ -277,13 +277,13 @@ console.log("Visible trees (real): " + visible);
 console.log("Year 2022, Day 08, Puzzle 2");
 
 // Example
-var trees = getTreesAsArray(SAMPLE_TREES_AS_TEXT);
-var scores = calculateScenicScoreForAll(trees);
-var highscore = getHighestScore(scores);
+trees = getTreesAsArray(SAMPLE_TREES_AS_TEXT);
+let scores = calculateScenicScoreForAll(trees);
+let highscore = getHighestScore(scores);
 console.log("Highscore (example): " + highscore);
 
 // Real
-var trees = getTreesAsArray(REAL_TREES_AS_TEXT);
-var scores = calculateScenicScoreForAll(trees);
-var highscore = getHighestScore(scores);
+trees = getTreesAsArray(REAL_TREES_AS_TEXT);
+scores = calculateScenicScoreForAll(trees);
+highscore = getHighestScore(scores);
 console.log("Highscore (real): " + highscore);

@@ -2032,24 +2032,24 @@ interface Movement {
 }
 
 function parseIntoMovements(movementsAsString: string): Movement[] {
-    var movements = movementsAsString.split(/\r?\n/);
-    var output: Movement[] = [];
-    for (var i: number = 0; i < movements.length; i++) {
+    const movements = movementsAsString.split(/\r?\n/);
+    const output: Movement[] = [];
+    for (let i: number = 0; i < movements.length; i++) {
         output[i] = parseIntoMovement(movements[i]);
     }
     return output;
 }
 
 function parseIntoMovement(movementAsString: string): Movement {
-    var input = movementAsString.split(/ /);
+    const input = movementAsString.split(/ /);
     return { direction: input[0], steps: Number(input[1]) };
 }
 
 function getNewTailPosition(head: Position, tail: Position): Position {
     if (!tailNeedsToMove(head, tail)) { return tail; }
 
-    var x = tail.x;
-    var y = tail.y;
+    let x = tail.x;
+    let y = tail.y;
 
     if ((head.x - tail.x) >= 1) { x++; }
     else if ((head.x - tail.x) <= -1) { x--; }
@@ -2061,8 +2061,8 @@ function getNewTailPosition(head: Position, tail: Position): Position {
 }
 
 function tailNeedsToMove(head: Position, tail: Position): boolean {
-    var diffX = Math.abs(head.x - tail.x);
-    var diffY = Math.abs(head.y - tail.y);
+    const diffX = Math.abs(head.x - tail.x);
+    const diffY = Math.abs(head.y - tail.y);
     return diffX > 1 || diffY > 1;
 }
 
@@ -2084,18 +2084,18 @@ function getNewHeadPosition(head: Position, direction: string): Position {
 
 function mapAllTailPositions(movements: Movement[], numKnots: number): Set<string> {
     // knots[0] is the head, the last knot in the array is the tail.
-    var knots: Position[] = [];
-    for (var knot: number = 0; knot < numKnots; knot++) {
+    const knots: Position[] = [];
+    for (let knot: number = 0; knot < numKnots; knot++) {
         // All knots start in the same place (0|0).
         knots[knot] = { x: 0, y: 0 };
     }
-    var tailPositions = new Set<string>();
+    const tailPositions = new Set<string>();
     tailPositions.add(toStringWithSeparator(knots[numKnots - 1]));
-    for (var i: number = 0; i < movements.length; i++) {
-        var move = movements[i];
-        for (var step: number = 0; step < move.steps; step++) {
+    for (let i: number = 0; i < movements.length; i++) {
+        const move = movements[i];
+        for (let step: number = 0; step < move.steps; step++) {
             knots[0] = getNewHeadPosition(knots[0], move.direction);
-            for (var knot: number = 1; knot < numKnots; knot++) {
+            for (let knot: number = 1; knot < numKnots; knot++) {
                 knots[knot] = getNewTailPosition(knots[knot - 1], knots[knot]);
             }
             tailPositions.add(toStringWithSeparator(knots[numKnots - 1]));
@@ -2107,16 +2107,16 @@ function mapAllTailPositions(movements: Movement[], numKnots: number): Set<strin
 console.log("Year 2022, Day 09, Puzzle 1");
 
 // Example
-var movements = parseIntoMovements(SAMPLE_MOVEMENTS1_AS_TEXT);
-var tailPositions = mapAllTailPositions(movements, 2);
+let movements = parseIntoMovements(SAMPLE_MOVEMENTS1_AS_TEXT);
+let tailPositions = mapAllTailPositions(movements, 2);
 for (let [key, value] of tailPositions) {
     // console.log(key, value);
 }
 console.log("Unique positions (example): " + tailPositions.size);
 
 // Real
-var movements = parseIntoMovements(REAL_MOVEMENTS_AS_TEXT);
-var tailPositions = mapAllTailPositions(movements, 2);
+movements = parseIntoMovements(REAL_MOVEMENTS_AS_TEXT);
+tailPositions = mapAllTailPositions(movements, 2);
 console.log("Unique positions (real): " + tailPositions.size);
 
 // ---------------------------------------------------------------
@@ -2124,15 +2124,15 @@ console.log("Unique positions (real): " + tailPositions.size);
 console.log("Year 2022, Day 09, Puzzle 2");
 
 // Example
-var movements = parseIntoMovements(SAMPLE_MOVEMENTS1_AS_TEXT);
-var tailPositions = mapAllTailPositions(movements, 10);
+movements = parseIntoMovements(SAMPLE_MOVEMENTS1_AS_TEXT);
+tailPositions = mapAllTailPositions(movements, 10);
 console.log("Unique positions (example 1): " + tailPositions.size);
 
-var movements = parseIntoMovements(SAMPLE_MOVEMENTS2_AS_TEXT);
-var tailPositions = mapAllTailPositions(movements, 10);
+movements = parseIntoMovements(SAMPLE_MOVEMENTS2_AS_TEXT);
+tailPositions = mapAllTailPositions(movements, 10);
 console.log("Unique positions (example 2): " + tailPositions.size);
 
 // Real
-var movements = parseIntoMovements(REAL_MOVEMENTS_AS_TEXT);
-var tailPositions = mapAllTailPositions(movements, 10);
+movements = parseIntoMovements(REAL_MOVEMENTS_AS_TEXT);
+tailPositions = mapAllTailPositions(movements, 10);
 console.log("Unique positions (real): " + tailPositions.size);

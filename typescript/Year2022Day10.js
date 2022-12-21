@@ -287,32 +287,32 @@ noop
 noop
 noop`;
 function parseIntoCommands(commandsAsString) {
-    var commands = commandsAsString.split(/\r?\n/);
-    var output = [];
-    for (var i = 0; i < commands.length; i++) {
+    const commands = commandsAsString.split(/\r?\n/);
+    const output = [];
+    for (let i = 0; i < commands.length; i++) {
         output[i] = parseIntoCommand(commands[i]);
     }
     return output;
 }
 function parseIntoCommand(commandAsString) {
-    var input = commandAsString.split(/ /);
+    const input = commandAsString.split(/ /);
     if (input.length == 1) {
         return { command: input[0], argument: Number.NaN };
     }
     return { command: input[0], argument: Number(input[1]) };
 }
 function executeCommands(commands) {
-    var registerX = 1;
-    var cycle = 1;
+    let registerX = 1;
+    let cycle = 1;
     // Programm counter, a pointer to the currently executed command
-    var pc = 0;
-    var allCommandsExecuted = false;
-    var cycleForCurrentCommand = 1;
-    var sumStrengths = 0;
+    let pc = 0;
+    let allCommandsExecuted = false;
+    let cycleForCurrentCommand = 1;
+    let sumStrengths = 0;
     const importantCycles = [20, 60, 100, 140, 180, 220];
-    var crtX = 0;
-    var crtY = 0;
-    var crtScreen = "";
+    let crtX = 0;
+    let crtY = 0;
+    let crtScreen = "";
     do {
         if (importantCycles.includes(cycle)) {
             sumStrengths += (registerX * cycle);
@@ -329,8 +329,8 @@ function executeCommands(commands) {
             crtY++;
             crtScreen += "\n";
         }
-        var command = commands[pc];
-        var holdPc = false;
+        const command = commands[pc];
+        let holdPc = false;
         switch (command.command.toLowerCase()) {
             case "addx":
                 if (cycleForCurrentCommand == 2) {
@@ -361,10 +361,10 @@ function executeCommands(commands) {
 }
 console.log("Year 2022, Day 10, Puzzle 1 and 2");
 // Example
-var commands = parseIntoCommands(SAMPLE_COMMANDS_AS_TEXT);
-var result = executeCommands(commands);
+let commands = parseIntoCommands(SAMPLE_COMMANDS_AS_TEXT);
+let result = executeCommands(commands);
 console.log("Result (example): " + result);
 // Real
-var commands = parseIntoCommands(REAL_COMMANDS_AS_TEXT);
-var result = executeCommands(commands);
+commands = parseIntoCommands(REAL_COMMANDS_AS_TEXT);
+result = executeCommands(commands);
 console.log("Result (real): " + result);

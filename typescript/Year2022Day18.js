@@ -2848,29 +2848,29 @@ const REAL_CUBES_AS_TEXT = `7,18,13
 5,6,13
 6,4,10`;
 function parseIntoCubes(cubesAsString) {
-    var cubes = cubesAsString.split(/\r?\n/);
-    var output = [];
-    for (var i = 0; i < cubes.length; i++) {
+    const cubes = cubesAsString.split(/\r?\n/);
+    const output = [];
+    for (let i = 0; i < cubes.length; i++) {
         output[i] = parseIntoCube(cubes[i]);
     }
     return output;
 }
 function parseIntoCube(cubeAsString) {
-    var input = cubeAsString.split(/,/);
+    const input = cubeAsString.split(/,/);
     return { x: Number(input[0]), y: Number(input[1]), z: Number(input[2]) };
 }
 function areNextToEachOther(c1, c2) {
-    var xDiff = Math.abs(c1.x - c2.x);
-    var yDiff = Math.abs(c1.y - c2.y);
-    var zDiff = Math.abs(c1.z - c2.z);
+    const xDiff = Math.abs(c1.x - c2.x);
+    const yDiff = Math.abs(c1.y - c2.y);
+    const zDiff = Math.abs(c1.z - c2.z);
     return (xDiff == 1 && yDiff == 0 && zDiff == 0)
         || (xDiff == 0 && yDiff == 1 && zDiff == 0)
         || (xDiff == 0 && yDiff == 0 && zDiff == 1);
 }
 function calculateSurfaceArea(cubes) {
-    var surfaces = cubes.length * 6;
-    for (var i = 0; i < cubes.length; i++) {
-        for (var j = 0; j < cubes.length; j++) {
+    let surfaces = cubes.length * 6;
+    for (let i = 0; i < cubes.length; i++) {
+        for (let j = 0; j < cubes.length; j++) {
             if (i < j && areNextToEachOther(cubes[i], cubes[j])) {
                 surfaces -= 2;
             }
@@ -2915,8 +2915,8 @@ function findLowestZ(cubes) {
     return Math.min(...cubes.map(extractZ));
 }
 function calculateOuterArea(cubes) {
-    var surfaces = 0;
-    for (var i = 0; i < cubes.length; i++) {
+    let surfaces = 0;
+    for (let i = 0; i < cubes.length; i++) {
         const sameXY = findAllWithSameXY(cubes, cubes[i].x, cubes[i].y);
         if (cubes[i].z == findHighestZ(sameXY))
             surfaces++;

@@ -294,16 +294,16 @@ interface Command {
 }
 
 function parseIntoCommands(commandsAsString: string): Command[] {
-    var commands = commandsAsString.split(/\r?\n/);
-    var output: Command[] = [];
-    for (var i: number = 0; i < commands.length; i++) {
+    const commands = commandsAsString.split(/\r?\n/);
+    const output: Command[] = [];
+    for (let i: number = 0; i < commands.length; i++) {
         output[i] = parseIntoCommand(commands[i]);
     }
     return output;
 }
 
 function parseIntoCommand(commandAsString: string): Command {
-    var input = commandAsString.split(/ /);
+    const input = commandAsString.split(/ /);
     if (input.length == 1) {
         return { command: input[0], argument: Number.NaN };
     }
@@ -311,18 +311,18 @@ function parseIntoCommand(commandAsString: string): Command {
 }
 
 function executeCommands(commands: Command[]): number {
-    var registerX: number = 1;
-    var cycle: number = 1;
+    let registerX: number = 1;
+    let cycle: number = 1;
     // Programm counter, a pointer to the currently executed command
-    var pc: number = 0;
-    var allCommandsExecuted: boolean = false;
-    var cycleForCurrentCommand: number = 1;
-    var sumStrengths: number = 0;
+    let pc: number = 0;
+    let allCommandsExecuted: boolean = false;
+    let cycleForCurrentCommand: number = 1;
+    let sumStrengths: number = 0;
     const importantCycles: number[] = [20, 60, 100, 140, 180, 220];
 
-    var crtX: number = 0;
-    var crtY: number = 0;
-    var crtScreen: string = "";
+    let crtX: number = 0;
+    let crtY: number = 0;
+    let crtScreen: string = "";
 
     do {
         if (importantCycles.includes(cycle)) {
@@ -341,8 +341,8 @@ function executeCommands(commands: Command[]): number {
             crtScreen += "\n";
         }
 
-        var command: Command = commands[pc];
-        var holdPc: boolean = false;
+        const command: Command = commands[pc];
+        let holdPc: boolean = false;
         switch (command.command.toLowerCase()) {
             case "addx":
                 if (cycleForCurrentCommand == 2) {
@@ -375,11 +375,11 @@ function executeCommands(commands: Command[]): number {
 console.log("Year 2022, Day 10, Puzzle 1 and 2");
 
 // Example
-var commands = parseIntoCommands(SAMPLE_COMMANDS_AS_TEXT);
-var result = executeCommands(commands);
+let commands = parseIntoCommands(SAMPLE_COMMANDS_AS_TEXT);
+let result = executeCommands(commands);
 console.log("Result (example): " + result);
 
 // Real
-var commands = parseIntoCommands(REAL_COMMANDS_AS_TEXT);
-var result = executeCommands(commands);
+commands = parseIntoCommands(REAL_COMMANDS_AS_TEXT);
+result = executeCommands(commands);
 console.log("Result (real): " + result);
