@@ -2890,49 +2890,46 @@ function findAllWithSameYZ(cubes, y, z) {
     const condition = (c) => c.y == y && c.z == z;
     return cubes.filter(condition);
 }
+const extractX = (c) => c.x;
+const extractY = (c) => c.y;
+const extractZ = (c) => c.z;
 function findHighestX(cubes) {
-    const extractX = (c) => c.x;
     return Math.max(...cubes.map(extractX));
 }
 function findLowestX(cubes) {
-    const extractX = (c) => c.x;
     return Math.min(...cubes.map(extractX));
 }
 function findHighestY(cubes) {
-    const extractY = (c) => c.y;
     return Math.max(...cubes.map(extractY));
 }
 function findLowestY(cubes) {
-    const extractY = (c) => c.y;
     return Math.min(...cubes.map(extractY));
 }
 function findHighestZ(cubes) {
-    const extractZ = (c) => c.z;
     return Math.max(...cubes.map(extractZ));
 }
 function findLowestZ(cubes) {
-    const extractZ = (c) => c.z;
     return Math.min(...cubes.map(extractZ));
 }
 function calculateOuterArea(cubes) {
     let surfaces = 0;
-    for (let i = 0; i < cubes.length; i++) {
-        const sameXY = findAllWithSameXY(cubes, cubes[i].x, cubes[i].y);
-        if (cubes[i].z == findHighestZ(sameXY))
+    cubes.forEach((c) => {
+        const sameXY = findAllWithSameXY(cubes, c.x, c.y);
+        if (c.z == findHighestZ(sameXY))
             surfaces++;
-        if (cubes[i].z == findLowestZ(sameXY))
+        if (c.z == findLowestZ(sameXY))
             surfaces++;
-        const sameXZ = findAllWithSameXZ(cubes, cubes[i].x, cubes[i].z);
-        if (cubes[i].y == findHighestY(sameXZ))
+        const sameXZ = findAllWithSameXZ(cubes, c.x, c.z);
+        if (c.y == findHighestY(sameXZ))
             surfaces++;
-        if (cubes[i].y == findLowestY(sameXZ))
+        if (c.y == findLowestY(sameXZ))
             surfaces++;
-        const sameYZ = findAllWithSameYZ(cubes, cubes[i].y, cubes[i].z);
-        if (cubes[i].x == findHighestX(sameYZ))
+        const sameYZ = findAllWithSameYZ(cubes, c.y, c.z);
+        if (c.x == findHighestX(sameYZ))
             surfaces++;
-        if (cubes[i].x == findLowestX(sameYZ))
+        if (c.x == findLowestX(sameYZ))
             surfaces++;
-    }
+    });
     return surfaces;
 }
 console.log("Year 2022, Day 18, Puzzle 1");

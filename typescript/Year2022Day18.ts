@@ -2904,48 +2904,44 @@ function findAllWithSameYZ(cubes: Cube[], y: number, z: number): Cube[] {
     return cubes.filter(condition);
 }
 
+const extractX = (c: Cube): number => c.x;
+const extractY = (c: Cube): number => c.y;
+const extractZ = (c: Cube): number => c.z;
+
 function findHighestX(cubes: Cube[]): number {
-    const extractX = (c: Cube): number => c.x;
     return Math.max(...cubes.map(extractX));
 }
 function findLowestX(cubes: Cube[]): number {
-    const extractX = (c: Cube): number => c.x;
     return Math.min(...cubes.map(extractX));
 }
-
 function findHighestY(cubes: Cube[]): number {
-    const extractY = (c: Cube): number => c.y;
     return Math.max(...cubes.map(extractY));
 }
 function findLowestY(cubes: Cube[]): number {
-    const extractY = (c: Cube): number => c.y;
     return Math.min(...cubes.map(extractY));
 }
-
 function findHighestZ(cubes: Cube[]): number {
-    const extractZ = (c: Cube): number => c.z;
     return Math.max(...cubes.map(extractZ));
 }
 function findLowestZ(cubes: Cube[]): number {
-    const extractZ = (c: Cube): number => c.z;
     return Math.min(...cubes.map(extractZ));
 }
 
 function calculateOuterArea(cubes: Cube[]) {
     let surfaces = 0;
-    for (let i = 0; i < cubes.length; i++) {
-        const sameXY: Cube[] = findAllWithSameXY(cubes, cubes[i].x, cubes[i].y);
-        if (cubes[i].z == findHighestZ(sameXY)) surfaces++;
-        if (cubes[i].z == findLowestZ(sameXY)) surfaces++;
+    cubes.forEach((c: Cube) => {
+        const sameXY: Cube[] = findAllWithSameXY(cubes, c.x, c.y);
+        if (c.z == findHighestZ(sameXY)) surfaces++;
+        if (c.z == findLowestZ(sameXY)) surfaces++;
 
-        const sameXZ: Cube[] = findAllWithSameXZ(cubes, cubes[i].x, cubes[i].z);
-        if (cubes[i].y == findHighestY(sameXZ)) surfaces++;
-        if (cubes[i].y == findLowestY(sameXZ)) surfaces++;
+        const sameXZ: Cube[] = findAllWithSameXZ(cubes, c.x, c.z);
+        if (c.y == findHighestY(sameXZ)) surfaces++;
+        if (c.y == findLowestY(sameXZ)) surfaces++;
 
-        const sameYZ: Cube[] = findAllWithSameYZ(cubes, cubes[i].y, cubes[i].z);
-        if (cubes[i].x == findHighestX(sameYZ)) surfaces++;
-        if (cubes[i].x == findLowestX(sameYZ)) surfaces++;
-    }
+        const sameYZ: Cube[] = findAllWithSameYZ(cubes, c.y, c.z);
+        if (c.x == findHighestX(sameYZ)) surfaces++;
+        if (c.x == findLowestX(sameYZ)) surfaces++;
+    });
     return surfaces;
 }
 
