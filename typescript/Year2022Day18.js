@@ -2848,12 +2848,7 @@ const REAL_CUBES_AS_TEXT = `7,18,13
 5,6,13
 6,4,10`;
 function parseIntoCubes(cubesAsString) {
-    const cubes = cubesAsString.split(/\r?\n/);
-    const output = [];
-    for (let i = 0; i < cubes.length; i++) {
-        output[i] = parseIntoCube(cubes[i]);
-    }
-    return output;
+    return cubesAsString.split(/\r?\n/).map(parseIntoCube);
 }
 function parseIntoCube(cubeAsString) {
     const input = cubeAsString.split(/,/);

@@ -2032,12 +2032,7 @@ interface Movement {
 }
 
 function parseIntoMovements(movementsAsString: string): Movement[] {
-    const movements = movementsAsString.split(/\r?\n/);
-    const output: Movement[] = [];
-    for (let i: number = 0; i < movements.length; i++) {
-        output[i] = parseIntoMovement(movements[i]);
-    }
-    return output;
+    return movementsAsString.split(/\r?\n/).map(parseIntoMovement);
 }
 
 function parseIntoMovement(movementAsString: string): Movement {

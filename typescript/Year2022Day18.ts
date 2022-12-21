@@ -2857,12 +2857,7 @@ interface Cube {
 }
 
 function parseIntoCubes(cubesAsString: string): Cube[] {
-    const cubes = cubesAsString.split(/\r?\n/);
-    const output: Cube[] = [];
-    for (let i: number = 0; i < cubes.length; i++) {
-        output[i] = parseIntoCube(cubes[i]);
-    }
-    return output;
+    return cubesAsString.split(/\r?\n/).map(parseIntoCube);
 }
 
 function parseIntoCube(cubeAsString: string): Cube {

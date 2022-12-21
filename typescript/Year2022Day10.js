@@ -287,12 +287,7 @@ noop
 noop
 noop`;
 function parseIntoCommands(commandsAsString) {
-    const commands = commandsAsString.split(/\r?\n/);
-    const output = [];
-    for (let i = 0; i < commands.length; i++) {
-        output[i] = parseIntoCommand(commands[i]);
-    }
-    return output;
+    return commandsAsString.split(/\r?\n/).map(parseIntoCommand);
 }
 function parseIntoCommand(commandAsString) {
     const input = commandAsString.split(/ /);

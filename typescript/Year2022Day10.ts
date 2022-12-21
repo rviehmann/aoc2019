@@ -294,12 +294,7 @@ interface Command {
 }
 
 function parseIntoCommands(commandsAsString: string): Command[] {
-    const commands = commandsAsString.split(/\r?\n/);
-    const output: Command[] = [];
-    for (let i: number = 0; i < commands.length; i++) {
-        output[i] = parseIntoCommand(commands[i]);
-    }
-    return output;
+    return commandsAsString.split(/\r?\n/).map(parseIntoCommand);
 }
 
 function parseIntoCommand(commandAsString: string): Command {

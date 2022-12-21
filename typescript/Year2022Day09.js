@@ -2018,12 +2018,7 @@ function toStringWithSeparator(position) {
     return position.x + "|" + position.y;
 }
 function parseIntoMovements(movementsAsString) {
-    const movements = movementsAsString.split(/\r?\n/);
-    const output = [];
-    for (let i = 0; i < movements.length; i++) {
-        output[i] = parseIntoMovement(movements[i]);
-    }
-    return output;
+    return movementsAsString.split(/\r?\n/).map(parseIntoMovement);
 }
 function parseIntoMovement(movementAsString) {
     const input = movementAsString.split(/ /);
