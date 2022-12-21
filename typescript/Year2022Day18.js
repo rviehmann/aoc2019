@@ -2878,9 +2878,73 @@ function calculateSurfaceArea(cubes) {
     }
     return surfaces;
 }
+function findAllWithSameXY(cubes, x, y) {
+    const condition = (c) => c.x == x && c.y == y;
+    return cubes.filter(condition);
+}
+function findAllWithSameXZ(cubes, x, z) {
+    const condition = (c) => c.x == x && c.z == z;
+    return cubes.filter(condition);
+}
+function findAllWithSameYZ(cubes, y, z) {
+    const condition = (c) => c.y == y && c.z == z;
+    return cubes.filter(condition);
+}
+function findHighestX(cubes) {
+    const extractX = (c) => c.x;
+    return Math.max(...cubes.map(extractX));
+}
+function findLowestX(cubes) {
+    const extractX = (c) => c.x;
+    return Math.min(...cubes.map(extractX));
+}
+function findHighestY(cubes) {
+    const extractY = (c) => c.y;
+    return Math.max(...cubes.map(extractY));
+}
+function findLowestY(cubes) {
+    const extractY = (c) => c.y;
+    return Math.min(...cubes.map(extractY));
+}
+function findHighestZ(cubes) {
+    const extractZ = (c) => c.z;
+    return Math.max(...cubes.map(extractZ));
+}
+function findLowestZ(cubes) {
+    const extractZ = (c) => c.z;
+    return Math.min(...cubes.map(extractZ));
+}
+function calculateOuterArea(cubes) {
+    var surfaces = 0;
+    for (var i = 0; i < cubes.length; i++) {
+        const sameXY = findAllWithSameXY(cubes, cubes[i].x, cubes[i].y);
+        if (cubes[i].z == findHighestZ(sameXY))
+            surfaces++;
+        if (cubes[i].z == findLowestZ(sameXY))
+            surfaces++;
+        const sameXZ = findAllWithSameXZ(cubes, cubes[i].x, cubes[i].z);
+        if (cubes[i].y == findHighestY(sameXZ))
+            surfaces++;
+        if (cubes[i].y == findLowestY(sameXZ))
+            surfaces++;
+        const sameYZ = findAllWithSameYZ(cubes, cubes[i].y, cubes[i].z);
+        if (cubes[i].x == findHighestX(sameYZ))
+            surfaces++;
+        if (cubes[i].x == findLowestX(sameYZ))
+            surfaces++;
+    }
+    return surfaces;
+}
 console.log("Year 2022, Day 18, Puzzle 1");
 // Example
 console.log("Result (example 1): " + calculateSurfaceArea(parseIntoCubes(SAMPLE_CUBES1_AS_TEXT)));
 console.log("Result (example 2): " + calculateSurfaceArea(parseIntoCubes(SAMPLE_CUBES2_AS_TEXT)));
 // Real
 console.log("Result (real): " + calculateSurfaceArea(parseIntoCubes(REAL_CUBES_AS_TEXT)));
+// ---------------------------------------------------------------
+console.log("Year 2022, Day 18, Puzzle 2");
+// Example
+console.log("Result (example 1): " + calculateOuterArea(parseIntoCubes(SAMPLE_CUBES1_AS_TEXT)));
+console.log("Result (example 2): " + calculateOuterArea(parseIntoCubes(SAMPLE_CUBES2_AS_TEXT)));
+// Real
+console.log("Result (real): " + calculateOuterArea(parseIntoCubes(REAL_CUBES_AS_TEXT)));

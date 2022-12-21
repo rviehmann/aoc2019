@@ -2891,6 +2891,64 @@ function calculateSurfaceArea(cubes: Cube[]) {
     return surfaces;
 }
 
+function findAllWithSameXY(cubes: Cube[], x: number, y: number): Cube[] {
+    const condition = (c: Cube): boolean => c.x == x && c.y == y;
+    return cubes.filter(condition);
+}
+function findAllWithSameXZ(cubes: Cube[], x: number, z: number): Cube[] {
+    const condition = (c: Cube): boolean => c.x == x && c.z == z;
+    return cubes.filter(condition);
+}
+function findAllWithSameYZ(cubes: Cube[], y: number, z: number): Cube[] {
+    const condition = (c: Cube): boolean => c.y == y && c.z == z;
+    return cubes.filter(condition);
+}
+
+function findHighestX(cubes: Cube[]): number {
+    const extractX = (c: Cube): number => c.x;
+    return Math.max(...cubes.map(extractX));
+}
+function findLowestX(cubes: Cube[]): number {
+    const extractX = (c: Cube): number => c.x;
+    return Math.min(...cubes.map(extractX));
+}
+
+function findHighestY(cubes: Cube[]): number {
+    const extractY = (c: Cube): number => c.y;
+    return Math.max(...cubes.map(extractY));
+}
+function findLowestY(cubes: Cube[]): number {
+    const extractY = (c: Cube): number => c.y;
+    return Math.min(...cubes.map(extractY));
+}
+
+function findHighestZ(cubes: Cube[]): number {
+    const extractZ = (c: Cube): number => c.z;
+    return Math.max(...cubes.map(extractZ));
+}
+function findLowestZ(cubes: Cube[]): number {
+    const extractZ = (c: Cube): number => c.z;
+    return Math.min(...cubes.map(extractZ));
+}
+
+function calculateOuterArea(cubes: Cube[]) {
+    var surfaces = 0;
+    for (var i = 0; i < cubes.length; i++) {
+        const sameXY: Cube[] = findAllWithSameXY(cubes, cubes[i].x, cubes[i].y);
+        if (cubes[i].z == findHighestZ(sameXY)) surfaces++;
+        if (cubes[i].z == findLowestZ(sameXY)) surfaces++;
+
+        const sameXZ: Cube[] = findAllWithSameXZ(cubes, cubes[i].x, cubes[i].z);
+        if (cubes[i].y == findHighestY(sameXZ)) surfaces++;
+        if (cubes[i].y == findLowestY(sameXZ)) surfaces++;
+
+        const sameYZ: Cube[] = findAllWithSameYZ(cubes, cubes[i].y, cubes[i].z);
+        if (cubes[i].x == findHighestX(sameYZ)) surfaces++;
+        if (cubes[i].x == findLowestX(sameYZ)) surfaces++;
+    }
+    return surfaces;
+}
+
 console.log("Year 2022, Day 18, Puzzle 1");
 
 // Example
@@ -2899,3 +2957,14 @@ console.log("Result (example 2): " + calculateSurfaceArea(parseIntoCubes(SAMPLE_
 
 // Real
 console.log("Result (real): " + calculateSurfaceArea(parseIntoCubes(REAL_CUBES_AS_TEXT)));
+
+// ---------------------------------------------------------------
+
+console.log("Year 2022, Day 18, Puzzle 2");
+
+// Example
+console.log("Result (example 1): " + calculateOuterArea(parseIntoCubes(SAMPLE_CUBES1_AS_TEXT)));
+console.log("Result (example 2): " + calculateOuterArea(parseIntoCubes(SAMPLE_CUBES2_AS_TEXT)));
+
+// Real
+console.log("Result (real): " + calculateOuterArea(parseIntoCubes(REAL_CUBES_AS_TEXT)));
