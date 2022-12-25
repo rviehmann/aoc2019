@@ -111,12 +111,12 @@ const REAL_TREES_AS_TEXT = `2021202110202201001312313000320214303204140255234254
 function getTreesAsArray(treesAsString: string): number[][] {
     const multilineString = treesAsString.split(/\r?\n/);
     const output: number[][] = [];
-    let lineSplit = multilineString[0].split("");
+    const lineSplit = multilineString[0].split("");
     for (let x: number = 0; x < lineSplit.length; x++) {
         output[x] = [];
     }
     for (let y: number = 0; y < multilineString.length; y++) {
-        let lineSplit = multilineString[y].split("");
+        const lineSplit = multilineString[y].split("");
         for (let x: number = 0; x < lineSplit.length; x++) {
             output[x][y] = Number(lineSplit[x]);
         }
