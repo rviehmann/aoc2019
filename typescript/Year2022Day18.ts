@@ -2856,6 +2856,21 @@ interface Cube {
     z: number;
 }
 
+interface Position {
+    x: number;
+    y: number;
+    z: number;
+}
+
+interface BoundingBox {
+    minX: number;
+    minY: number;
+    minZ: number;
+    maxX: number;
+    maxY: number;
+    maxZ: number;
+}
+
 function parseIntoCubes(cubesAsString: string): Cube[] {
     return cubesAsString.split(/\r?\n/).map(parseIntoCube);
 }
@@ -2922,22 +2937,104 @@ function findLowestZ(cubes: Cube[]): number {
     return Math.min(...cubes.map(extractZ));
 }
 
-function calculateOuterArea(cubes: Cube[]) {
-    let surfaces = 0;
-    cubes.forEach((c: Cube) => {
-        const sameXY: Cube[] = findAllWithSameXY(cubes, c.x, c.y);
-        if (c.z == findHighestZ(sameXY)) surfaces++;
-        if (c.z == findLowestZ(sameXY)) surfaces++;
+enum Material {
+    Air,
+    Water,
+    Lava
+}
 
-        const sameXZ: Cube[] = findAllWithSameXZ(cubes, c.x, c.z);
-        if (c.y == findHighestY(sameXZ)) surfaces++;
-        if (c.y == findLowestY(sameXZ)) surfaces++;
+function createBoundingBox(cubes: Cube[]): BoundingBox {
+    return {
+        // It has to surround the structure on all sides.
+        minX: findLowestX(cubes) - 1,
+        minY: findLowestY(cubes) - 1,
+        minZ: findLowestZ(cubes) - 1,
+        maxX: findHighestX(cubes) + 1,
+        maxY: findHighestY(cubes) + 1,
+        maxZ: findHighestZ(cubes) + 1
+    };
+}
 
-        const sameYZ: Cube[] = findAllWithSameYZ(cubes, c.y, c.z);
-        if (c.x == findHighestX(sameYZ)) surfaces++;
-        if (c.x == findLowestX(sameYZ)) surfaces++;
-    });
-    return surfaces;
+function hasCube(cubes: Cube[], x: number, y: number, z: number): boolean {
+    const condition = (c: Cube): boolean => c.x == x && c.y == y && c.z == z;
+    return cubes.filter(condition).length > 0;
+}
+
+function isInsideBox(boundingBox: BoundingBox, x: number, y: number, z: number): boolean {
+    return x >= boundingBox.minX
+        && y >= boundingBox.minY
+        && z >= boundingBox.minZ
+        && x <= boundingBox.maxX
+        && y <= boundingBox.maxY
+        && z <= boundingBox.maxZ;
+}
+
+function getNeighbors(c: Position): Position[] {
+    return [
+        { x: c.x - 1, y: c.y, z: c.z },
+        { x: c.x + 1, y: c.y, z: c.z },
+        { x: c.x, y: c.y - 1, z: c.z },
+        { x: c.x, y: c.y + 1, z: c.z },
+        { x: c.x, y: c.y, z: c.z - 1 },
+        { x: c.x, y: c.y, z: c.z + 1 }
+    ];
+}
+
+function fillBox(cubes: Cube[], boundingBox: BoundingBox): Material[][][] {
+    // Flood fill algorithm, very much inspired by: https://github.com/ash42/adventofcode/blob/main/adventofcode2022/src/nl/michielgraat/adventofcode2022/day18/Day18.java
+    const box: Material[][][] = [];
+    for (let x: number = boundingBox.minX; x <= boundingBox.maxX; x++) {
+        box[x] = [];
+        for (let y: number = boundingBox.minY; y <= boundingBox.maxY; y++) {
+            box[x][y] = [];
+            for (let z: number = boundingBox.minZ; z <= boundingBox.maxZ; z++) {
+                if (hasCube(cubes, x, y, z)) {
+                    box[x][y][z] = Material.Lava;
+                } else {
+                    box[x][y][z] = Material.Air;
+                }
+            }
+        }
+    }
+
+    const toVisit: Array<Position> = new Array<Position>();
+    toVisit.push({ x: boundingBox.minX, y: boundingBox.minY, z: boundingBox.minZ });
+
+    while (!(toVisit.length == 0)) {
+        const pos: Position = toVisit.pop() as Position;
+
+        if (box[pos.x][pos.y][pos.z] == Material.Air) {
+            box[pos.x][pos.y][pos.z] = Material.Water;
+            toVisit.push(...
+                getNeighbors(pos)
+                    .filter((n) => isInsideBox(boundingBox, n.x, n.y, n.z))
+                    .filter((n) => box[n.x][n.y][n.z] == Material.Air)
+            );
+        }
+    }
+
+    return box;
+}
+
+function calculateOuterArea(cubes: Cube[]): number {
+    const boundingBox = createBoundingBox(cubes);
+    // console.log("Bounding box calculated, with values: minX=" + boundingBox.minX + ", minY=" + boundingBox.minY + ", minZ=" + boundingBox.minZ + ", maxX=" + boundingBox.maxX + ", maxY=" + boundingBox.maxY + ", maxZ=" + boundingBox.maxZ + ".");
+
+    const box = fillBox(cubes, boundingBox);
+    // console.log("Box has been filled.");
+
+    const airBubbles: Array<Position> = new Array<Position>();
+    for (let x: number = boundingBox.minX; x <= boundingBox.maxX; x++) {
+        for (let y: number = boundingBox.minY; y <= boundingBox.maxY; y++) {
+            for (let z: number = boundingBox.minZ; z <= boundingBox.maxZ; z++) {
+                if (box[x][y][z] == Material.Air) {
+                    airBubbles.push({ x: x, y: y, z: z });
+                }
+            }
+        }
+    }
+
+    return calculateSurfaceArea(cubes) - calculateSurfaceArea(airBubbles);
 }
 
 console.log("Year 2022, Day 18, Puzzle 1");

@@ -2906,26 +2906,91 @@ function findHighestZ(cubes) {
 function findLowestZ(cubes) {
     return Math.min(...cubes.map(extractZ));
 }
+var Material;
+(function (Material) {
+    Material[Material["Air"] = 0] = "Air";
+    Material[Material["Water"] = 1] = "Water";
+    Material[Material["Lava"] = 2] = "Lava";
+})(Material || (Material = {}));
+function createBoundingBox(cubes) {
+    return {
+        // It has to surround the structure on all sides.
+        minX: findLowestX(cubes) - 1,
+        minY: findLowestY(cubes) - 1,
+        minZ: findLowestZ(cubes) - 1,
+        maxX: findHighestX(cubes) + 1,
+        maxY: findHighestY(cubes) + 1,
+        maxZ: findHighestZ(cubes) + 1
+    };
+}
+function hasCube(cubes, x, y, z) {
+    const condition = (c) => c.x == x && c.y == y && c.z == z;
+    return cubes.filter(condition).length > 0;
+}
+function isInsideBox(boundingBox, x, y, z) {
+    return x >= boundingBox.minX
+        && y >= boundingBox.minY
+        && z >= boundingBox.minZ
+        && x <= boundingBox.maxX
+        && y <= boundingBox.maxY
+        && z <= boundingBox.maxZ;
+}
+function getNeighbors(c) {
+    return [
+        { x: c.x - 1, y: c.y, z: c.z },
+        { x: c.x + 1, y: c.y, z: c.z },
+        { x: c.x, y: c.y - 1, z: c.z },
+        { x: c.x, y: c.y + 1, z: c.z },
+        { x: c.x, y: c.y, z: c.z - 1 },
+        { x: c.x, y: c.y, z: c.z + 1 }
+    ];
+}
+function fillBox(cubes, boundingBox) {
+    // Flood fill algorithm, very much inspired by: https://github.com/ash42/adventofcode/blob/main/adventofcode2022/src/nl/michielgraat/adventofcode2022/day18/Day18.java
+    const box = [];
+    for (let x = boundingBox.minX; x <= boundingBox.maxX; x++) {
+        box[x] = [];
+        for (let y = boundingBox.minY; y <= boundingBox.maxY; y++) {
+            box[x][y] = [];
+            for (let z = boundingBox.minZ; z <= boundingBox.maxZ; z++) {
+                if (hasCube(cubes, x, y, z)) {
+                    box[x][y][z] = Material.Lava;
+                }
+                else {
+                    box[x][y][z] = Material.Air;
+                }
+            }
+        }
+    }
+    const toVisit = new Array();
+    toVisit.push({ x: boundingBox.minX, y: boundingBox.minY, z: boundingBox.minZ });
+    while (!(toVisit.length == 0)) {
+        const pos = toVisit.pop();
+        if (box[pos.x][pos.y][pos.z] == Material.Air) {
+            box[pos.x][pos.y][pos.z] = Material.Water;
+            toVisit.push(...getNeighbors(pos)
+                .filter((n) => isInsideBox(boundingBox, n.x, n.y, n.z))
+                .filter((n) => box[n.x][n.y][n.z] == Material.Air));
+        }
+    }
+    return box;
+}
 function calculateOuterArea(cubes) {
-    let surfaces = 0;
-    cubes.forEach((c) => {
-        const sameXY = findAllWithSameXY(cubes, c.x, c.y);
-        if (c.z == findHighestZ(sameXY))
-            surfaces++;
-        if (c.z == findLowestZ(sameXY))
-            surfaces++;
-        const sameXZ = findAllWithSameXZ(cubes, c.x, c.z);
-        if (c.y == findHighestY(sameXZ))
-            surfaces++;
-        if (c.y == findLowestY(sameXZ))
-            surfaces++;
-        const sameYZ = findAllWithSameYZ(cubes, c.y, c.z);
-        if (c.x == findHighestX(sameYZ))
-            surfaces++;
-        if (c.x == findLowestX(sameYZ))
-            surfaces++;
-    });
-    return surfaces;
+    const boundingBox = createBoundingBox(cubes);
+    // console.log("Bounding box calculated, with values: minX=" + boundingBox.minX + ", minY=" + boundingBox.minY + ", minZ=" + boundingBox.minZ + ", maxX=" + boundingBox.maxX + ", maxY=" + boundingBox.maxY + ", maxZ=" + boundingBox.maxZ + ".");
+    const box = fillBox(cubes, boundingBox);
+    // console.log("Box has been filled.");
+    const airBubbles = new Array();
+    for (let x = boundingBox.minX; x <= boundingBox.maxX; x++) {
+        for (let y = boundingBox.minY; y <= boundingBox.maxY; y++) {
+            for (let z = boundingBox.minZ; z <= boundingBox.maxZ; z++) {
+                if (box[x][y][z] == Material.Air) {
+                    airBubbles.push({ x: x, y: y, z: z });
+                }
+            }
+        }
+    }
+    return calculateSurfaceArea(cubes) - calculateSurfaceArea(airBubbles);
 }
 console.log("Year 2022, Day 18, Puzzle 1");
 // Example
