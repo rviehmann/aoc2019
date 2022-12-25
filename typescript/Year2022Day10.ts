@@ -308,7 +308,7 @@ function parseIntoCommand(commandAsString: string): Command {
 function executeCommands(commands: Command[]): number {
     let registerX: number = 1;
     let cycle: number = 1;
-    // Programm counter, a pointer to the currently executed command
+    // Program counter, a pointer to the currently executed command
     let pc: number = 0;
     let allCommandsExecuted: boolean = false;
     let cycleForCurrentCommand: number = 1;

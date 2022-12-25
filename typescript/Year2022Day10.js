@@ -299,7 +299,7 @@ function parseIntoCommand(commandAsString) {
 function executeCommands(commands) {
     let registerX = 1;
     let cycle = 1;
-    // Programm counter, a pointer to the currently executed command
+    // Program counter, a pointer to the currently executed command
     let pc = 0;
     let allCommandsExecuted = false;
     let cycleForCurrentCommand = 1;
