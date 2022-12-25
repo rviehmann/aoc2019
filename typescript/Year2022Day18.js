@@ -2953,18 +2953,13 @@ function fillBox(cubes, boundingBox) {
         for (let y = boundingBox.minY; y <= boundingBox.maxY; y++) {
             box[x][y] = [];
             for (let z = boundingBox.minZ; z <= boundingBox.maxZ; z++) {
-                if (hasCube(cubes, x, y, z)) {
-                    box[x][y][z] = Material.Lava;
-                }
-                else {
-                    box[x][y][z] = Material.Air;
-                }
+                box[x][y][z] = hasCube(cubes, x, y, z) ? Material.Lava : Material.Air;
             }
         }
     }
     const toVisit = new Array();
     toVisit.push({ x: boundingBox.minX, y: boundingBox.minY, z: boundingBox.minZ });
-    while (!(toVisit.length == 0)) {
+    while (0 != toVisit.length) {
         const pos = toVisit.pop();
         if (box[pos.x][pos.y][pos.z] == Material.Air) {
             box[pos.x][pos.y][pos.z] = Material.Water;

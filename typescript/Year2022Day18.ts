@@ -2988,11 +2988,7 @@ function fillBox(cubes: Cube[], boundingBox: BoundingBox): Material[][][] {
         for (let y: number = boundingBox.minY; y <= boundingBox.maxY; y++) {
             box[x][y] = [];
             for (let z: number = boundingBox.minZ; z <= boundingBox.maxZ; z++) {
-                if (hasCube(cubes, x, y, z)) {
-                    box[x][y][z] = Material.Lava;
-                } else {
-                    box[x][y][z] = Material.Air;
-                }
+                box[x][y][z] = hasCube(cubes, x, y, z) ? Material.Lava : Material.Air;
             }
         }
     }
@@ -3000,16 +2996,14 @@ function fillBox(cubes: Cube[], boundingBox: BoundingBox): Material[][][] {
     const toVisit: Array<Position> = new Array<Position>();
     toVisit.push({ x: boundingBox.minX, y: boundingBox.minY, z: boundingBox.minZ });
 
-    while (!(toVisit.length == 0)) {
+    while (0 != toVisit.length) {
         const pos: Position = toVisit.pop() as Position;
 
         if (box[pos.x][pos.y][pos.z] == Material.Air) {
             box[pos.x][pos.y][pos.z] = Material.Water;
-            toVisit.push(...
-                getNeighbors(pos)
-                    .filter((n) => isInsideBox(boundingBox, n.x, n.y, n.z))
-                    .filter((n) => box[n.x][n.y][n.z] == Material.Air)
-            );
+            toVisit.push(...getNeighbors(pos)
+                .filter((n) => isInsideBox(boundingBox, n.x, n.y, n.z))
+                .filter((n) => box[n.x][n.y][n.z] == Material.Air));
         }
     }
 
