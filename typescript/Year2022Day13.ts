@@ -22,6 +22,9 @@ const SAMPLE_PACKETS_AS_TEXT = `[1,1,3,1,1]
 [1,[2,[3,[4,[5,6,7]]]],8,9]
 [1,[2,[3,[4,[5,6,0]]]],8,9]`;
 
+const DIVIDER_PACKETS_AS_TEXT = `[[2]]
+[[6]]`;
+
 const REAL_PACKETS_AS_TEXT = `[[0,5,[[],[],2,[7,9]]],[[8,8,3,[6,3,8,9,1]],[2,0,10,7,10],4,10,[9,[1,8],4,[4,0,5,10],[4,0,8,8]]],[9,10],[],[0,[[]],4,10]]
 [[],[4,7,3,6,[2,[10],[2,5,10],5,2]],[[1,10,[6,9],3],[6,10,8,[1],[10,7,3]],[[7],[10,9,9,2],1,7],7],[3,7,9,[[4],0]],[[4],[[9],0,9,[]],[7,[],[],[5,7]]]]
 
@@ -482,8 +485,6 @@ function parseIntoPairs(input: string): Pair[] {
 }
 
 function parseIntoPair(input: string): Pair {
-    // console.log("input:\n###\n" + input + "\n###");
-
     const terms = input.split(/\r?\n/);
 
     // console.log("left raw: " + terms[0]);
@@ -495,6 +496,12 @@ function parseIntoPair(input: string): Pair {
         left: JSON.parse(terms[0]),
         right: JSON.parse(terms[1])
     };
+}
+
+function parseIntoSingleEntries(input: string): object[] {
+    return input.split(/\r?\n/)
+        .filter((line) => line.length > 0)
+        .map((line) => JSON.parse(line));
 }
 
 enum Order {
@@ -540,14 +547,42 @@ function isInRightOrder(left, right): Order {
     throw new Error('Type of left and / or right invalid.');
 }
 
+function sortEntries(entries: object[]): object[] {
+    return entries.sort((left, right) => {
+        switch (isInRightOrder(left, right)) {
+            case Order.good:
+                return -1;
+            case Order.bad:
+                return 1;
+            case Order.undefined:
+                return 0;
+        }
+    });
+}
+
 function workWithInputPuzzle1(input: string) {
     const pairs = parseIntoPairs(input);
     let sumIndexesOfGood = 0;
     for (let i = 0; i < pairs.length; i++) {
-        // console.log("Index: " + (i + 1) + ", in right order: " + pairIsInRightOrder(pairs[i]));
         sumIndexesOfGood += pairIsInRightOrder(pairs[i]) == Order.good ? (i + 1) : 0;
     }
     console.log("Sum of indexes of good pairs: " + sumIndexesOfGood);
+}
+
+function workWithInputPuzzle2(input: string) {
+    const inputWithDividers = input + "\n" + DIVIDER_PACKETS_AS_TEXT;
+    const entries = sortEntries(parseIntoSingleEntries(inputWithDividers));
+    const dividers = DIVIDER_PACKETS_AS_TEXT.split(/\r?\n/);
+    let index = 1;
+    let decoderKey = 1;
+    entries.forEach((entry) => {
+        const asString = JSON.stringify(entry);
+        if (dividers.includes(asString)) {
+            decoderKey *= index;
+        }
+        index++;
+    });
+    console.log("Decoder key: " + decoderKey);
 }
 
 console.log("Year 2022, Day 13, Puzzle 1");
@@ -559,3 +594,15 @@ workWithInputPuzzle1(SAMPLE_PACKETS_AS_TEXT);
 // Real
 console.log("Real:");
 workWithInputPuzzle1(REAL_PACKETS_AS_TEXT);
+
+// ---------------------------------------------------------------
+
+console.log("Year 2022, Day 13, Puzzle 2");
+
+// Example
+console.log("Example:");
+workWithInputPuzzle2(SAMPLE_PACKETS_AS_TEXT);
+
+// Real
+console.log("Real:");
+workWithInputPuzzle2(REAL_PACKETS_AS_TEXT);
