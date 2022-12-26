@@ -3051,7 +3051,7 @@ function getValuePuzzle2(name, monkeys) {
     const left = getValuePuzzle2(monkey.left, monkeys);
     const right = getValuePuzzle2(monkey.right, monkeys);
     if (name == "root") {
-        return "(" + left + "=" + right + ")";
+        return left + "=" + right;
     }
     if ("number" == typeof left && "number" == typeof right) {
         switch (monkey.operator) {
@@ -3076,7 +3076,7 @@ The second part yields a long equation with one variable (x), I used the followi
 Afterwards I solved the equation by hand without any tools to yield a value for x.
 
 Example:
-Program output: (((4+(2*(x-3)))/4)=150)
+Program output: ((4+(2*(x-3)))/4)=150
 Nerdamer output: (2x-2)/4 = 150
 My steps:
 2x-2 = 600
@@ -3084,7 +3084,7 @@ My steps:
 x = 301
 
 Real:
-Program output: ((115*(((14407472692195-(((((((8*(((((((631+(((4*((((((((2*(((((882+(((9*(((((((((2*(665+((((((((((2*(((((102+((((x-73)/3)+575)*18))/6)-87)*36)-221))+244)/9)+830)/2)-246)*2)-219)+749)/2)))-286)/2)+500)*4)+909)+757)/5)-485))-823)/2))*2)-730)/2)+653))+793)/3)-120)*2)-746)/4)+775))-150)/2))*2)-768)*2)+249)/11)+528))-400)/12)+753)/3)-513)*3))/7)+769))=94625185243550)
+Program output: (115*(((14407472692195-(((((((8*(((((((631+(((4*((((((((2*(((((882+(((9*(((((((((2*(665+((((((((((2*(((((102+((((x-73)/3)+575)*18))/6)-87)*36)-221))+244)/9)+830)/2)-246)*2)-219)+749)/2)))-286)/2)+500)*4)+909)+757)/5)-485))-823)/2))*2)-730)/2)+653))+793)/3)-120)*2)-746)/4)+775))-150)/2))*2)-768)*2)+249)/11)+528))-400)/12)+753)/3)-513)*3))/7)+769))=94625185243550
 Nerdamer output: 115*(-128x/385+792410998122346/385) = 94625185243550
 My steps:
 -128x/385+792410998122346/385 = 94625185243550/115
