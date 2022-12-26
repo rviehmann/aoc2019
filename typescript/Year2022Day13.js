@@ -497,30 +497,21 @@ function pairIsInRightOrder(pair) {
 function isInRightOrder(left, right) {
     // console.log("typeof left: " + typeof left);
     // console.log("typeof right: " + typeof right);
-    if (typeof left == 'number' && typeof right == 'number') {
-        if (left < right) {
-            return Order.good;
-        }
-        if (left > right) {
-            return Order.bad;
-        }
-        return Order.undefined;
-    }
-    if (typeof left == 'object' && typeof right == 'number') {
+    if ("number" == typeof left && "number" == typeof right)
+        return left < right ? Order.good : left > right ? Order.bad : Order.undefined;
+    if ("object" == typeof left && "number" == typeof right)
         return isInRightOrder(left, [right]);
-    }
-    if (typeof left == 'number' && typeof right == 'object') {
+    if ("number" == typeof left && "object" == typeof right)
         return isInRightOrder([left], right);
-    }
-    if (typeof left == 'object' && typeof right == 'object') {
+    if ("object" == typeof left && "object" == typeof right) {
         let index = 0;
         while (index < left.length || index < right.length) {
             const leftHasEntry = left[index] !== undefined;
             const rightHasEntry = right[index] !== undefined;
             if (leftHasEntry && rightHasEntry) {
-                const tempResult = isInRightOrder(left[index], right[index]);
-                if (tempResult != Order.undefined)
-                    return tempResult;
+                const result = isInRightOrder(left[index], right[index]);
+                if (result != Order.undefined)
+                    return result;
             }
             if (!leftHasEntry && rightHasEntry) {
                 return Order.good;
