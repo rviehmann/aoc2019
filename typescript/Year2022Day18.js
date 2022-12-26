@@ -2873,18 +2873,6 @@ function calculateSurfaceArea(cubes) {
     }
     return surfaces;
 }
-function findAllWithSameXY(cubes, x, y) {
-    const condition = (c) => c.x == x && c.y == y;
-    return cubes.filter(condition);
-}
-function findAllWithSameXZ(cubes, x, z) {
-    const condition = (c) => c.x == x && c.z == z;
-    return cubes.filter(condition);
-}
-function findAllWithSameYZ(cubes, y, z) {
-    const condition = (c) => c.y == y && c.z == z;
-    return cubes.filter(condition);
-}
 const extractX = (c) => c.x;
 const extractY = (c) => c.y;
 const extractZ = (c) => c.z;

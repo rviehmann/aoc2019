@@ -2901,19 +2901,6 @@ function calculateSurfaceArea(cubes: Cube[]) {
     return surfaces;
 }
 
-function findAllWithSameXY(cubes: Cube[], x: number, y: number): Cube[] {
-    const condition = (c: Cube): boolean => c.x == x && c.y == y;
-    return cubes.filter(condition);
-}
-function findAllWithSameXZ(cubes: Cube[], x: number, z: number): Cube[] {
-    const condition = (c: Cube): boolean => c.x == x && c.z == z;
-    return cubes.filter(condition);
-}
-function findAllWithSameYZ(cubes: Cube[], y: number, z: number): Cube[] {
-    const condition = (c: Cube): boolean => c.y == y && c.z == z;
-    return cubes.filter(condition);
-}
-
 const extractX = (c: Cube): number => c.x;
 const extractY = (c: Cube): number => c.y;
 const extractZ = (c: Cube): number => c.z;
