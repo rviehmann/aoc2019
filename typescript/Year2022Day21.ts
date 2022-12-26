@@ -3024,7 +3024,7 @@ function parseIntoMonkey(input: string): Monkey {
     }
 }
 
-function getValue(name: string, monkeys: Map<string, Monkey>): number {
+function getValuePuzzle1(name: string, monkeys: Map<string, Monkey>): number {
     const monkey = monkeys.get(name);
     if (monkey === undefined) {
         throw new Error('Monkey not found.');
@@ -3035,8 +3035,8 @@ function getValue(name: string, monkeys: Map<string, Monkey>): number {
     if (monkey.left === null || monkey.right === null) {
         throw new Error('Monkey left or right invalid.');
     }
-    const left = getValue(monkey.left, monkeys);
-    const right = getValue(monkey.right, monkeys);
+    const left = getValuePuzzle1(monkey.left, monkeys);
+    const right = getValuePuzzle1(monkey.right, monkeys);
     switch (monkey.operator) {
         case "+": return left + right;
         case "-": return left - right;
@@ -3046,6 +3046,67 @@ function getValue(name: string, monkeys: Map<string, Monkey>): number {
     throw new Error('Monkey operator invalid.');
 }
 
+function getValuePuzzle2(name: string, monkeys: Map<string, Monkey>): number | string {
+    if (name == "humn") {
+        return "x";
+    }
+    const monkey = monkeys.get(name);
+    if (monkey === undefined) {
+        throw new Error('Monkey not found.');
+    }
+    if (monkey.rawValue !== null) {
+        return monkey.rawValue;
+    }
+    if (monkey.left === null || monkey.right === null) {
+        throw new Error('Monkey left or right invalid.');
+    }
+    const left = getValuePuzzle2(monkey.left, monkeys);
+    const right = getValuePuzzle2(monkey.right, monkeys);
+    if (name == "root") {
+        return "(" + left + "=" + right + ")";
+    }
+    if ("number" == typeof left && "number" == typeof right) {
+        switch (monkey.operator) {
+            case "+": return left + right;
+            case "-": return left - right;
+            case "*": return left * right;
+            case "/": return left / right;
+        }
+        throw new Error('Monkey operator invalid.');
+    }
+    return "(" + left + monkey.operator + right + ")";
+}
+
 console.log("Year 2022, Day 21, Puzzle 1");
-console.log("Result (example): " + getValue("root", parseIntoMonkeys(SAMPLE_MONKEYS_AS_TEXT)));
-console.log("Result (real): " + getValue("root", parseIntoMonkeys(REAL_MONKEYS_AS_TEXT)));
+console.log("Result (example): " + getValuePuzzle1("root", parseIntoMonkeys(SAMPLE_MONKEYS_AS_TEXT)));
+console.log("Result (real): " + getValuePuzzle1("root", parseIntoMonkeys(REAL_MONKEYS_AS_TEXT)));
+
+// ---------------------------------------------------------------
+
+console.log("Year 2022, Day 21, Puzzle 2");
+console.log("Result (example): " + getValuePuzzle2("root", parseIntoMonkeys(SAMPLE_MONKEYS_AS_TEXT)));
+console.log("Result (real): " + getValuePuzzle2("root", parseIntoMonkeys(REAL_MONKEYS_AS_TEXT)));
+
+/*
+The second part yields a long equation with one variable (x), I used the following website to simplify it as much as possible: https://nerdamer.com/demo.html
+Afterwards I solved the equation by hand without any tools to yield a value for x.
+
+Example:
+Program output: (((4+(2*(x-3)))/4)=150)
+Nerdamer output: (2x-2)/4 = 150
+My steps:
+2x-2 = 600
+2x = 602
+x = 301
+
+Real:
+Program output: ((115*(((14407472692195-(((((((8*(((((((631+(((4*((((((((2*(((((882+(((9*(((((((((2*(665+((((((((((2*(((((102+((((x-73)/3)+575)*18))/6)-87)*36)-221))+244)/9)+830)/2)-246)*2)-219)+749)/2)))-286)/2)+500)*4)+909)+757)/5)-485))-823)/2))*2)-730)/2)+653))+793)/3)-120)*2)-746)/4)+775))-150)/2))*2)-768)*2)+249)/11)+528))-400)/12)+753)/3)-513)*3))/7)+769))=94625185243550)
+Nerdamer output: 115*(-128x/385+792410998122346/385) = 94625185243550
+My steps:
+-128x/385+792410998122346/385 = 94625185243550/115
+-128x+792410998122346 = 94625185243550*385/115
+-128x = 94625185243550*385/115-792410998122346
+128x = -94625185243550*385/115+792410998122346
+x = (-94625185243550*385/115+792410998122346)/128
+x = 3715799488132
+*/
