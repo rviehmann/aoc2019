@@ -153,16 +153,16 @@ function snafuToDecimal(input: string): number {
     let output = 0;
     while (index >= 0) {
         switch (input.charCodeAt(index)) {
-            case "2".charCodeAt(0):
-                output += digitValue * 2; break;
-            case "1".charCodeAt(0):
+            case 50: // 2
+                output += 2 * digitValue; break;
+            case 49: // 1
                 output += digitValue; break;
-            case "0".charCodeAt(0):
+            case 48: // 0
                 break;
-            case "-".charCodeAt(0):
+            case 45: // -
                 output -= digitValue; break;
-            case "=".charCodeAt(0):
-                output -= digitValue * 2; break;
+            case 61: // =
+                output -= 2 * digitValue; break;
         }
         digitValue *= 5;
         index--; // The hightest index has the lowest value and vice versa.
